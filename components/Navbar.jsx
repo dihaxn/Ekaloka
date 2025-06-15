@@ -1,5 +1,6 @@
+// components/Navbar.jsx
 "use client"
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { assets } from "@/assets/assets";
 import Link from "next/link"
 import { useAppContext } from "@/context/AppContext";
@@ -8,92 +9,229 @@ import { useClerk } from "@clerk/nextjs";
 
 const Navbar = () => {
     const { isSeller, router } = useAppContext();
-    const { openSignIn } = useClerk()
+    const { openSignIn } = useClerk();
+    const [scrolled, setScrolled] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 20) {
+                setScrolled(true);
+            } else {
+                setScrolled(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Close mobile menu when a link is clicked
+    const closeMobileMenu = () => {
+        setMobileMenuOpen(false);
+    };
 
     return (
-        <nav className="flex items-center justify-between px-6 md:px-16 lg:px-32 py-3 border-b border-gray-300 text-gray-700">
-            <Image
-                className="cursor-pointer w-28 md:w-32 opacity-100 hover:opacity-80 transition-opacity duration-300"
-                onClick={() => router.push('/')}
-                src={assets.logo}
-                alt="logo"
-            />
-            <div className="flex items-center gap-4 lg:gap-8 max-md:hidden">
-                <Link href="/" className="relative group hover:text-orange-500 transition-colors duration-300">
-          <span className="relative">
-            Home
-            <span className="absolute bottom-0 left-0 w-0 h-px bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
-          </span>
-                </Link>
-                <Link href="/all-products" className="relative group hover:text-orange-500 transition-colors duration-300">
-          <span className="relative">
-            Shop
-            <span className="absolute bottom-0 left-0 w-0 h-px bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
-          </span>
-                </Link>
-                <Link href="/" className="relative group hover:text-orange-500 transition-colors duration-300">
-          <span className="relative">
-            About Us
-            <span className="absolute bottom-0 left-0 w-0 h-px bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
-          </span>
-                </Link>
-                <Link href="/" className="relative group hover:text-orange-500 transition-colors duration-300">
-          <span className="relative">
-            Contact
-            <span className="absolute bottom-0 left-0 w-0 h-px bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
-          </span>
-                </Link>
+        <nav className={`fixed w-full z-50 transition-all duration-500 ${
+            scrolled
+                ? "bg-gradient-to-b from-gray-900 to-black py-2 shadow-xl"
+                : "bg-transparent py-4"
+        }`}>
+            <div className="container mx-auto px-4 lg:px-8">
+                <div className="flex items-center justify-between">
+                    {/* Logo */}
+                    <div className="flex items-center">
+                        <div
+                            className="flex items-center cursor-pointer group"
+                            onClick={() => router.push('/')}
+                        >
+                            <div className="bg-gradient-to-r from-amber-500 to-amber-300 p-1.5 rounded-lg mr-3 group-hover:rotate-12 transition-transform">
+                                <div className="bg-black p-1 rounded-md">
+                                    <span className="text-amber-400 font-bold text-xl">DF</span>
+                                </div>
+                            </div>
+                            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-amber-200">
+                                Dai Fashion
+                            </h1>
+                        </div>
+                    </div>
 
-                {isSeller && (
-                    <button
-                        onClick={() => router.push('/seller')}
-                        className="text-xs border px-4 py-1.5 rounded-full transition-all duration-300 ease-out hover:bg-orange-500 hover:text-white hover:border-orange-500"
-                    >
-                        Seller Dashboard
-                    </button>
-                )}
+                    {/* Desktop Navigation */}
+                    <div className="hidden lg:flex items-center space-x-8">
+                        <Link href="/" className="relative group">
+                            <span className="text-gray-200 group-hover:text-amber-400 transition-colors duration-300">
+                                Home
+                            </span>
+                            <span className="absolute bottom-0 left-0 w-0 h-px bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
+                        </Link>
+                        <Link href="/all-products" className="relative group">
+                            <span className="text-gray-200 group-hover:text-amber-400 transition-colors duration-300">
+                                Shop
+                            </span>
+                            <span className="absolute bottom-0 left-0 w-0 h-px bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
+                        </Link>
+                        <Link href="/" className="relative group">
+                            <span className="text-gray-200 group-hover:text-amber-400 transition-colors duration-300">
+                                Collections
+                            </span>
+                            <span className="absolute bottom-0 left-0 w-0 h-px bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
+                        </Link>
+                        <Link href="/" className="relative group">
+                            <span className="text-gray-200 group-hover:text-amber-400 transition-colors duration-300">
+                                About
+                            </span>
+                            <span className="absolute bottom-0 left-0 w-0 h-px bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
+                        </Link>
+                        <Link href="/" className="relative group">
+                            <span className="text-gray-200 group-hover:text-amber-400 transition-colors duration-300">
+                                Contact
+                            </span>
+                            <span className="absolute bottom-0 left-0 w-0 h-px bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
+                        </Link>
+                    </div>
+
+                    {/* Desktop Actions */}
+                    <div className="hidden lg:flex items-center space-x-6">
+                        <div className="relative group">
+                            <Image
+                                className="w-5 h-5 cursor-pointer transition-transform duration-300 group-hover:scale-125 group-hover:brightness-125"
+                                src={assets.search_icon}
+                                alt="search icon"
+                                style={{ filter: 'invert(100%)' }}
+                            />
+                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                        </div>
+
+                        <div className="relative group">
+                            <Image
+                                className="w-5 h-5 cursor-pointer transition-transform duration-300 group-hover:scale-125 group-hover:brightness-125"
+                                src={assets.cart_icon}
+                                alt="cart icon"
+                                style={{ filter: 'invert(100%)' }}
+                            />
+                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                        </div>
+
+                        <button
+                            onClick={openSignIn}
+                            className="flex items-center gap-2 text-gray-200 group hover:text-amber-400 transition-colors duration-300"
+                        >
+                            <Image
+                                src={assets.user_icon}
+                                alt="user icon"
+                                className="transition-transform duration-300 group-hover:scale-110 group-hover:brightness-125"
+                                style={{ filter: 'invert(100%)' }}
+                            />
+                            <span>Account</span>
+                        </button>
+
+                        {isSeller && (
+                            <button
+                                onClick={() => router.push('/seller')}
+                                className="px-4 py-1.5 rounded-full transition-all duration-300 ease-out bg-gradient-to-r from-amber-500 to-amber-400 text-black text-sm font-medium hover:from-amber-600 hover:to-amber-500 hover:shadow-lg"
+                            >
+                                Seller Dashboard
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Mobile Menu Button */}
+                    <div className="lg:hidden flex items-center space-x-4">
+                        {isSeller && (
+                            <button
+                                onClick={() => router.push('/seller')}
+                                className="hidden md:block px-3 py-1 rounded-full transition-all duration-300 ease-out bg-gradient-to-r from-amber-500 to-amber-400 text-black text-xs font-medium hover:from-amber-600 hover:to-amber-500"
+                            >
+                                Seller
+                            </button>
+                        )}
+
+                        <button
+                            onClick={openSignIn}
+                            className="flex items-center gap-1 text-gray-200 group"
+                        >
+                            <Image
+                                src={assets.user_icon}
+                                alt="user icon"
+                                className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:brightness-125"
+                                style={{ filter: 'invert(100%)' }}
+                            />
+                        </button>
+
+                        <button
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            className="text-gray-200 focus:outline-none"
+                        >
+                            {mobileMenuOpen ? (
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            ) : (
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                                </svg>
+                            )}
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <ul className="hidden md:flex items-center gap-6 ">
-                <Image
-                    className="w-4 h-4 cursor-pointer transition-transform duration-300 hover:scale-125 hover:brightness-125"
-                    src={assets.search_icon}
-                    alt="search icon"
-                    style={{ filter: 'hue-rotate(0deg) saturate(2)' }}
-                />
-                <button
-                    onClick={openSignIn}
-                    className="flex items-center gap-2 hover:text-orange-500 transition-colors duration-300"
-                >
-                    <Image
-                        src={assets.user_icon}
-                        alt="user icon"
-                        className="transition-transform duration-300 hover:scale-110 hover:brightness-125"
-                    />
-                    Account
-                </button>
-            </ul>
+            {/* Mobile Menu */}
+            <div className={`lg:hidden fixed top-20 left-0 w-full h-full bg-gradient-to-b from-gray-900 to-black transition-all duration-500 overflow-hidden ${
+                mobileMenuOpen ? "opacity-100 max-h-screen" : "opacity-0 max-h-0"
+            }`}>
+                <div className="container mx-auto px-4 py-8">
+                    <div className="flex flex-col space-y-6">
+                        <Link href="/" className="text-xl text-gray-200 hover:text-amber-400 transition-colors py-2 border-b border-gray-800" onClick={closeMobileMenu}>
+                            Home
+                        </Link>
+                        <Link href="/all-products" className="text-xl text-gray-200 hover:text-amber-400 transition-colors py-2 border-b border-gray-800" onClick={closeMobileMenu}>
+                            Shop
+                        </Link>
+                        <Link href="/" className="text-xl text-gray-200 hover:text-amber-400 transition-colors py-2 border-b border-gray-800" onClick={closeMobileMenu}>
+                            Collections
+                        </Link>
+                        <Link href="/" className="text-xl text-gray-200 hover:text-amber-400 transition-colors py-2 border-b border-gray-800" onClick={closeMobileMenu}>
+                            About
+                        </Link>
+                        <Link href="/" className="text-xl text-gray-200 hover:text-amber-400 transition-colors py-2 border-b border-gray-800" onClick={closeMobileMenu}>
+                            Contact
+                        </Link>
 
-            <div className="flex items-center md:hidden gap-3">
-                {isSeller && (
-                    <button
-                        onClick={() => router.push('/seller')}
-                        className="text-xs border px-4 py-1.5 rounded-full transition-all duration-300 ease-out hover:bg-orange-500 hover:text-white hover:border-orange-500"
-                    >
-                        Seller Dashboard
-                    </button>
-                )}
-                <button
-                    onClick={openSignIn}
-                    className="flex items-center gap-2 hover:text-orange-500 transition-colors duration-300"
-                >
-                    <Image
-                        src={assets.user_icon}
-                        alt="user icon"
-                        className="transition-transform duration-300 hover:scale-110 hover:brightness-125"
-                    />
-                    Account
-                </button>
+                        <div className="pt-6 flex justify-between items-center">
+                            <div className="flex space-x-6">
+                                <div className="p-2 rounded-full bg-gray-800">
+                                    <Image
+                                        className="w-5 h-5 cursor-pointer"
+                                        src={assets.search_icon}
+                                        alt="search icon"
+                                        style={{ filter: 'invert(100%)' }}
+                                    />
+                                </div>
+                                <div className="p-2 rounded-full bg-gray-800">
+                                    <Image
+                                        className="w-5 h-5 cursor-pointer"
+                                        src={assets.cart_icon}
+                                        alt="cart icon"
+                                        style={{ filter: 'invert(100%)' }}
+                                    />
+                                </div>
+                            </div>
+
+                            {isSeller && (
+                                <button
+                                    onClick={() => {
+                                        router.push('/seller');
+                                        closeMobileMenu();
+                                    }}
+                                    className="px-4 py-2 rounded-full transition-all duration-300 ease-out bg-gradient-to-r from-amber-500 to-amber-400 text-black text-sm font-medium hover:from-amber-600 hover:to-amber-500"
+                                >
+                                    Seller Dashboard
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
     );
