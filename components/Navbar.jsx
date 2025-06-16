@@ -1,6 +1,6 @@
 // components/Navbar.jsx
 "use client"
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { assets } from "@/assets/assets";
 import Link from "next/link"
 import { useAppContext } from "@/context/AppContext";
@@ -12,6 +12,8 @@ const Navbar = () => {
     const { openSignIn } = useClerk();
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const navbarRef = useRef(null);
+    const [navbarHeight, setNavbarHeight] = useState(0);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -26,17 +28,27 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // Update navbar height when state changes
+    useEffect(() => {
+        if (navbarRef.current) {
+            setNavbarHeight(navbarRef.current.offsetHeight);
+        }
+    }, [scrolled, mobileMenuOpen]);
+
     // Close mobile menu when a link is clicked
     const closeMobileMenu = () => {
         setMobileMenuOpen(false);
     };
 
     return (
-        <nav className={`fixed w-full z-50 transition-all duration-500 ${
-            scrolled
-                ? "bg-gradient-to-b from-gray-900 to-black py-2 shadow-xl"
-                : "bg-transparent py-4"
-        }`}>
+        <nav
+            ref={navbarRef}
+            className={`fixed w-full z-50 transition-all duration-500 ${
+                scrolled
+                    ? "bg-gradient-to-b from-gray-900 to-black py-2 shadow-xl"
+                    : "bg-transparent py-4"
+            }`}
+        >
             <div className="container mx-auto px-4 lg:px-8">
                 <div className="flex items-center justify-between">
                     {/* Logo */}
@@ -176,10 +188,17 @@ const Navbar = () => {
                 </div>
             </div>
 
-            {/* Mobile Menu */}
-            <div className={`lg:hidden fixed top-20 left-0 w-full h-full bg-gradient-to-b from-gray-900 to-black transition-all duration-500 overflow-hidden ${
-                mobileMenuOpen ? "opacity-100 max-h-screen" : "opacity-0 max-h-0"
-            }`}>
+            {/* Mobile Menu - FIXED POSITIONING */}
+            <div
+                className={`lg:hidden left-0 w-full bg-gradient-to-b from-gray-900 to-black transition-all duration-500 overflow-hidden ${
+                    mobileMenuOpen ? "opacity-100" : "opacity-0"
+                }`}
+                style={{
+                    position: 'fixed',
+                    top: `${navbarHeight}px`,
+                    height: mobileMenuOpen ? `calc(100vh - ${navbarHeight}px)` : '0'
+                }}
+            >
                 <div className="container mx-auto px-4 py-8">
                     <div className="flex flex-col space-y-6">
                         <Link href="/" className="text-xl text-gray-200 hover:text-amber-400 transition-colors py-2 border-b border-gray-800" onClick={closeMobileMenu}>
