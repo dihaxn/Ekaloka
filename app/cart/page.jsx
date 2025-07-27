@@ -12,7 +12,7 @@ const Cart = () => {
 
   return (
     <>
-      <div>
+      <div >
         <Navbar />
       </div>
       <div className="flex flex-col md:flex-row gap-10 px-6 md:px-16 lg:px-32 pt-14 mb-20">

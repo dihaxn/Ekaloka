@@ -25,7 +25,7 @@ const MyOrders = () => {
 
     return (
         <>
-            <div>
+            <div >
                 <Navbar />
             </div>
             <div className="flex flex-col justify-between px-6 md:px-16 lg:px-32 py-6 min-h-screen">

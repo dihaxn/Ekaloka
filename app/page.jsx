@@ -10,9 +10,12 @@ import Footer from "@/components/Footer";
 
 const Home = () => {
   return (
-    <>
-        <div>
+    <div className="bg-gradient-to-r from-black via-gray-900 to-black">
+        <div >
             <Navbar />
+            <br/>
+            <br/>
+            <br/>
         </div>
       <div className="px-6 md:px-16 lg:px-32">
         <HeaderSlider />
@@ -22,7 +25,7 @@ const Home = () => {
         <NewsLetter />
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

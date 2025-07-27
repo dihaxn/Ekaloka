@@ -10,7 +10,7 @@ const AllProducts = () => {
 
     return (
         <>
-            <div>
+            <div >
                 <Navbar />
             </div>
 

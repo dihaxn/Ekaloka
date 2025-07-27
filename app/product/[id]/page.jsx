@@ -29,7 +29,7 @@ const Product = () => {
     }, [id, products.length])
 
     return productData ? (<>
-            <div>
+            <div >
                 <Navbar />
             </div>
         <div className="px-6 md:px-16 lg:px-32 pt-14 space-y-10">

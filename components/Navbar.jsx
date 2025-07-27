@@ -10,30 +10,16 @@ import { useClerk } from "@clerk/nextjs";
 const Navbar = () => {
     const { isSeller, router } = useAppContext();
     const { openSignIn } = useClerk();
-    const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const navbarRef = useRef(null);
     const [navbarHeight, setNavbarHeight] = useState(0);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 20) {
-                setScrolled(true);
-            } else {
-                setScrolled(false);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    // Update navbar height when state changes
+    // Update navbar height on mount and when mobile menu opens/closes
     useEffect(() => {
         if (navbarRef.current) {
             setNavbarHeight(navbarRef.current.offsetHeight);
         }
-    }, [scrolled, mobileMenuOpen]);
+    }, [mobileMenuOpen]);
 
     // Close mobile menu when a link is clicked
     const closeMobileMenu = () => {
@@ -43,11 +29,7 @@ const Navbar = () => {
     return (
         <nav
             ref={navbarRef}
-            className={`fixed w-full z-50 transition-all duration-500 ${
-                scrolled
-                    ? "bg-gradient-to-b from-gray-900 to-black py-2 shadow-xl"
-                    : "bg-transparent py-4"
-            }`}
+            className="fixed w-full z-50 bg-transparent bg-gradient-to-r from-black via-gray-900 to-black py-4 shadow-xl"
         >
             <div className="container mx-auto px-4 lg:px-8">
                 <div className="flex items-center justify-between">
@@ -109,6 +91,8 @@ const Navbar = () => {
                                 className="w-5 h-5 cursor-pointer transition-transform duration-300 group-hover:scale-125 group-hover:brightness-125"
                                 src={assets.search_icon}
                                 alt="search icon"
+                                width={20}
+                                height={20}
                                 style={{ filter: 'invert(100%)' }}
                             />
                             <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>
@@ -119,6 +103,8 @@ const Navbar = () => {
                                 className="w-5 h-5 cursor-pointer transition-transform duration-300 group-hover:scale-125 group-hover:brightness-125"
                                 src={assets.cart_icon}
                                 alt="cart icon"
+                                width={20}
+                                height={20}
                                 style={{ filter: 'invert(100%)' }}
                             />
                             <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>
@@ -131,6 +117,8 @@ const Navbar = () => {
                             <Image
                                 src={assets.user_icon}
                                 alt="user icon"
+                                width={20}
+                                height={20}
                                 className="transition-transform duration-300 group-hover:scale-110 group-hover:brightness-125"
                                 style={{ filter: 'invert(100%)' }}
                             />
@@ -165,6 +153,8 @@ const Navbar = () => {
                             <Image
                                 src={assets.user_icon}
                                 alt="user icon"
+                                width={20}
+                                height={20}
                                 className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:brightness-125"
                                 style={{ filter: 'invert(100%)' }}
                             />
@@ -188,9 +178,9 @@ const Navbar = () => {
                 </div>
             </div>
 
-            {/* Mobile Menu - FIXED POSITIONING */}
+            {/* Mobile Menu */}
             <div
-                className={`lg:hidden left-0 w-full bg-gradient-to-b from-gray-900 to-black transition-all duration-500 overflow-hidden ${
+                className={`lg:hidden left-0 w-full bg-black transition-all duration-500 overflow-hidden ${
                     mobileMenuOpen ? "opacity-100" : "opacity-0"
                 }`}
                 style={{
@@ -224,6 +214,8 @@ const Navbar = () => {
                                         className="w-5 h-5 cursor-pointer"
                                         src={assets.search_icon}
                                         alt="search icon"
+                                        width={20}
+                                        height={20}
                                         style={{ filter: 'invert(100%)' }}
                                     />
                                 </div>
@@ -232,6 +224,8 @@ const Navbar = () => {
                                         className="w-5 h-5 cursor-pointer"
                                         src={assets.cart_icon}
                                         alt="cart icon"
+                                        width={20}
+                                        height={20}
                                         style={{ filter: 'invert(100%)' }}
                                     />
                                 </div>
