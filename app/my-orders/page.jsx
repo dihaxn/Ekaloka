@@ -24,13 +24,23 @@ const MyOrders = () => {
     }, []);
 
     return (
-        <>
+            <div className="bg-gradient-to-r from-black via-gray-900 to-black">
+
             <div >
                 <Navbar />
+                <br />
+                <br />
+                <br />
             </div>
-            <div className="flex flex-col justify-between px-6 md:px-16 lg:px-32 py-6 min-h-screen">
+            <div className="flex flex-col justify-between px-6 md:px-16 lg:px-32 py-6 min-h-screen text-gray-500/80">
                 <div className="space-y-5">
-                    <h2 className="text-lg font-medium mt-6">My Orders</h2>
+                    <div className="flex flex-col items-start">
+                    <div className="flex flex-col items-end pt-12">
+                        <p className="text-2xl font-medium">My Orders</p>
+                        <div className="w-16 h-0.5 bg-orange-600 rounded-full"></div>
+                    </div>
+                    </div>  
+                    <br/>
                     {loading ? <Loading /> : (<div className="max-w-5xl border-t border-gray-300 text-sm">
                         {orders.map((order, index) => (
                             <div key={index} className="flex flex-col md:flex-row gap-5 justify-between p-5 border-b border-gray-300">
@@ -72,7 +82,7 @@ const MyOrders = () => {
                 </div>
             </div>
             <Footer />
-        </>
+        </div>
     );
 };
 
