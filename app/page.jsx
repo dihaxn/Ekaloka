@@ -11,7 +11,7 @@ import Footer from "@/components/Footer";
 const Home = () => {
   return (
     <div className="bg-gradient-to-r from-black via-gray-900 to-black">
-        <div >
+        <div>
             <Navbar />
             <br/>
             <br/>

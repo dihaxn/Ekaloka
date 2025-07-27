@@ -9,9 +9,12 @@ const AllProducts = () => {
     const { products } = useAppContext();
 
     return (
-        <>
-            <div >
+        <div className="bg-gradient-to-r from-black via-gray-900 to-black">
+            <div>
                 <Navbar />
+                <br/>
+                <br/>
+                <br/>
             </div>
 
             <div className="flex flex-col items-start px-6 md:px-16 lg:px-32">
@@ -24,7 +27,7 @@ const AllProducts = () => {
                 </div>
             </div>
             <Footer />
-        </>
+        </div>
     );
 };
 
