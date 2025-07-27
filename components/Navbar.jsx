@@ -53,31 +53,31 @@ const Navbar = () => {
                     {/* Desktop Navigation */}
                     <div className="hidden lg:flex items-center space-x-8">
                         <Link href="/" className="relative group">
-                            <span className="text-gray-200 group-hover:text-amber-400 transition-colors duration-300">
+                            <span className="text-gray-500/80 group-hover:text-amber-400 transition-colors duration-300">
                                 Home
                             </span>
                             <span className="absolute bottom-0 left-0 w-0 h-px bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
                         </Link>
                         <Link href="/all-products" className="relative group">
-                            <span className="text-gray-200 group-hover:text-amber-400 transition-colors duration-300">
+                            <span className="text-gray-500/80 group-hover:text-amber-400 transition-colors duration-300">
                                 Shop
                             </span>
                             <span className="absolute bottom-0 left-0 w-0 h-px bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
                         </Link>
                         <Link href="/" className="relative group">
-                            <span className="text-gray-200 group-hover:text-amber-400 transition-colors duration-300">
+                            <span className="text-gray-500/80 group-hover:text-amber-400 transition-colors duration-300">
                                 Collections
                             </span>
                             <span className="absolute bottom-0 left-0 w-0 h-px bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
                         </Link>
                         <Link href="/" className="relative group">
-                            <span className="text-gray-200 group-hover:text-amber-400 transition-colors duration-300">
+                            <span className="text-gray-500/80 group-hover:text-amber-400 transition-colors duration-300">
                                 About
                             </span>
                             <span className="absolute bottom-0 left-0 w-0 h-px bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
                         </Link>
                         <Link href="/" className="relative group">
-                            <span className="text-gray-200 group-hover:text-amber-400 transition-colors duration-300">
+                            <span className="text-gray-500/80 group-hover:text-amber-400 transition-colors duration-300">
                                 Contact
                             </span>
                             <span className="absolute bottom-0 left-0 w-0 h-px bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
@@ -112,7 +112,7 @@ const Navbar = () => {
 
                         <button
                             onClick={openSignIn}
-                            className="flex items-center gap-2 text-gray-200 group hover:text-amber-400 transition-colors duration-300"
+                            className="flex items-center gap-2 group hover:text-amber-400 transition-colors duration-300"
                         >
                             <Image
                                 src={assets.user_icon}
