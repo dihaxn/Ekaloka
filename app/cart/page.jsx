@@ -5,21 +5,25 @@ import OrderSummary from "@/components/OrderSummary";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { useAppContext } from "@/context/AppContext";
+import Footer from "@/components/Footer";
 
 const Cart = () => {
 
   const { products, router, cartItems, addToCart, updateCartQuantity, getCartCount } = useAppContext();
 
   return (
-    <>
+    <div className="bg-gradient-to-r from-black via-gray-900 to-black">
       <div >
         <Navbar />
+        <br />
+        <br />
+        <br />
       </div>
       <div className="flex flex-col md:flex-row gap-10 px-6 md:px-16 lg:px-32 pt-14 mb-20">
         <div className="flex-1">
           <div className="flex items-center justify-between mb-8 border-b border-gray-500/30 pb-6">
             <p className="text-2xl md:text-3xl text-gray-500">
-              Your <span className="font-medium text-orange-600">Cart</span>
+              Your <span className="font-medium text-amber-600">Cart</span>
             </p>
             <p className="text-lg md:text-xl text-gray-500/80">{getCartCount()} Items</p>
           </div>
@@ -104,7 +108,7 @@ const Cart = () => {
               </tbody>
             </table>
           </div>
-          <button onClick={()=> router.push('/all-products')} className="group flex items-center mt-6 gap-2 text-orange-600">
+          <button onClick={()=> router.push('/all-products')} className="group flex items-center mt-6 gap-2 text-amber-600">
             <Image
               className="group-hover:-translate-x-1 transition"
               src={assets.arrow_right_icon_colored}
@@ -115,7 +119,8 @@ const Cart = () => {
         </div>
         <OrderSummary />
       </div>
-    </>
+      <Footer/>
+    </div>
   );
 };
 

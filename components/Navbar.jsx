@@ -98,7 +98,7 @@ const Navbar = () => {
                             <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>
                         </div>
 
-                        <div className="relative group">
+                        <Link href="/cart" className="relative group" aria-label="Cart">
                             <Image
                                 className="w-5 h-5 cursor-pointer transition-transform duration-300 group-hover:scale-125 group-hover:brightness-125"
                                 src={assets.cart_icon}
@@ -108,7 +108,7 @@ const Navbar = () => {
                                 style={{ filter: 'invert(100%)' }}
                             />
                             <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                        </div>
+                        </Link>
 
                         <button
                             onClick={openSignIn}
@@ -237,7 +237,7 @@ const Navbar = () => {
                                         router.push('/seller');
                                         closeMobileMenu();
                                     }}
-                                    className="px-4 py-2 rounded-full transition-all duration-300 ease-out bg-gradient-to-r from-amber-500 to-amber-400 text-black text-sm font-medium hover:from-amber-600 hover:to-amber-500"
+                                    className="px-4 py-2 rounded-full transition-all duration-300 ease-out bg-gradient-to-r from-amber-700 to-amber-600 text-black text-sm font-medium hover:from-amber-700 hover:to-amber-800"
                                 >
                                     Seller Dashboard
                                 </button>
