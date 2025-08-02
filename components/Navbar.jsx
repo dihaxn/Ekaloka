@@ -5,13 +5,16 @@ import { assets } from "@/assets/assets";
 import Link from "next/link"
 import { useAppContext } from "@/context/AppContext";
 import Image from "next/image";
-import { useClerk } from "@clerk/nextjs";
+import { useClerk, useUser } from "@clerk/nextjs";
 
 const Navbar = () => {
     const { isSeller, router } = useAppContext();
-    const { openSignIn } = useClerk();
+    const { openSignIn, signOut } = useClerk();
+    const { isSignedIn } = useUser();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
     const navbarRef = useRef(null);
+    const accountDropdownRef = useRef(null);
     const [navbarHeight, setNavbarHeight] = useState(0);
 
     // Update navbar height on mount and when mobile menu opens/closes
@@ -20,6 +23,17 @@ const Navbar = () => {
             setNavbarHeight(navbarRef.current.offsetHeight);
         }
     }, [mobileMenuOpen]);
+
+    // Close account dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (accountDropdownRef.current && !accountDropdownRef.current.contains(event.target)) {
+                setAccountDropdownOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     // Close mobile menu when a link is clicked
     const closeMobileMenu = () => {
@@ -64,19 +78,13 @@ const Navbar = () => {
                             </span>
                             <span className="absolute bottom-0 left-0 w-0 h-px bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
                         </Link>
-                        <Link href="/my-orders" className="relative group">
-                            <span className="text-gray-500/80 group-hover:text-amber-400 transition-colors duration-300">
-                                Orders
-                            </span>
-                            <span className="absolute bottom-0 left-0 w-0 h-px bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
-                        </Link>
                         <Link href="/" className="relative group">
                             <span className="text-gray-500/80 group-hover:text-amber-400 transition-colors duration-300">
                                 About
                             </span>
                             <span className="absolute bottom-0 left-0 w-0 h-px bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
                         </Link>
-                        <Link href="/" className="relative group">
+                        <Link href="/add-address" className="relative group">
                             <span className="text-gray-500/80 group-hover:text-amber-400 transition-colors duration-300">
                                 Contact
                             </span>
@@ -110,20 +118,43 @@ const Navbar = () => {
                             <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>
                         </Link>
 
-                        <button
-                            onClick={openSignIn}
-                            className="flex items-center gap-2 group hover:text-amber-400 transition-colors duration-300"
-                        >
-                            <Image
-                                src={assets.user_icon}
-                                alt="user icon"
-                                width={20}
-                                height={20}
-                                className="transition-transform duration-300 group-hover:scale-110 group-hover:brightness-125"
-                                style={{ filter: 'invert(100%)' }}
-                            />
-                            <span>Account</span>
-                        </button>
+                        {/* Account Dropdown */}
+                        <div className="relative" ref={accountDropdownRef}>
+                            <button
+                                onClick={() => isSignedIn ? setAccountDropdownOpen(!accountDropdownOpen) : openSignIn()}
+                                className="flex items-center gap-2 group hover:text-amber-400 transition-colors duration-300"
+                            >
+                                <Image
+                                    src={assets.user_icon}
+                                    alt="user icon"
+                                    width={20}
+                                    height={20}
+                                    className="transition-transform duration-300 group-hover:scale-110 group-hover:brightness-125"
+                                    style={{ filter: 'invert(100%)' }}
+                                />
+                                <span>Account</span>
+                            </button>
+
+                            {/* Dropdown Menu */}
+                            {accountDropdownOpen && isSignedIn && (
+                                <div className="absolute right-0 mt-2 w-48 bg-gray-900 border border-gray-700 rounded-lg shadow-lg py-2 z-50">
+                                    <Link 
+                                        href="/my-orders" 
+                                        className="block px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
+                                        onClick={() => setAccountDropdownOpen(false)}
+                                    >
+                                        My Orders
+                                    </Link>
+                                    
+                                    <button 
+                                        onClick={() => signOut()}
+                                        className="block w-full text-left px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
+                                    >
+                                        Sign Out
+                                    </button>
+                                </div>
+                            )}
+                        </div>
 
                         {isSeller && (
                             <button
