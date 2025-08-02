@@ -84,12 +84,7 @@ const Navbar = () => {
                             </span>
                             <span className="absolute bottom-0 left-0 w-0 h-px bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
                         </Link>
-                        <Link href="/add-address" className="relative group">
-                            <span className="text-gray-500/80 group-hover:text-amber-400 transition-colors duration-300">
-                                Contact
-                            </span>
-                            <span className="absolute bottom-0 left-0 w-0 h-px bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
-                        </Link>
+                       
                     </div>
 
                     {/* Desktop Actions */}
@@ -138,6 +133,14 @@ const Navbar = () => {
                             {/* Dropdown Menu */}
                             {accountDropdownOpen && isSignedIn && (
                                 <div className="absolute right-0 mt-2 w-48 bg-gray-900 border border-gray-700 rounded-lg shadow-lg py-2 z-50">
+                                   
+                                   <Link 
+                                        href="/profile" 
+                                        className="block px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
+                                        onClick={() => setAccountDropdownOpen(false)}
+                                    >
+                                        Profile
+                                    </Link>
                                     <Link 
                                         href="/my-orders" 
                                         className="block px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
@@ -145,7 +148,20 @@ const Navbar = () => {
                                     >
                                         My Orders
                                     </Link>
-                                    
+                                     <Link 
+                                        href="/login" 
+                                        className="block px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
+                                        onClick={() => setAccountDropdownOpen(false)}
+                                    >
+                                        Login
+                                    </Link>
+                                     <Link 
+                                        href="/signup" 
+                                        className="block px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
+                                        onClick={() => setAccountDropdownOpen(false)}
+                                    >
+                                        Sign-up
+                                    </Link>
                                     <button 
                                         onClick={() => signOut()}
                                         className="block w-full text-left px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
@@ -228,15 +244,10 @@ const Navbar = () => {
                         <Link href="/all-products" className="text-xl text-gray-200 hover:text-amber-400 transition-colors py-2 border-b border-gray-800" onClick={closeMobileMenu}>
                             Shop
                         </Link>
-                        <Link href="/my-orders" className="text-xl text-gray-200 hover:text-amber-400 transition-colors py-2 border-b border-gray-800" onClick={closeMobileMenu}>
-                            Orders
-                        </Link>
                         <Link href="/" className="text-xl text-gray-200 hover:text-amber-400 transition-colors py-2 border-b border-gray-800" onClick={closeMobileMenu}>
                             About
                         </Link>
-                        <Link href="/" className="text-xl text-gray-200 hover:text-amber-400 transition-colors py-2 border-b border-gray-800" onClick={closeMobileMenu}>
-                            Contact
-                        </Link>
+                
 
                         <div className="pt-6 flex justify-between items-center">
                             <div className="flex space-x-6">
