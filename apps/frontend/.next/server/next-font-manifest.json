@@ -1,0 +1,25 @@
+{
+  "app": {
+    "[project]/apps/frontend/app/about/page": [
+      "static/media/QGYvz_MVcBeNP4NJtEtqUYLknw-s.p.de485432.woff2"
+    ],
+    "[project]/apps/frontend/app/all-products/page": [
+      "static/media/QGYvz_MVcBeNP4NJtEtqUYLknw-s.p.de485432.woff2"
+    ],
+    "[project]/apps/frontend/app/cart/page": [
+      "static/media/QGYvz_MVcBeNP4NJtEtqUYLknw-s.p.de485432.woff2"
+    ],
+    "[project]/apps/frontend/app/login/page": [
+      "static/media/QGYvz_MVcBeNP4NJtEtqUYLknw-s.p.de485432.woff2"
+    ],
+    "[project]/apps/frontend/app/page": [
+      "static/media/QGYvz_MVcBeNP4NJtEtqUYLknw-s.p.de485432.woff2"
+    ],
+    "[project]/apps/frontend/app/signup/page": [
+      "static/media/QGYvz_MVcBeNP4NJtEtqUYLknw-s.p.de485432.woff2"
+    ]
+  },
+  "appUsingSizeAdjust": true,
+  "pages": {},
+  "pagesUsingSizeAdjust": false
+}
