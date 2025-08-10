@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 const quickLinks = [
   { name: "New Arrivals", href: "#" },
@@ -213,9 +214,9 @@ const Footer = () => (
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p>© 2023 Dai Fashion. All rights reserved.</p>
           <div className="mt-4 md:mt-0 flex space-x-6">
-            <a href="#" className="hover:text-amber-400 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-amber-400 transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-amber-400 transition-colors">Returns & Exchanges</a>
+            <Link href="/privacy-policy" className="hover:text-amber-400 transition-colors">Privacy Policy</Link>
+            <Link href="/terms-of-service" className="hover:text-amber-400 transition-colors">Terms of Service</Link>
+            <Link href="/returns-exchanges" className="hover:text-amber-400 transition-colors">Returns & Exchanges</Link>
           </div>
         </div>
       </motion.div>

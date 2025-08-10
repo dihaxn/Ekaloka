@@ -137,10 +137,8 @@ const AboutUs = () => {
                         <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-8">
                             Be a part of the Dai Fashion family. Explore our latest collections and discover your unique style.
                         </p>
-                        <Link href="/all-products">
-                            <a className="inline-block bg-gradient-to-r from-orange-600 to-orange-500 text-white font-bold py-3 px-8 rounded-lg hover:from-orange-700 hover:to-orange-600 transition-all duration-300 shadow-lg">
+                        <Link href="/all-products" className="inline-block bg-gradient-to-r from-orange-600 to-orange-500 text-white font-bold py-3 px-8 rounded-lg hover:from-orange-700 hover:to-orange-600 transition-all duration-300 shadow-lg">
                                 Shop Now
-                            </a>
                         </Link>
                     </div>
                 </section>

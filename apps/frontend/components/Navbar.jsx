@@ -7,10 +7,12 @@ import { useAppContext } from "@/context/AppContext";
 import Image from "next/image";
 
 const Navbar = () => {
-    const { isSeller, router, token, setToken } = useAppContext();
+    const { isSeller, router, token, setToken, products } = useAppContext();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
     const [isClient, setIsClient] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
     const navbarRef = useRef(null);
     const accountDropdownRef = useRef(null);
     const [navbarHeight, setNavbarHeight] = useState(0);
@@ -45,6 +47,27 @@ const Navbar = () => {
         setAccountDropdownOpen(false);
         router.push("/");
     }
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const handleSearchFocus = () => {
+        setIsSearchFocused(true);
+    };
+
+    const handleSearchBlur = () => {
+        // Delay blur to allow click on search results
+        setTimeout(() => {
+            setIsSearchFocused(false);
+        }, 200);
+    };
+
+    const filteredProducts = searchQuery
+        ? products.filter(product =>
+            product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        : [];
 
     return (
         <nav
@@ -95,16 +118,44 @@ const Navbar = () => {
 
                     {/* Desktop Actions */}
                     <div className="hidden lg:flex items-center space-x-6">
-                        <div className="relative group">
+                        <div className="relative group" onFocus={handleSearchFocus} onBlur={handleSearchBlur}>
+                            <input
+                                type="text"
+                                placeholder="Search products..."
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                className="w-48 px-3 py-1.5 rounded-full bg-gray-800 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all"
+                            />
                             <Image
-                                className="w-5 h-5 cursor-pointer transition-transform duration-300 group-hover:scale-125 group-hover:brightness-125"
+                                className="absolute top-1/2 right-3 transform -translate-y-1/2 w-5 h-5 cursor-pointer transition-transform duration-300 group-hover:scale-125 group-hover:brightness-125"
                                 src={assets.search_icon}
                                 alt="search icon"
                                 width={20}
                                 height={20}
                                 style={{ filter: 'invert(100%)' }}
                             />
-                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                            {isSearchFocused && searchQuery && (
+                                <div className="absolute top-full mt-2 w-72 bg-gray-900 border border-gray-700 rounded-lg shadow-lg z-50">
+                                    {filteredProducts.length > 0 ? (
+                                        filteredProducts.slice(0, 5).map(product => (
+                                            <Link
+                                                key={product._id}
+                                                href={`/product/${product._id}`}
+                                                className="flex items-center p-2 hover:bg-gray-800"
+                                                onClick={() => {
+                                                    setSearchQuery("");
+                                                    setIsSearchFocused(false);
+                                                }}
+                                            >
+                                                <Image src={product.image[0]} alt={product.name} width={40} height={40} className="w-10 h-10 object-cover rounded-md mr-3" />
+                                                <span className="text-white">{product.name}</span>
+                                            </Link>
+                                        ))
+                                    ) : (
+                                        <div className="p-3 text-gray-400">No products found.</div>
+                                    )}
+                                </div>
+                            )}
                         </div>
 
                         {isClient && <>
@@ -252,6 +303,38 @@ const Navbar = () => {
             >
                 <div className="container mx-auto px-4 py-8">
                     <div className="flex flex-col space-y-6">
+                        <div className="relative" onFocus={handleSearchFocus} onBlur={handleSearchBlur}>
+                            <input
+                                type="text"
+                                placeholder="Search products..."
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                className="w-full px-4 py-2 rounded-full bg-gray-800 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                            />
+                             {isSearchFocused && searchQuery && (
+                                <div className="absolute top-full mt-2 w-full bg-gray-900 border border-gray-700 rounded-lg shadow-lg z-50">
+                                    {filteredProducts.length > 0 ? (
+                                        filteredProducts.slice(0, 5).map(product => (
+                                            <Link
+                                                key={product._id}
+                                                href={`/product/${product._id}`}
+                                                className="flex items-center p-2 hover:bg-gray-800"
+                                                onClick={() => {
+                                                    setSearchQuery("");
+                                                    setIsSearchFocused(false);
+                                                    closeMobileMenu();
+                                                }}
+                                            >
+                                                <Image src={product.image[0]} alt={product.name} width={40} height={40} className="w-10 h-10 object-cover rounded-md mr-3" />
+                                                <span className="text-white">{product.name}</span>
+                                            </Link>
+                                        ))
+                                    ) : (
+                                        <div className="p-3 text-gray-400">No products found.</div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
                         <Link href="/" className="text-xl text-gray-200 hover:text-amber-400 transition-colors py-2 border-b border-gray-800" onClick={closeMobileMenu}>
                             Home
                         </Link>
@@ -265,17 +348,7 @@ const Navbar = () => {
 
                         <div className="pt-6 flex justify-between items-center">
                             <div className="flex space-x-6">
-                                <div className="p-2 rounded-full bg-gray-800">
-                                    <Image
-                                        className="w-5 h-5 cursor-pointer"
-                                        src={assets.search_icon}
-                                        alt="search icon"
-                                        width={20}
-                                        height={20}
-                                        style={{ filter: 'invert(100%)' }}
-                                    />
-                                </div>
-                                <div className="p-2 rounded-full bg-gray-800">
+                                <Link href="/cart" className="p-2 rounded-full bg-gray-800" onClick={closeMobileMenu}>
                                     <Image
                                         className="w-5 h-5 cursor-pointer"
                                         src={assets.cart_icon}
@@ -284,7 +357,7 @@ const Navbar = () => {
                                         height={20}
                                         style={{ filter: 'invert(100%)' }}
                                     />
-                                </div>
+                                </Link>
                             </div>
 
                             {isClient && isSeller && (

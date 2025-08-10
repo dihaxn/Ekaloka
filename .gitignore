@@ -14,8 +14,14 @@
 /coverage
 
 # next.js
-/.next/
+.next/
 /out/
+
+# uploads
+uploads/
+
+# package-lock.json
+package-lock.json
 
 # production
 /build

@@ -1,9 +1,7 @@
 {
-  "/about/page": "app/about/page.js",
-  "/all-products/page": "app/all-products/page.js",
-  "/cart/page": "app/cart/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/login/page": "app/login/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/page": "app/page.js",
-  "/signup/page": "app/signup/page.js"
+  "/cart/page": "app/cart/page.js",
+  "/about/page": "app/about/page.js",
+  "/all-products/page": "app/all-products/page.js"
 }

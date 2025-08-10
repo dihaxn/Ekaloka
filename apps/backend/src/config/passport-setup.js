@@ -3,6 +3,11 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
 import userModel from '../models/userModel.js';
 
+const googleClientID = process.env.GOOGLE_CLIENT_ID || "dummy-google-client-id";
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET || "dummy-google-client-secret";
+const facebookAppID = process.env.FACEBOOK_APP_ID || "dummy-facebook-app-id";
+const facebookAppSecret = process.env.FACEBOOK_APP_SECRET || "dummy-facebook-app-secret";
+
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
@@ -15,8 +20,8 @@ passport.deserializeUser((id, done) => {
 
 // Google Strategy
 passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    clientID: googleClientID,
+    clientSecret: googleClientSecret,
     callbackURL: "/api/user/auth/google/callback"
 },
     async (accessToken, refreshToken, profile, done) => {
@@ -35,8 +40,8 @@ passport.use(new GoogleStrategy({
 
 // Facebook Strategy
 passport.use(new FacebookStrategy({
-    clientID: process.env.FACEBOOK_APP_ID,
-    clientSecret: process.env.FACEBOOK_APP_SECRET,
+    clientID: facebookAppID,
+    clientSecret: facebookAppSecret,
     callbackURL: "/api/user/auth/facebook/callback",
     profileFields: ['id', 'displayName', 'emails']
 },
