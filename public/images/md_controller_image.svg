@@ -1,0 +1,8 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="320" height="320" fill="#E5E7EB"/>
+  <rect x="40" y="80" width="240" height="160" rx="20" fill="#9CA3AF"/>
+  <circle cx="120" cy="160" r="25" fill="#6B7280"/>
+  <circle cx="200" cy="160" r="25" fill="#6B7280"/>
+  <rect x="140" y="140" width="40" height="40" rx="8" fill="#6B7280"/>
+  <text x="160" y="165" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">CTRL</text>
+</svg>
