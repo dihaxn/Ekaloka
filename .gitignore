@@ -3,6 +3,7 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
 # Environment variables
 .env
@@ -10,30 +11,17 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.env*.local
 
 # Next.js
 .next/
 out/
 build/
 dist/
+.vercel
 
 # Production
 /build
-
-# Misc
-.DS_Store
-*.pem
-
-# Debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Local env files
-.env*.local
-
-# Vercel
-.vercel
 
 # TypeScript
 *.tsbuildinfo
@@ -42,14 +30,17 @@ next-env.d.ts
 # Testing
 coverage/
 .nyc_output
+.jest/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*.sublime-*
 
 # OS
+.DS_Store
 Thumbs.db
 ehthumbs.db
 Desktop.ini
@@ -57,6 +48,11 @@ Desktop.ini
 # Logs
 logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # Runtime data
 pids
@@ -82,5 +78,43 @@ jspm_packages/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
+# Prisma
+prisma/dev.db
+prisma/dev.db-journal
+prisma/migrations/
+
+# Uploads and generated files
+public/uploads/
+*.tmp
+*.temp
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Local development
+*.local
+
+# Security
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.csr
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
