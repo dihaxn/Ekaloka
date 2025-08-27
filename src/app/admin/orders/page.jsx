@@ -14,7 +14,7 @@ const AdminOrders = () => {
 
     useEffect(() => {
         // Check if user is admin
-        if (token && !isAdmin()) {
+        if (token && !isOwnerUser()) {
             router.push('/');
             return;
         }

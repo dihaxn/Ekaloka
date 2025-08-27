@@ -17,11 +17,11 @@ export async function OPTIONS() {
   })
 }
 
-// Helper function to check if user is admin or seller (treat as same role)
-function isAdminUser(token: string): boolean {
+// Helper function to check if user is owner
+function isOwnerUser(token: string): boolean {
   // This is a simplified check - in production you should verify the JWT token
   // and check the user's role from the database
-  return token.includes('admin') || token.includes('seller')
+  return token.includes('owner')
 }
 
 // GET /api/admin/products - Get all products (admin only)
@@ -39,9 +39,9 @@ export async function GET(request: NextRequest) {
     const token = authHeader.substring(7)
 
     // Check if user is admin
-    if (!isAdminUser(token)) {
+    if (!isOwnerUser(token)) {
       return NextResponse.json(
-        { success: false, message: 'Admin access required' },
+        { success: false, message: 'Owner access required' },
         { status: 403, headers: corsHeaders }
       )
     }
@@ -85,9 +85,9 @@ export async function POST(request: NextRequest) {
     const token = authHeader.substring(7)
 
     // Check if user is admin
-    if (!isAdminUser(token)) {
+    if (!isOwnerUser(token)) {
       return NextResponse.json(
-        { success: false, message: 'Admin access required' },
+        { success: false, message: 'Owner access required' },
         { status: 403, headers: corsHeaders }
       )
     }

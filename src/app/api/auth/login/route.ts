@@ -26,9 +26,9 @@ export async function POST(request: NextRequest) {
     let userRole = 'user'
     let userName = 'John Doe'
     
-    // Check if it's an admin user
+    // Check if it's an owner user
     if (email === 'jane@example.com' && password === 'password123') {
-      userRole = 'admin'
+      userRole = 'owner'
       userName = 'Jane Smith'
     } else if (email === 'john@example.com' && password === 'password123') {
       userRole = 'user'
