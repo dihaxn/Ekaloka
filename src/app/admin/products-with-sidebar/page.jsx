@@ -9,7 +9,7 @@ import Navbar from "@/components/admin/Navbar";
 import Sidebar from "@/components/admin/Sidebar";
 
 const AdminProductsWithSidebar = () => {
-    const { router, userRole, token } = useAppContext();
+    const { router, userRole, token, isOwnerUser } = useAppContext();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 

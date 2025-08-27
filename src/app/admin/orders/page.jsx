@@ -8,7 +8,7 @@ import Loading from "@/components/Loading";
 import Navbar from "@/components/admin/Navbar";
 
 const AdminOrders = () => {
-    const { currency, userRole, token } = useAppContext();
+    const { currency, userRole, token, isOwnerUser } = useAppContext();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 

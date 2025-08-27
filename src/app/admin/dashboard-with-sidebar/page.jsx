@@ -7,7 +7,7 @@ import Navbar from "@/components/admin/Navbar";
 import Sidebar from "@/components/admin/Sidebar";
 
 const AdminDashboardWithSidebar = () => {
-    const { userRole, token } = useAppContext();
+    const { userRole, token, isOwnerUser } = useAppContext();
     const router = useRouter();
     const [formData, setFormData] = useState({
         name: '',

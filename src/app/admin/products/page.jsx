@@ -8,7 +8,7 @@ import Loading from "@/components/Loading";
 import Navbar from "@/components/admin/Navbar";
 
 const AdminProducts = () => {
-    const { router, userRole, token } = useAppContext();
+    const { router, userRole, token, isOwnerUser } = useAppContext();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 

@@ -6,7 +6,7 @@ import Footer from "@/components/admin/Footer";
 import Navbar from "@/components/admin/Navbar";
 
 const AdminAddProduct = () => {
-    const { userRole, token } = useAppContext();
+    const { userRole, token, isOwnerUser } = useAppContext();
     const router = useRouter();
     const [formData, setFormData] = useState({
         name: '',

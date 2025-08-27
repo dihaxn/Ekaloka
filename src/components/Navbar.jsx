@@ -184,35 +184,44 @@ const Navbar = () => {
                                                 className="block px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
                                                 onClick={() => setAccountDropdownOpen(false)}
                                             >
-                                                Owner Dashboard
-                                            </Link>
-                                            <Link 
-                                                href="/admin/products" 
-                                                className="block px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
-                                                onClick={() => setAccountDropdownOpen(false)}
-                                            >
-                                                Manage Products
-                                            </Link>
-                                            <Link 
-                                                href="/admin/orders" 
-                                                className="block px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
-                                                onClick={() => setAccountDropdownOpen(false)}
-                                            >
-                                                View Orders
+                                                📊 Owner Dashboard
                                             </Link>
                                             <Link 
                                                 href="/admin/dashboard-with-sidebar" 
                                                 className="block px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
                                                 onClick={() => setAccountDropdownOpen(false)}
                                             >
-                                                Sidebar Layout
+                                                📋 Dashboard Sidebar
+                                            </Link>
+                                            <div className="border-t border-gray-700 my-1"></div>
+                                            <Link 
+                                                href="/admin/products" 
+                                                className="block px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
+                                                onClick={() => setAccountDropdownOpen(false)}
+                                            >
+                                                🛍️ Manage Products
+                                            </Link>
+                                            <Link 
+                                                href="/admin/products/add" 
+                                                className="block px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
+                                                onClick={() => setAccountDropdownOpen(false)}
+                                            >
+                                                ➕ Add Product
                                             </Link>
                                             <Link 
                                                 href="/admin/products-with-sidebar" 
                                                 className="block px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
                                                 onClick={() => setAccountDropdownOpen(false)}
                                             >
-                                                Products Sidebar
+                                                📦 Products Sidebar
+                                            </Link>
+                                            <div className="border-t border-gray-700 my-1"></div>
+                                            <Link 
+                                                href="/admin/orders" 
+                                                className="block px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
+                                                onClick={() => setAccountDropdownOpen(false)}
+                                            >
+                                                📋 View Orders
                                             </Link>
                                         </>
                                     )}
@@ -236,14 +245,7 @@ const Navbar = () => {
                             )}
                         </div>
 
-                        {isOwnerUser() && (
-                            <button
-                                onClick={() => router.push('/admin/dashboard')}
-                                className="px-4 py-1.5 rounded-full transition-all duration-300 ease-out bg-gradient-to-r from-amber-500 to-amber-400 text-black text-sm font-medium hover:from-amber-600 hover:to-amber-500 hover:shadow-lg"
-                            >
-                                Owner Dashboard
-                            </button>
-                        )}
+
                         </>}
                     </div>
 
@@ -335,24 +337,36 @@ const Navbar = () => {
                                     </div>
                                 )}
 
-                                {/* Admin/Seller User Options */}
+                                {/* Owner User Options */}
                                 {isOwnerUser() && (
                                     <div className="space-y-2">
-                                                                                                                              <Link href="/admin/dashboard" className="block text-gray-200 hover:text-amber-400 py-2" onClick={closeMobileMenu}>
-                                                 Owner Dashboard
-                                             </Link>
-                                                                                      <Link href="/admin/products" className="block text-gray-200 hover:text-amber-400 py-2" onClick={closeMobileMenu}>
-                                                 Manage Products
-                                             </Link>
-                                                                                      <Link href="/admin/orders" className="block text-gray-200 hover:text-amber-400 py-2" onClick={closeMobileMenu}>
-                                                 View Orders
-                                             </Link>
-                                                                                      <Link href="/admin/dashboard-with-sidebar" className="block text-gray-200 hover:text-amber-400 py-2" onClick={closeMobileMenu}>
-                                                 Sidebar Layout
-                                             </Link>
-                                                                                      <Link href="/admin/products-with-sidebar" className="block text-gray-200 hover:text-amber-400 py-2" onClick={closeMobileMenu}>
-                                                 Products Sidebar
-                                             </Link>
+                                        <div className="text-amber-400 font-medium py-1 border-b border-gray-700 mb-2">
+                                            Owner Dashboard
+                                        </div>
+                                        <Link href="/admin/dashboard" className="block text-gray-200 hover:text-amber-400 py-2 pl-2" onClick={closeMobileMenu}>
+                                            📊 Main Dashboard
+                                        </Link>
+                                        <Link href="/admin/dashboard-with-sidebar" className="block text-gray-200 hover:text-amber-400 py-2 pl-2" onClick={closeMobileMenu}>
+                                            📋 Dashboard Sidebar
+                                        </Link>
+                                        <div className="text-amber-400 font-medium py-1 border-b border-gray-700 mb-2 mt-3">
+                                            Product Management
+                                        </div>
+                                        <Link href="/admin/products" className="block text-gray-200 hover:text-amber-400 py-2 pl-2" onClick={closeMobileMenu}>
+                                            🛍️ Manage Products
+                                        </Link>
+                                        <Link href="/admin/products/add" className="block text-gray-200 hover:text-amber-400 py-2 pl-2" onClick={closeMobileMenu}>
+                                            ➕ Add Product
+                                        </Link>
+                                        <Link href="/admin/products-with-sidebar" className="block text-gray-200 hover:text-amber-400 py-2 pl-2" onClick={closeMobileMenu}>
+                                            📦 Products Sidebar
+                                        </Link>
+                                        <div className="text-amber-400 font-medium py-1 border-b border-gray-700 mb-2 mt-3">
+                                            Order Management
+                                        </div>
+                                        <Link href="/admin/orders" className="block text-gray-200 hover:text-amber-400 py-2 pl-2" onClick={closeMobileMenu}>
+                                            📋 View Orders
+                                        </Link>
                                     </div>
                                 )}
 
@@ -409,17 +423,7 @@ const Navbar = () => {
                                 )}
                             </div>
 
-                            {isClient && isOwnerUser() && (
-                                <button
-                                    onClick={() => {
-                                        router.push('/seller');
-                                        closeMobileMenu();
-                                    }}
-                                                                         className="px-4 py-2 rounded-full transition-all duration-300 ease-out bg-gradient-to-r from-amber-700 to-amber-600 text-black text-sm font-medium hover:from-amber-700 hover:to-amber-800"
-                                >
-                                    Owner Dashboard
-                                </button>
-                            )}
+
                         </div>
                     </div>
                 </div>

@@ -33,18 +33,6 @@ async function main() {
     }
   })
 
-  const user3 = await prisma.user.upsert({
-    where: { email: 'bob@example.com' },
-    update: {},
-    create: {
-      uid: 'user_003',
-      name: 'Bob Johnson',
-      email: 'bob@example.com',
-      passwordHash,
-      role: 'owner'
-    }
-  })
-
   // Create sample products
   try {
     const product1 = await prisma.product.create({
