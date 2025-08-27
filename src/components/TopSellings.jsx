@@ -52,26 +52,28 @@ const TopSellings = () => {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-          {topSellingProducts.map((product, index) => (
-            <div key={product._id || index} className="relative">
-              {/* Top Selling Badge */}
-              <div className="absolute top-2 left-2 z-10">
-                <div className="bg-gradient-to-r from-amber-500 to-amber-400 text-black text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-                  #{index + 1} Top
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+            {topSellingProducts.map((product, index) => (
+              <div key={product._id || index} className="relative">
+                {/* Top Selling Badge */}
+                <div className="absolute top-2 left-2 z-10">
+                  <div className="bg-gradient-to-r from-amber-500 to-amber-400 text-black text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                    #{index + 1} Top
+                  </div>
                 </div>
+                <ProductCard product={product} />
               </div>
-              <ProductCard product={product} />
-            </div>
-          ))}
-        </div>
-        
-        {/* View All Top Products Button */}
-        <div className="flex justify-center mt-8">
-          <button className="px-8 py-3 border border-amber-500/70 rounded text-amber-400/80 hover:border-amber-400 hover:text-amber-300 transition-colors duration-300 hover:bg-amber-500/10">
-            View All Top Products
-          </button>
-        </div>
+            ))}
+          </div>
+          
+          {/* View All Top Products Button */}
+          <div className="flex justify-center mt-8">
+            <button className="px-8 py-3 border border-amber-500/70 rounded text-amber-400/80 hover:border-amber-400 hover:text-amber-300 transition-colors duration-300 hover:bg-amber-500/10">
+              View All Top Products
+            </button>
+          </div>
+        </>
       )}
     </div>
   );

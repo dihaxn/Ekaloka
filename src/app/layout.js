@@ -13,7 +13,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-      <html lang="en" suppressHydrationWarning={true}>
+      <html lang="en" suppressHydrationWarning={true} data-scroll-behavior="smooth">
         <body className={`${outfit.className} antialiased text-gray-700`} suppressHydrationWarning={true}>
           <ErrorBoundary>
             <ToastProvider>

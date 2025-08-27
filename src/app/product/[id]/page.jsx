@@ -12,7 +12,7 @@ import React from "react";
 
 const Product = () => {
   const { id } = useParams();
-  const { products, router, addToCart } = useAppContext();
+  const { products, router, addToCart, canAccessCart } = useAppContext();
   const [mainImage, setMainImage] = useState(null);
   const [productData, setProductData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -140,6 +140,7 @@ const Product = () => {
                 </tbody>
               </table>
             </div>
+            {canAccessCart() && (
             <div className="flex flex-col sm:flex-row items-center mt-10 gap-4">
               <button
                 onClick={() => addToCart(productData)}
@@ -165,6 +166,7 @@ const Product = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-amber-600 to-amber-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               </button>
             </div>
+            )}
           </div>
         </div>
 

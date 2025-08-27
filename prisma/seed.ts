@@ -29,7 +29,7 @@ async function main() {
       name: 'Jane Smith',
       email: 'jane@example.com',
       passwordHash,
-      role: 'admin'
+      role: 'owner'
     }
   })
 
@@ -41,7 +41,7 @@ async function main() {
       name: 'Bob Johnson',
       email: 'bob@example.com',
       passwordHash,
-      role: 'seller'
+      role: 'owner'
     }
   })
 

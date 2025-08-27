@@ -7,7 +7,7 @@ import { useAppContext } from "@/context/AppContext";
 import Image from "next/image";
 
 const Navbar = () => {
-    const { isSeller, isAdmin, router, token, setToken, canAccessCart, userRole } = useAppContext();
+    const { isOwner, isOwnerUser, router, token, setToken, canAccessCart, userRole } = useAppContext();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
     const [isClient, setIsClient] = useState(false);
@@ -142,7 +142,7 @@ const Navbar = () => {
                                     className="transition-transform duration-300 group-hover:scale-110 group-hover:brightness-125"
                                     style={{ filter: 'invert(100%)' }}
                                 />
-                                <span>{token ? (isAdmin() ? 'Admin/Seller' : 'Account') : 'Account'}</span>
+                                <span>{token ? (isOwnerUser() ? 'Owner' : 'Account') : 'Account'}</span>
                             </button>
 
                             {/* Dropdown Menu for Logged-in Users */}
@@ -151,7 +151,7 @@ const Navbar = () => {
                                     {/* User Info Header */}
                                     <div className="px-4 py-2 border-b border-gray-700">
                                         <div className="text-sm text-gray-300">
-                                            <div className="font-medium text-white">{isAdmin() ? 'Admin/Seller Panel' : 'User Account'}</div>
+                                            <div className="font-medium text-white">{isOwnerUser() ? 'Owner Panel' : 'User Account'}</div>
                                             <div className="text-xs text-gray-400">{userRole}</div>
                                         </div>
                                     </div>
@@ -176,15 +176,15 @@ const Navbar = () => {
                                         </>
                                     )}
 
-                                    {/* Admin/Seller User Options */}
-                                    {isAdmin() && (
+                                    {/* Owner Options */}
+                                    {isOwnerUser() && (
                                         <>
                                             <Link 
                                                 href="/admin/dashboard" 
                                                 className="block px-4 py-2 text-gray-200 hover:bg-gray-800 hover:text-amber-400"
                                                 onClick={() => setAccountDropdownOpen(false)}
                                             >
-                                                Admin Dashboard
+                                                Owner Dashboard
                                             </Link>
                                             <Link 
                                                 href="/admin/products" 
@@ -236,12 +236,12 @@ const Navbar = () => {
                             )}
                         </div>
 
-                        {isAdmin() && (
+                        {isOwnerUser() && (
                             <button
                                 onClick={() => router.push('/admin/dashboard')}
                                 className="px-4 py-1.5 rounded-full transition-all duration-300 ease-out bg-gradient-to-r from-amber-500 to-amber-400 text-black text-sm font-medium hover:from-amber-600 hover:to-amber-500 hover:shadow-lg"
                             >
-                                Admin Dashboard
+                                Owner Dashboard
                             </button>
                         )}
                         </>}
@@ -249,12 +249,12 @@ const Navbar = () => {
 
                     {/* Mobile Menu Button */}
                     <div className="lg:hidden flex items-center space-x-4">
-                        {isClient && isAdmin() && (
+                        {isClient && isOwnerUser() && (
                             <button
                                 onClick={() => router.push('/seller')}
                                                                  className="hidden md:block px-3 py-1 rounded-all transition-all duration-300 ease-out bg-gradient-to-r from-amber-500 to-amber-400 text-black text-xs font-medium hover:from-amber-600 hover:to-amber-500"
                             >
-                                Admin/Seller
+                                Owner
                             </button>
                         )}
 
@@ -318,7 +318,7 @@ const Navbar = () => {
                             <div className="pt-4 border-t border-gray-800">
                                 <div className="mb-4">
                                     <div className="text-sm text-gray-400 mb-2">
-                                        {isAdmin() ? 'Admin/Seller Panel' : 'User Account'}
+                                        {isOwnerUser() ? 'Owner Panel' : 'User Account'}
                                     </div>
                                     <div className="text-lg font-medium text-white">{userRole}</div>
                                 </div>
@@ -336,10 +336,10 @@ const Navbar = () => {
                                 )}
 
                                 {/* Admin/Seller User Options */}
-                                {isAdmin() && (
+                                {isOwnerUser() && (
                                     <div className="space-y-2">
                                                                                                                               <Link href="/admin/dashboard" className="block text-gray-200 hover:text-amber-400 py-2" onClick={closeMobileMenu}>
-                                                 Admin Dashboard
+                                                 Owner Dashboard
                                              </Link>
                                                                                       <Link href="/admin/products" className="block text-gray-200 hover:text-amber-400 py-2" onClick={closeMobileMenu}>
                                                  Manage Products
@@ -409,7 +409,7 @@ const Navbar = () => {
                                 )}
                             </div>
 
-                            {isClient && isAdmin() && (
+                            {isClient && isOwnerUser() && (
                                 <button
                                     onClick={() => {
                                         router.push('/seller');
@@ -417,7 +417,7 @@ const Navbar = () => {
                                     }}
                                                                          className="px-4 py-2 rounded-full transition-all duration-300 ease-out bg-gradient-to-r from-amber-700 to-amber-600 text-black text-sm font-medium hover:from-amber-700 hover:to-amber-800"
                                 >
-                                    Admin/Seller Dashboard
+                                    Owner Dashboard
                                 </button>
                             )}
                         </div>

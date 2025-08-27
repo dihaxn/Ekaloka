@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useAppContext } from '@/context/AppContext';
 
 const ProductCard = ({ product }) => {
-    const { currency, router, addToCart } = useAppContext();
+    const { currency, router, addToCart, canAccessCart } = useAppContext();
 
     return (
         <div
@@ -68,6 +68,7 @@ const ProductCard = ({ product }) => {
                 </button>
                  */}
                 {/* Quick Buy Button - Visible on Mobile */}
+                {canAccessCart() && (
                 <button 
                     onClick={(e) => {
                         e.stopPropagation();
@@ -77,6 +78,7 @@ const ProductCard = ({ product }) => {
                 >
                     Buy
                 </button>
+                )}
             </div>
 
             {/* Product Name */}
@@ -123,6 +125,7 @@ const ProductCard = ({ product }) => {
                 </div>
                 
                 {/* Buy Now Button - Visible on Desktop */}
+                {canAccessCart() && (
                 <button 
                     onClick={(e) => {
                         e.stopPropagation();
@@ -132,6 +135,7 @@ const ProductCard = ({ product }) => {
                 >
                     Buy now
                 </button>
+                )}
             </div>
         </div>
     );

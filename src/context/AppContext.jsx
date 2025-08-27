@@ -16,23 +16,18 @@ export const AppContextProvider = (props) => {
     const [cartItems, setCartItems] = useState({})
     const [token, setToken] = useState("");
     const [userRole, setUserRole] = useState(""); // Add user role state
-    const [isSeller, setIsSeller] = useState(false); // Placeholder for seller logic
+    const [isOwner, setIsOwner] = useState(false); // owner role
     const [loading, setLoading] = useState(true);
     const [currency] = useState("$"); // Default currency
 
-    // Check if user can access cart (hide for admin/seller users)
+    // Hide cart for owner users
     const canAccessCart = () => {
-        return userRole !== "admin" && userRole !== "seller";
+        return userRole !== "owner";
     };
 
-    // Check if user is admin or seller (treat as same role)
-    const isAdmin = () => {
-        return userRole === "admin" || userRole === "seller";
-    };
-
-    // Check if user is seller (same as admin)
-    const isSellerUser = () => {
-        return userRole === "admin" || userRole === "seller";
+    // Check if user is owner
+    const isOwnerUser = () => {
+        return userRole === "owner";
     };
 
     const fetchProductList = async () => {
@@ -59,8 +54,7 @@ export const AppContextProvider = (props) => {
                 // Set user role from login response
                 if (response.data.user && response.data.user.role) {
                     setUserRole(response.data.user.role);
-                    // Treat admin and seller as the same role
-                    setIsSeller(response.data.user.role === "seller" || response.data.user.role === "admin");
+                    setIsOwner(response.data.user.role === "owner");
                     localStorage.setItem("userRole", response.data.user.role);
                 }
                 
@@ -143,8 +137,7 @@ export const AppContextProvider = (props) => {
                 const savedRole = localStorage.getItem("userRole");
                 if (savedRole) {
                     setUserRole(savedRole);
-                    // Treat admin and seller as the same role
-                    setIsSeller(savedRole === "seller" || savedRole === "admin");
+                    setIsOwner(savedRole === "owner");
                 }
             }
         }
@@ -165,15 +158,15 @@ export const AppContextProvider = (props) => {
         router,
         token,
         setToken,
-        isSeller,
-        isSellerUser, // Add isSellerUser function to context
+        isOwner,
+        isOwnerUser,
         loginUser,
         registerUser,
         loading,
         userRole, // Add userRole to context
         setUserRole, // Add setUserRole to context
         canAccessCart, // Add canAccessCart to context
-        isAdmin // Add isAdmin to context
+        
     }
 
     return (
