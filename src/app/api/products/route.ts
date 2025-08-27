@@ -5,43 +5,43 @@ import { handleApiError } from '@/lib/errorHandler'
 // Mock product data for development
 const mockProducts = [
   {
-    _id: '1',
-    name: 'Premium Wireless Headphones',
-    description: 'High-quality wireless headphones with noise cancellation',
-    price: 299.99,
-    offerPrice: 249.99,
-    image: ['/images/bose_headphone_image.svg'],
-    category: 'Electronics',
-    brand: 'Bose',
+    _id: "1",
+    name: "Premium Fashion Collection",
+    description: "Exclusive designer pieces for the modern fashionista",
+    price: 199.99,
+    category: "Fashion",
+    image: ['/images/fashion-accessories.jpg'],
+    inStock: true,
     rating: 4.8,
-    reviews: 156,
-    inStock: true
+    numReviews: 156,
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
-    _id: '2',
-    name: 'Gaming Controller',
-    description: 'Professional gaming controller with customizable buttons',
-    price: 89.99,
-    offerPrice: 69.99,
-    image: ['/images/md_controller_image.svg'],
-    category: 'Gaming',
-    brand: 'GamePro',
-    rating: 4.6,
-    reviews: 89,
-    inStock: true
+    _id: "2",
+    name: "Lifestyle Fashion Bundle",
+    description: "Complete your look with our premium lifestyle collection",
+    price: 299.99,
+    category: "Lifestyle",
+    image: ['/images/fashion-lifestyle.jpg'],
+    inStock: true,
+    rating: 4.9,
+    numReviews: 89,
+    createdAt: new Date(),
+    updatedAt: new Date()
   },
   {
-    _id: '3',
-    name: 'Laptop Computer',
-    description: 'High-performance laptop for work and gaming',
-    price: 1299.99,
-    offerPrice: 1099.99,
-    image: ['/images/asus_laptop_image.svg'],
-    category: 'Computers',
-    brand: 'ASUS',
+    _id: "3",
+    name: "Designer Fashion Set",
+    description: "Timeless elegance with our exclusive designer pieces",
+    price: 399.99,
+    category: "Designer",
+    image: ['/images/fashion-model.jpg'],
+    inStock: true,
     rating: 4.7,
-    reviews: 234,
-    inStock: true
+    numReviews: 234,
+    createdAt: new Date(),
+    updatedAt: new Date()
   }
 ]
 
@@ -80,7 +80,8 @@ export async function GET(request: NextRequest) {
     return response
   } catch (error) {
     console.error('Error fetching products:', error)
-    return handleApiError(error)
+    const errorResponse = handleApiError(error as Error)
+    return NextResponse.json(errorResponse, { status: errorResponse.error.statusCode })
   }
 }
 
@@ -104,6 +105,7 @@ export async function POST(request: NextRequest) {
     return response
   } catch (error) {
     console.error('Error creating product:', error)
-    return handleApiError(error)
+    const errorResponse = handleApiError(error as Error)
+    return NextResponse.json(errorResponse, { status: errorResponse.error.statusCode })
   }
 }

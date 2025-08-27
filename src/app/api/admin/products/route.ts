@@ -17,9 +17,11 @@ export async function OPTIONS() {
   })
 }
 
-// Helper function to check if user is admin
+// Helper function to check if user is admin or seller (treat as same role)
 function isAdminUser(token: string): boolean {
-  return token.includes('admin')
+  // This is a simplified check - in production you should verify the JWT token
+  // and check the user's role from the database
+  return token.includes('admin') || token.includes('seller')
 }
 
 // GET /api/admin/products - Get all products (admin only)

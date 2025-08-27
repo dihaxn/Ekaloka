@@ -5,9 +5,9 @@ import ImageUpload from '@/components/ImageUpload'
 import ProfilePicture from '@/components/ProfilePicture'
 
 const TestProfilePhoto = () => {
-  const [testImage, setTestImage] = useState<string | null>(null)
+  const [testImage, setTestImage] = useState(null)
 
-  const handleTestUpload = async (file: File) => {
+  const handleTestUpload = async (file) => {
     try {
       // Simulate upload delay
       await new Promise(resolve => setTimeout(resolve, 1000))

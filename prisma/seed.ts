@@ -33,6 +33,18 @@ async function main() {
     }
   })
 
+  const user3 = await prisma.user.upsert({
+    where: { email: 'bob@example.com' },
+    update: {},
+    create: {
+      uid: 'user_003',
+      name: 'Bob Johnson',
+      email: 'bob@example.com',
+      passwordHash,
+      role: 'seller'
+    }
+  })
+
   // Create sample products
   try {
     const product1 = await prisma.product.create({
@@ -74,7 +86,7 @@ async function main() {
   }
 
   console.log('Seeding finished.')
-  console.log('Created users:', { user1, user2 })
+  console.log('Created users:', { user1, user2, user3 })
 }
 
 main()

@@ -115,8 +115,8 @@ const ImageUpload = ({
           relative rounded-full overflow-hidden cursor-pointer
           border-2 border-dashed transition-all duration-200
           ${isDragOver 
-            ? 'border-amber-400 bg-amber-50/10' 
-            : 'border-gray-600 hover:border-amber-500'
+                            ? 'border-amber-400 bg-amber-50/10'
+                : 'border-gray-600 hover:border-amber-500'
           }
           ${disabled ? 'cursor-not-allowed opacity-50' : ''}
           ${isUploading ? 'animate-pulse' : ''}
@@ -167,8 +167,8 @@ const ImageUpload = ({
 
         {/* Drag overlay */}
         {isDragOver && (
-          <div className="absolute inset-0 bg-amber-500/20 flex items-center justify-center">
-            <div className="text-amber-400 text-center">
+                      <div className="absolute inset-0 bg-amber-500/20 flex items-center justify-center">
+                <div className="text-amber-400 text-center">
               <div className="text-3xl mb-2">⬇️</div>
               <div className="text-sm font-medium">Drop to upload</div>
             </div>
@@ -179,7 +179,7 @@ const ImageUpload = ({
       {/* Upload status */}
       {isUploading && (
         <div className="mt-2 text-center">
-          <div className="text-xs text-amber-400">Uploading image...</div>
+                          <div className="text-xs text-amber-400">Uploading image...</div>
         </div>
       )}
 

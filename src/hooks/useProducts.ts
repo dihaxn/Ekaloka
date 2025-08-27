@@ -48,14 +48,15 @@ export function useProducts(filters: ProductFilters = {}) {
       } else {
         // Handle different types of errors
         if (response.error) {
-          if (response.error.includes('Method not allowed')) {
+          const errorMessage = response.error.message
+          if (errorMessage.includes('Method not allowed')) {
             setError('Invalid request method')
-          } else if (response.error.includes('Invalid pagination')) {
+          } else if (errorMessage.includes('Invalid pagination')) {
             setError('Invalid page or limit parameters')
-          } else if (response.error.includes('not found')) {
+          } else if (errorMessage.includes('not found')) {
             setError('Products not found')
           } else {
-            setError(response.error)
+            setError(errorMessage)
           }
         } else {
           setError('Failed to fetch products')

@@ -87,7 +87,7 @@ const OrderSummary = () => {
               placeholder="Enter promo code"
               className="bg-gray-300 flex-grow w-full outline-none p-2.5 text-gray-600 border"
             />
-            <button className="bg-amber-600 text-white px-9 py-2 hover:bg-amber-700">
+                            <button className="bg-amber-600 text-white px-9 py-2 hover:bg-amber-700">
               Apply
             </button>
           </div>
@@ -115,7 +115,7 @@ const OrderSummary = () => {
         </div>
       </div>
 
-      <button onClick={createOrder} className="w-full bg-amber-600 text-white py-3 mt-5 hover:bg-amber-700">
+                      <button onClick={createOrder} className="w-full bg-amber-600 text-white py-3 mt-5 hover:bg-amber-700">
         Place Order
       </button>
     </div>

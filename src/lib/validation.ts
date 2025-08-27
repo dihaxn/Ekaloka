@@ -40,7 +40,7 @@ export const validators = {
     return null
   },
 
-  maxLength: (maxLength: number, fieldName: string) => (value: string): ValidationError | null => {
+  maxLength: (maxLength: number, fieldName: string) => (value: string | undefined): ValidationError | null => {
     if (!value) return null // Skip if empty
     
     if (value.length > maxLength) {

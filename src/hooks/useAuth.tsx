@@ -58,14 +58,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         // Handle different types of errors
         if (response.error) {
-          if (response.error.includes('Invalid credentials')) {
+          const errorMessage = response.error.message
+          if (errorMessage.includes('Invalid credentials')) {
             setError('Invalid email or password')
-          } else if (response.error.includes('required')) {
+          } else if (errorMessage.includes('required')) {
             setError('Please fill in all required fields')
-          } else if (response.error.includes('email')) {
+          } else if (errorMessage.includes('email')) {
             setError('Please enter a valid email address')
           } else {
-            setError(response.error)
+            setError(errorMessage)
           }
         } else {
           setError('Login failed. Please try again.')

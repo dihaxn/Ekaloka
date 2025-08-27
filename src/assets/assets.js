@@ -1,13 +1,17 @@
 // Assets configuration and data
 export const assets = {
+  // Fashion images
+  fashion_hero: '/images/fashion-hero.jpg',
+  fashion_collection: '/images/fashion-collection.jpg',
+  fashion_model: '/images/fashion-model.jpg',
+  fashion_accessories: '/images/fashion-accessories.jpg',
+  fashion_lifestyle: '/images/fashion-lifestyle.jpg',
+  
   // Image paths for the application
   jbl_soundbox_image: '/images/jbl_soundbox_image.svg',
   md_controller_image: '/images/md_controller_image.svg',
   sm_controller_image: '/images/sm_controller_image.svg',
   apple_earphone_image: '/images/apple_earphone_image.svg',
-  asus_laptop_image: '/images/asus_laptop_image.svg',
-  bose_headphone_image: '/images/bose_headphone_image.svg',
-  cannon_camera_image: '/images/cannon_camera_image.svg',
   girl_with_earphone_image: '/images/girl_with_earphone_image.svg',
   girl_with_headphone_image: '/images/girl_with_headphone_image.svg',
   header_headphone_image: '/images/girl_with_headphone_image.svg',
@@ -125,15 +129,15 @@ export const orderDummyData = [
 export const productsDummyData = [
   {
     id: "1",
-    name: "Premium Headphones",
+    name: "Premium Fashion Collection",
     price: 199.99,
-    image: "/images/bose_headphone_image.png"
+    image: "/images/fashion-accessories.jpg"
   },
   {
     id: "2",
-    name: "Gaming Laptop",
-    price: 1299.99,
-    image: "/images/asus_laptop_image.png"
+    name: "Lifestyle Fashion Bundle",
+    price: 299.99,
+    image: "/images/fashion-lifestyle.jpg"
   }
 ];
 

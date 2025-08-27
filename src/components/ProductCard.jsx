@@ -18,7 +18,7 @@ const ProductCard = ({ product }) => {
             className="flex flex-col items-start gap-0.5 max-w-[200px] w-full cursor-pointer group"
         >
             {/* Product Image Container */}
-            <div className="relative bg-gray-800/50 rounded-lg w-full h-52 flex items-center justify-center overflow-hidden border border-gray-700/50 group-hover:border-amber-500/50 transition-all duration-300">
+                         <div className="relative bg-gray-800/50 rounded-lg w-full h-52 flex items-center justify-center overflow-hidden border border-gray-700/50 group-hover:border-amber-500/50 transition-all duration-300">
                 {/* Product Image */}
                 <Image
                     src={product.image[0] || assets.placeholder_image}
@@ -34,7 +34,7 @@ const ProductCard = ({ product }) => {
                         e.stopPropagation();
                         // Handle wishlist functionality here
                     }}
-                    className="absolute top-2 right-2 bg-gray-900/80 p-2 rounded-full shadow-md hover:bg-amber-500/90 transition-colors duration-300 z-10"
+                                         className="absolute top-2 right-2 bg-gray-900/80 p-2 rounded-full shadow-md hover:bg-amber-500/90 transition-colors duration-300 z-10"
                 >
                     <Image
                         className="h-3 w-3 invert opacity-80 group-hover:opacity-100 group-hover:invert-0 transition-all"
@@ -73,16 +73,16 @@ const ProductCard = ({ product }) => {
                         e.stopPropagation();
                         addToCart(product);
                     }}
-                    className="absolute bottom-3 left-3 px-3 py-1 text-xs bg-gradient-to-r from-amber-500/80 to-amber-300/80 rounded-full text-gray-900 font-medium hover:from-amber-400 hover:to-amber-200 transition-all duration-300 transform hover:scale-105 md:hidden"
+                                         className="absolute bottom-3 left-3 px-3 py-1 text-xs bg-gradient-to-r from-amber-500/80 to-amber-300/80 rounded-full text-gray-900 font-medium hover:from-amber-400 hover:to-amber-300 transition-all duration-300 transform hover:scale-105 md:hidden"
                 >
                     Buy
                 </button>
             </div>
 
             {/* Product Name */}
-            <p className="md:text-base font-medium pt-2 w-full truncate text-white group-hover:text-amber-400 transition-colors">
-                {product.name}
-            </p>
+                         <p className="md:text-base font-medium pt-2 w-full truncate text-white group-hover:text-amber-400 transition-colors">
+                 {product.name}
+             </p>
             
             {/* Product Description */}
             <p className="w-full text-xs text-gray-400 max-sm:hidden truncate">
@@ -112,9 +112,9 @@ const ProductCard = ({ product }) => {
             {/* Price and Buy Button */}
             <div className="flex items-end justify-between w-full mt-1.5">
                 <div>
-                    <p className="text-base font-medium text-amber-400">
-                        {currency}{product.offerPrice}
-                    </p>
+                                         <p className="text-base font-medium text-amber-400">
+                         {currency}{product.offerPrice}
+                     </p>
                     {product.originalPrice && (
                         <p className="text-xs text-gray-500 line-through">
                             {currency}{product.originalPrice}

@@ -51,25 +51,25 @@ const Loading = () => {
             <div className="flex flex-col items-center">
                 <div className="relative w-48 h-16 mb-8">
                     {/* Circles */}
-                    <div className="dai-circle delay-1 absolute w-5 h-5 rounded-full bg-gradient-to-r from-amber-500 to-amber-300 left-1/4 transform -translate-x-1/2"></div>
-                    <div className="dai-circle delay-2 absolute w-5 h-5 rounded-full bg-gradient-to-r from-amber-500 to-amber-300 left-1/2 transform -translate-x-1/2"></div>
-                    <div className="dai-circle delay-3 absolute w-5 h-5 rounded-full bg-gradient-to-r from-amber-500 to-amber-300 left-3/4 transform -translate-x-1/2"></div>
+                            <div className="dai-circle delay-1 absolute w-5 h-5 rounded-full bg-gradient-to-r from-amber-500 to-amber-300 left-1/4 transform -translate-x-1/2"></div>
+        <div className="dai-circle delay-2 absolute w-5 h-5 rounded-full bg-gradient-to-r from-amber-500 to-amber-300 left-1/2 transform -translate-x-1/2"></div>
+        <div className="dai-circle delay-3 absolute w-5 h-5 rounded-full bg-gradient-to-r from-amber-500 to-amber-300 left-3/4 transform -translate-x-1/2"></div>
                     
                     {/* Shadows */}
-                    <div className="dai-shadow delay-1 absolute w-5 h-2 rounded-full bg-gradient-to-r from-amber-900/70 to-amber-700/70 top-[62px] left-1/4 transform -translate-x-1/2 filter blur-[1px]"></div>
-                    <div className="dai-shadow delay-2 absolute w-5 h-2 rounded-full bg-gradient-to-r from-amber-900/70 to-amber-700/70 top-[62px] left-1/2 transform -translate-x-1/2 filter blur-[1px]"></div>
-                    <div className="dai-shadow delay-3 absolute w-5 h-2 rounded-full bg-gradient-to-r from-amber-900/70 to-amber-700/70 top-[62px] left-3/4 transform -translate-x-1/2 filter blur-[1px]"></div>
+                            <div className="dai-shadow delay-1 absolute w-5 h-2 rounded-full bg-gradient-to-r from-amber-900/70 to-amber-700/70 top-[62px] left-1/4 transform -translate-x-1/2 filter blur-[1px]"></div>
+        <div className="dai-shadow delay-2 absolute w-5 h-2 rounded-full bg-gradient-to-r from-amber-900/70 to-amber-700/70 top-[62px] left-1/2 transform -translate-x-1/2 filter blur-[1px]"></div>
+        <div className="dai-shadow delay-3 absolute w-5 h-2 rounded-full bg-gradient-to-r from-amber-900/70 to-amber-700/70 top-[62px] left-3/4 transform -translate-x-1/2 filter blur-[1px]"></div>
                 </div>
                 
                 <div className="flex items-center space-x-3 mt-6 animate-pulse">
-                    <div className="bg-gradient-to-r from-amber-500 to-amber-300 p-2 rounded-lg">
-                        <div className="bg-black p-1 rounded-md">
-                            <span className="text-amber-400 font-bold text-xl">DF</span>
-                        </div>
-                    </div>
-                    <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-amber-200">
-                        Dai Fashion
-                    </h1>
+                                <div className="bg-gradient-to-r from-amber-500 to-amber-300 p-2 rounded-lg">
+                <div className="bg-black p-1 rounded-md">
+                    <span className="text-amber-400 font-bold text-xl">DF</span>
+                </div>
+            </div>
+            <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-amber-200">
+                Dai Fashion
+            </h1>
                 </div>
                 
                 <p className="mt-4 text-gray-400 max-w-md text-center px-4">

@@ -118,7 +118,6 @@ export function handleApiError(
       message: appError.message,
       code: appError.code,
       field: appError instanceof ValidationError ? appError.field : undefined,
-      value: appError instanceof ValidationError ? appError.value : undefined,
       statusCode: appError.statusCode,
       timestamp: new Date().toISOString(),
       path: req?.url

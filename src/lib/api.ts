@@ -28,7 +28,13 @@ export async function apiFetch<T = any>(
       return {
         ok: false,
         data: null,
-        error: errorData.error || `HTTP ${res.status}: ${res.statusText}`
+        error: {
+          message: errorData.error || `HTTP ${res.status}: ${res.statusText}`,
+          code: `HTTP_${res.status}`,
+          statusCode: res.status,
+          timestamp: new Date().toISOString(),
+          path: path
+        }
       }
     }
 
@@ -42,7 +48,13 @@ export async function apiFetch<T = any>(
       return {
         ok: false,
         data: null,
-        error: 'Network error. Please check your connection.'
+        error: {
+          message: 'Network error. Please check your connection.',
+          code: 'NETWORK_ERROR',
+          statusCode: 0,
+          timestamp: new Date().toISOString(),
+          path: path
+        }
       }
     }
     
@@ -50,14 +62,26 @@ export async function apiFetch<T = any>(
       return {
         ok: false,
         data: null,
-        error: 'Invalid response format from server.'
+        error: {
+          message: 'Invalid response format from server.',
+          code: 'PARSE_ERROR',
+          statusCode: 0,
+          timestamp: new Date().toISOString(),
+          path: path
+        }
       }
     }
 
     return {
       ok: false,
       data: null,
-      error: error instanceof Error ? error.message : 'Unknown error occurred'
+      error: {
+        message: error instanceof Error ? error.message : 'Unknown error occurred',
+        code: 'UNKNOWN_ERROR',
+        statusCode: 0,
+        timestamp: new Date().toISOString(),
+        path: path
+      }
     }
   }
 }
@@ -119,7 +143,7 @@ export function isErrorResponse<T>(response: ApiResponse<T>): response is ErrorR
 // Helper function to extract error message
 export function getErrorMessage(response: ApiResponse<any>): string {
   if (isErrorResponse(response)) {
-    return response.error.message || response.error || 'An error occurred'
+    return response.error.message || 'An error occurred'
   }
   return 'No error'
 }

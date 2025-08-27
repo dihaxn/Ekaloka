@@ -30,7 +30,7 @@ export function withRateLimit(
   const store = new Map<string, { count: number; resetTime: number }>()
   
   return async (req: NextApiRequest, res: NextApiResponse) => {
-    const ip = req.ip || req.connection.remoteAddress || 'unknown'
+    const ip = (req as any).ip || (req as any).connection?.remoteAddress || 'unknown'
     const now = Date.now()
     
     // Get current rate limit info for this IP

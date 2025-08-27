@@ -186,12 +186,12 @@ export class CircuitBreaker {
   // Helper method to get current time that works with Jest timers
   private getCurrentTime(): number {
     // In test mode, try to use Jest's timer mocks if available
-    if (process.env.NODE_ENV === 'test' && typeof jest !== 'undefined') {
+    if (process.env.NODE_ENV === 'test') {
       try {
-        // @ts-ignore - Jest globals
-        if (typeof jest.getTimerCount === 'function') {
-          // @ts-ignore - Jest globals
-          return jest.now()
+        // Check if Jest is available in global scope
+        const globalAny = global as any
+        if (globalAny.jest && typeof globalAny.jest.getTimerCount === 'function') {
+          return globalAny.jest.now()
         }
       } catch (e) {
         // Fall back to Date.now() if Jest timers aren't available

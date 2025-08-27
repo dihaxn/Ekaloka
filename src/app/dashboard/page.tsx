@@ -1,10 +1,30 @@
 'use client'
 
 import { useAuth } from '../../hooks/useAuth'
+import { useEffect, useState } from 'react'
+
+// Prevent static generation
+export const dynamic = 'force-dynamic'
 import { useProducts } from '../../hooks/useProducts'
-import { useState } from 'react'
 
 export default function DashboardPage() {
+  const [isClient, setIsClient] = useState(false)
+  
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+  
+  if (!isClient) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+  
   const { user, logout } = useAuth()
   const [searchTerm, setSearchTerm] = useState('')
   const { data, loading, error, setSearch, setPage } = useProducts({ page: 1, limit: 10 })

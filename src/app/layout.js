@@ -7,8 +7,8 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 const outfit = Outfit({ subsets: ['latin'], weight: ["300", "400", "500"] })
 
 export const metadata = {
-  title: "Dai Clothing",
-  description: "E-Commerce with Next.js ",
+  title: "DF Dai Fashion - Premium Fashion Collection",
+  description: "Discover your style with our exclusive fashion collection. Premium clothing, accessories, and lifestyle pieces for the modern fashionista.",
 };
 
 export default function RootLayout({ children }) {

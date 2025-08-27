@@ -8,9 +8,9 @@ const Banner = () => (
     <div className="relative group">
       <div className="absolute -inset-4 bg-gradient-to-r from-amber-500 to-amber-300 rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-500 -z-10"></div>
       <Image
-        className="max-w-56 group-hover:scale-105 transition-transform duration-500"
-        src={assets.jbl_soundbox_image}
-        alt="JBL Soundbox"
+        className="max-w-56 group-hover:scale-105 transition-transform duration-500 rounded-lg w-56 h-56 object-cover"
+        src={assets.fashion_accessories}
+        alt="Fashion Accessories"
         width={224}
         height={224}
       />
@@ -18,16 +18,16 @@ const Banner = () => (
 
     {/* Center Content */}
     <div className="flex flex-col items-center justify-center text-center space-y-2 px-4 md:px-0">
-      <h2 className="text-2xl md:text-3xl font-semibold max-w-[290px]">
-        Level Up Your Gaming Experience
+      <h2 className="text-2xl md:text-3xl font-semibold max-w-[290px] text-white">
+        Elevate Your Style Game
       </h2>
-      <p className="max-w-[343px] font-medium text-gray-500/60">
-        From immersive sound to precise controls—everything you need to win
+      <p className="max-w-[343px] font-medium text-gray-300/80">
+        From runway trends to everyday elegance—everything you need to look your best
       </p>
       <button
-        className="group flex items-center justify-center gap-1 px-12 py-2.5 bg-orange-800 rounded text-white transition-colors duration-300 ease-in-out hover:bg-orange-900 hover:shadow-lg"
+        className="group flex items-center justify-center gap-1 px-12 py-2.5 bg-amber-800 hover:bg-amber-700 rounded text-white transition-colors duration-300 ease-in-out hover:shadow-lg"
       >
-        Buy now
+        Shop Collection
       </button>
     </div>
 
@@ -35,16 +35,16 @@ const Banner = () => (
     <div className="relative group mt-8 md:mt-0">
       <div className="absolute -inset-4 bg-gradient-to-r from-amber-500 to-amber-300 rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-500 -z-10"></div>
       <Image
-        className="hidden md:block max-w-80 group-hover:scale-105 transition-transform duration-500"
-        src={assets.md_controller_image}
-        alt="Gaming Controller"
+        className="hidden md:block max-w-80 group-hover:scale-105 transition-transform duration-500 rounded-lg w-80 h-80 object-cover"
+        src={assets.fashion_lifestyle}
+        alt="Fashion Lifestyle"
         width={320}
         height={320}
       />
       <Image
-        className="md:hidden group-hover:scale-105 transition-transform duration-500"
-        src={assets.sm_controller_image}
-        alt="Gaming Controller Small"
+        className="md:hidden group-hover:scale-105 transition-transform duration-500 rounded-lg w-72 h-72 object-cover"
+        src={assets.fashion_lifestyle}
+        alt="Fashion Lifestyle Small"
         width={280}
         height={280}
       />

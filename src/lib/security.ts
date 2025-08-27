@@ -284,12 +284,12 @@ export class InputSecurity {
       errors.push(`File size must be less than ${SECURITY_CONFIG.MAX_FILE_SIZE / (1024 * 1024)}MB`)
     }
     
-    if (!SECURITY_CONFIG.ALLOWED_FILE_TYPES.includes(file.type)) {
+    if (!SECURITY_CONFIG.ALLOWED_FILE_TYPES.includes(file.type as any)) {
       errors.push('File type not allowed')
     }
     
     const extension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase()
-    if (!SECURITY_CONFIG.ALLOWED_FILE_EXTENSIONS.includes(extension)) {
+    if (!SECURITY_CONFIG.ALLOWED_FILE_EXTENSIONS.includes(extension as any)) {
       errors.push('File extension not allowed')
     }
     

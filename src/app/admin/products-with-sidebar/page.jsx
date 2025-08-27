@@ -15,7 +15,7 @@ const AdminProductsWithSidebar = () => {
 
     useEffect(() => {
         // Check if user is admin
-        if (token && userRole !== 'admin') {
+        if (token && !isAdmin()) {
             router.push('/');
             return;
         }

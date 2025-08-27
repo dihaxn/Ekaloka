@@ -20,14 +20,19 @@ export const AppContextProvider = (props) => {
     const [loading, setLoading] = useState(true);
     const [currency] = useState("$"); // Default currency
 
-    // Check if user can access cart (hide for admin users)
+    // Check if user can access cart (hide for admin/seller users)
     const canAccessCart = () => {
-        return userRole !== "admin";
+        return userRole !== "admin" && userRole !== "seller";
     };
 
-    // Check if user is admin
+    // Check if user is admin or seller (treat as same role)
     const isAdmin = () => {
-        return userRole === "admin";
+        return userRole === "admin" || userRole === "seller";
+    };
+
+    // Check if user is seller (same as admin)
+    const isSellerUser = () => {
+        return userRole === "admin" || userRole === "seller";
     };
 
     const fetchProductList = async () => {
@@ -54,7 +59,8 @@ export const AppContextProvider = (props) => {
                 // Set user role from login response
                 if (response.data.user && response.data.user.role) {
                     setUserRole(response.data.user.role);
-                    setIsSeller(response.data.user.role === "seller");
+                    // Treat admin and seller as the same role
+                    setIsSeller(response.data.user.role === "seller" || response.data.user.role === "admin");
                     localStorage.setItem("userRole", response.data.user.role);
                 }
                 
@@ -137,7 +143,8 @@ export const AppContextProvider = (props) => {
                 const savedRole = localStorage.getItem("userRole");
                 if (savedRole) {
                     setUserRole(savedRole);
-                    setIsSeller(savedRole === "seller");
+                    // Treat admin and seller as the same role
+                    setIsSeller(savedRole === "seller" || savedRole === "admin");
                 }
             }
         }
@@ -159,6 +166,7 @@ export const AppContextProvider = (props) => {
         token,
         setToken,
         isSeller,
+        isSellerUser, // Add isSellerUser function to context
         loginUser,
         registerUser,
         loading,

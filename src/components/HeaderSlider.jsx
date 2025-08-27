@@ -7,30 +7,30 @@ const HeaderSlider = () => {
   const sliderData = [
     {
       id: 1,
-      title: "Experience Pure Sound - Your Perfect Headphones Awaits!",
+      title: "Discover Your Style - Premium Fashion Collection Awaits!",
       offer: "Limited Time Offer 30% Off",
-      buttonText1: "Buy now",
-      buttonText2: "Find more",
-      imgSrc: assets.header_headphone_image,
+      buttonText1: "Shop Now",
+      buttonText2: "Explore Collection",
+      imgSrc: assets.fashion_hero,
       bgColor: "from-amber-900/30 to-gray-900"
     },
     {
       id: 2,
-      title: "Next-Level Gaming Starts Here - Discover PlayStation 5 Today!",
-      offer: "Hurry up only few left!",
-      buttonText1: "Shop Now",
-      buttonText2: "Explore Deals",
-      imgSrc: assets.header_playstation_image,
-      bgColor: "from-blue-900/30 to-gray-900"
+      title: "Elevate Your Wardrobe - Exclusive Designer Pieces!",
+      offer: "New Arrivals - Limited Stock!",
+      buttonText1: "View Collection",
+      buttonText2: "Learn More",
+      imgSrc: assets.fashion_collection,
+      bgColor: "from-purple-900/30 to-gray-900"
     },
     {
       id: 3,
-      title: "Power Meets Elegance - Apple MacBook Pro is Here for you!",
-      offer: "Exclusive Deal 40% Off",
+      title: "Timeless Elegance - Where Fashion Meets Sophistication!",
+      offer: "Premium Collection 40% Off",
       buttonText1: "Order Now",
-      buttonText2: "Learn More",
-      imgSrc: assets.header_macbook_image,
-      bgColor: "from-gray-800/30 to-gray-900"
+      buttonText2: "Discover More",
+      imgSrc: assets.fashion_model,
+      bgColor: "from-indigo-900/30 to-gray-900"
     },
   ];
 
@@ -85,11 +85,12 @@ const HeaderSlider = () => {
             </div>
             <div className="flex items-center flex-1 justify-center">
               <Image
-                className="md:w-72 w-48 transition-transform duration-500 hover:scale-105"
+                className="md:w-72 w-48 h-72 md:h-72 object-cover transition-transform duration-500 hover:scale-105 rounded-lg"
                 src={slide.imgSrc}
                 alt={`Slide ${index + 1}`}
                 width={320}
                 height={320}
+                priority={index === 0}
               />
             </div>
           </div>
