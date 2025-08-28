@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/server/db/prisma'
+import { PrismaClient } from '@prisma/client/edge'
+import { withAccelerate } from '@prisma/extension-accelerate'
+import jwt from 'jsonwebtoken'
+
+// Create Prisma client with Accelerate
+const prisma = new PrismaClient().$extends(withAccelerate())
 
 // CORS headers
 const corsHeaders = {
@@ -19,13 +24,22 @@ export async function OPTIONS() {
 
 // Helper function to check if user is owner
 function isOwnerUser(token: string): boolean {
-  // This is a simplified check - in production you should verify the JWT token
-  // and check the user's role from the database
-  return token.includes('owner')
+  try {
+    const jwtSecret = process.env.JWT_ACCESS_SECRET
+    if (!jwtSecret) {
+      console.error('JWT_ACCESS_SECRET environment variable is not set')
+      return false
+    }
+    const decoded = jwt.verify(token, jwtSecret) as any
+    return decoded.role === 'owner'
+  } catch (error) {
+    return false
+  }
 }
 
 // GET /api/admin/products - Get all products (admin only)
 export async function GET(request: NextRequest) {
+  
   try {
     const authHeader = request.headers.get('authorization')
 
@@ -67,11 +81,14 @@ export async function GET(request: NextRequest) {
       { success: false, message: 'Failed to get products' },
       { status: 500, headers: corsHeaders }
     )
+  } finally {
+    await prisma.$disconnect()
   }
 }
 
 // POST /api/admin/products - Create new product (admin only)
 export async function POST(request: NextRequest) {
+  
   try {
     const authHeader = request.headers.get('authorization')
 
@@ -102,12 +119,21 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create product in database
+    // Create product in database with all required fields
     const newProduct = await prisma.product.create({
       data: {
         name,
         price: parseFloat(price),
-        description: description || ''
+        description: description || '',
+        category: body.category || 'Fashion',
+        brand: body.brand || 'Dai Fashion',
+        sku: body.sku || `SKU-${Date.now()}`,
+        stock: parseInt(body.stock) || 0,
+        images: Array.isArray(body.images) ? body.images : [],
+        tags: Array.isArray(body.tags) ? body.tags : [],
+        status: 'active',
+        rating: 0,
+        totalSales: 0,
       }
     })
 
@@ -128,5 +154,7 @@ export async function POST(request: NextRequest) {
       { success: false, message: 'Failed to create product' },
       { status: 500, headers: corsHeaders }
     )
+  } finally {
+    await prisma.$disconnect()
   }
 }

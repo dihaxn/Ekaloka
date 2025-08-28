@@ -43,7 +43,7 @@ const nextConfig = {
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()'
+            value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()'
           },
           // Temporarily disabled CSP to fix CSS loading issues
           // {
@@ -65,11 +65,6 @@ const nextConfig = {
   
   // Server external packages for security
   serverExternalPackages: ['bcrypt'],
-  
-  // Environment variables
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY
-  }
 }
 
 module.exports = nextConfig

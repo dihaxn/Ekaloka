@@ -7,7 +7,7 @@ import { useAppContext } from "@/context/AppContext";
 import Image from "next/image";
 
 const Navbar = () => {
-    const { isOwner, isOwnerUser, router, token, setToken, canAccessCart, userRole } = useAppContext();
+    const { isOwner, isOwnerUser, router, token, logoutUser, canAccessCart, userRole, userName } = useAppContext();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
     const [isClient, setIsClient] = useState(false);
@@ -40,10 +40,8 @@ const Navbar = () => {
     };
 
     const logout = () => {
-        localStorage.removeItem("token");
-        setToken("");
+        logoutUser();
         setAccountDropdownOpen(false);
-        router.push("/");
     }
 
     return (
@@ -142,7 +140,7 @@ const Navbar = () => {
                                     className="transition-transform duration-300 group-hover:scale-110 group-hover:brightness-125"
                                     style={{ filter: 'invert(100%)' }}
                                 />
-                                <span>{token ? (isOwnerUser() ? 'Owner' : 'Account') : 'Account'}</span>
+                                <span>{token ? (userName || (isOwnerUser() ? 'Owner' : 'User')) : 'Account'}</span>
                             </button>
 
                             {/* Dropdown Menu for Logged-in Users */}
@@ -151,7 +149,7 @@ const Navbar = () => {
                                     {/* User Info Header */}
                                     <div className="px-4 py-2 border-b border-gray-700">
                                         <div className="text-sm text-gray-300">
-                                            <div className="font-medium text-white">{isOwnerUser() ? 'Owner Panel' : 'User Account'}</div>
+                                            <div className="font-medium text-white">{userName || (isOwnerUser() ? 'Owner' : 'User')}</div>
                                             <div className="text-xs text-gray-400">{userRole}</div>
                                         </div>
                                     </div>
@@ -314,7 +312,7 @@ const Navbar = () => {
                             <div className="pt-4 border-t border-gray-800">
                                 <div className="mb-4">
                                     <div className="text-sm text-gray-400 mb-2">
-                                        {isOwnerUser() ? 'Owner Panel' : 'User Account'}
+                                        {userName || (isOwnerUser() ? 'Owner' : 'User')}
                                     </div>
                                     <div className="text-lg font-medium text-white">{userRole}</div>
                                 </div>
@@ -369,10 +367,7 @@ const Navbar = () => {
 
                                 {/* Common Options */}
                                 <div className="pt-4 border-t border-gray-800">
-                                                                                                                  <Link href="/settings" className="block text-gray-200 hover:text-amber-400 py-2" onClick={closeMobileMenu}>
-                                             Settings
-                                         </Link>
-                                                                              <button 
+                                        <button 
                                              onClick={() => {
                                                  logout();
                                                  closeMobileMenu();
@@ -385,12 +380,7 @@ const Navbar = () => {
                             </div>
                         ) : (
                             <div className="pt-4 border-t border-gray-800">
-                                                                 <Link href="/login" className="block text-gray-200 hover:text-amber-400 py-2" onClick={closeMobileMenu}>
-                                     Login
-                                 </Link>
-                                 <Link href="/signup" className="block text-gray-400 hover:text-amber-400 py-2" onClick={closeMobileMenu}>
-                                     Sign Up
-                                 </Link>
+                                
                             </div>
                         )}
 

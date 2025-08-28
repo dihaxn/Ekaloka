@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -17,8 +18,18 @@ model User {
   email        String   @unique
   passwordHash String
   role         String   @default("user")
+  phone        String?
+  address      String?
+  avatar       String?
+  joinDate     DateTime @default(now())
+  lastLogin    DateTime?
+  status       String   @default("active")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  // Relations
+  orders       Order[]
+  cartItems    CartItem[]
 
   @@map("users")
 }
@@ -27,9 +38,77 @@ model Product {
   id          String   @id @default(cuid())
   name        String
   price       Float
+  offerPrice  Float?
   description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  category    String
+  brand       String?
+  sku         String?   @unique
+  stock       Int       @default(0)
+  images      String[]  @default([])
+  tags        String[]  @default([])
+  status      String    @default("active")
+  rating      Float?    @default(0)
+  totalSales  Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  orderItems  OrderItem[]
+  cartItems   CartItem[]
 
   @@map("products")
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  orderNumber   String   @unique
+  userId        String
+  customerName  String
+  customerEmail String
+  customerPhone String?
+  totalAmount   Float
+  status        String   @default("pending")
+  shippingAddress String
+  paymentMethod   String?
+  paymentStatus   String  @default("pending")
+  orderDate     DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  user          User       @relation(fields: [userId], references: [id])
+  orderItems    OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+
+  // Relations
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+model CartItem {
+  id        String @id @default(cuid())
+  userId    String
+  productId String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("cart_items")
 }

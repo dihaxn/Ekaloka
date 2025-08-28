@@ -53,7 +53,7 @@ export const assets = {
   star_dull_icon: '/images/star_dull_icon.svg',
   star_icon: '/images/star_icon.svg',
   twitter_icon: '/images/twitter_icon.svg',
-  upload_area: '/images/upload_area.png',
+  upload_area: '/images/placeholder_image.svg',
   user_icon: '/images/user_icon.svg',
   placeholder_image: '/images/placeholder_image.svg'
 };
