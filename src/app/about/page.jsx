@@ -30,7 +30,7 @@ const AboutUs = () => {
     ];
 
     return (
-        <div className="bg-gradient-to-r from-black via-gray-900 to-black text-gray-200">
+        <div className="bg-gradient-to-r from-black via-gray-900 to-black">
             <Navbar />
             <main className="pt-24">
                 {/* Hero Section */}

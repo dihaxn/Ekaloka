@@ -150,7 +150,6 @@ const Navbar = () => {
                                     <div className="px-4 py-2 border-b border-gray-700">
                                         <div className="text-sm text-gray-300">
                                             <div className="font-medium text-white">{userName || (isOwnerUser() ? 'Owner' : 'User')}</div>
-                                            <div className="text-xs text-gray-400">{userRole}</div>
                                         </div>
                                     </div>
 
@@ -252,7 +251,7 @@ const Navbar = () => {
                             </button>
                         )}
 
-                        {isClient && <button
+                        {isClient && !token && <button
                             onClick={() => router.push('/login')}
                             className="flex items-center gap-1 text-gray-200 group"
                         >
@@ -314,7 +313,6 @@ const Navbar = () => {
                                     <div className="text-sm text-gray-400 mb-2">
                                         {userName || (isOwnerUser() ? 'Owner' : 'User')}
                                     </div>
-                                    <div className="text-lg font-medium text-white">{userRole}</div>
                                 </div>
                                 
                                 {/* Regular User Options */}
