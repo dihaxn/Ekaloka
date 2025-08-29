@@ -1,9 +1,11 @@
-"use client"
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { assets } from '@/assets/assets';
-import Image from 'next/image';
-import Link from 'next/link';
+'use client'
+import { useState, useCallback, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
+import toast from "react-hot-toast";
+import MessageAlert from "../../components/MessageAlert";
+import PasswordStrengthIndicator from "../../components/PasswordStrengthIndicator";
+import { validatePassword, getPasswordErrorMessage } from "../../utils/validators";
 
 const ForgotPassword = () => {
     const router = useRouter();
@@ -13,17 +15,98 @@ const ForgotPassword = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState('');
-    const [error, setError] = useState('');
+    const [message, setMessage] = useState({ type: '', text: '' });
+    const [error, setError] = useState({ type: '', text: '' });
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [validationErrors, setValidationErrors] = useState({});
+    const [resendCooldown, setResendCooldown] = useState(0);
+    const mountedRef = useRef(true);
+
+    // Check API URL configuration
+    useEffect(() => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        if (!apiUrl && process.env.NODE_ENV === 'production') {
+            console.error('NEXT_PUBLIC_API_URL is not configured');
+            setError({ type: 'error', text: 'Configuration error. Please contact support.' });
+        }
+    }, []);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            mountedRef.current = false;
+        };
+    }, []);
+
+    // Resend cooldown timer
+    useEffect(() => {
+        if (resendCooldown > 0) {
+            const timer = setTimeout(() => {
+                if (mountedRef.current) {
+                    setResendCooldown(resendCooldown - 1);
+                }
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [resendCooldown]);
+
+    // Focus first input when step changes
+    useEffect(() => {
+        const firstInputs = {
+            email: 'email',
+            otp: 'otp',
+            reset: 'newPassword'
+        };
+        const inputId = firstInputs[step];
+        if (inputId) {
+            setTimeout(() => {
+                const element = document.getElementById(inputId);
+                if (element && mountedRef.current) {
+                    element.focus();
+                }
+            }, 100);
+        }
+    }, [step]);
+
+    // Email validation helper
+    const isValidEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email.trim());
+    };
+
+    const focusFirst = useCallback((errors) => {
+        const firstKey = Object.keys(errors)[0];
+        if (firstKey) {
+            const element = document.getElementById(firstKey);
+            if (element && mountedRef.current) {
+                element.focus();
+            }
+        }
+    }, []);
 
     const handleSendOTP = async (e) => {
         e.preventDefault();
+        
+        // Client-side email validation
+        if (!isValidEmail(email)) {
+            setValidationErrors({ email: 'Please enter a valid email address' });
+            setError({ type: '', text: '' });
+            setMessage({ type: '', text: '' });
+            focusFirst({ email: 'Please enter a valid email address' });
+            return;
+        }
+
+        if (!mountedRef.current) return;
+        
         setLoading(true);
-        setError('');
-        setMessage('');
+        setError({ type: '', text: '' });
+        setMessage({ type: '', text: '' });
+        setValidationErrors({});
 
         try {
-            const response = await fetch('/api/auth/forgot-password', {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+            const response = await fetch(`${apiUrl}/api/auth/forgot-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,29 +114,59 @@ const ForgotPassword = () => {
                 body: JSON.stringify({ step: 'send-otp', email }),
             });
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (parseError) {
+                throw new Error('Invalid response from server');
+            }
 
-            if (data.success) {
-                setMessage('OTP sent to your email! Check your inbox.');
+            if (response.status === 429) {
+                if (mountedRef.current) {
+                    setError({ type: 'error', text: 'Too many requests. Please wait before trying again.' });
+                }
+                return;
+            }
+
+            if (data.success && mountedRef.current) {
+                setMessage({ type: 'success', text: 'OTP sent to your email! Check your inbox.' });
                 setStep('otp');
-            } else {
-                setError(data.message || 'Failed to send OTP');
+                setResendCooldown(60);
+            } else if (mountedRef.current) {
+                setError({ type: 'error', text: data.message || 'Failed to send OTP' });
             }
         } catch (err) {
-            setError('Network error. Please try again.');
+            if (mountedRef.current) {
+                const errorMessage = err.message === 'Invalid response from server'
+                    ? 'Network error. Please check your connection and try again.'
+                    : 'Network error. Please try again.';
+                setError({ type: 'error', text: errorMessage });
+            }
         } finally {
-            setLoading(false);
+            if (mountedRef.current) {
+                setLoading(false);
+            }
         }
     };
 
     const handleVerifyOTP = async (e) => {
         e.preventDefault();
+        
+        if (!mountedRef.current) return;
+        
         setLoading(true);
-        setError('');
-        setMessage('');
+        setError({ type: '', text: '' });
+        setMessage({ type: '', text: '' });
+        setValidationErrors({});
 
         try {
-            const response = await fetch('/api/auth/forgot-password', {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            if (!apiUrl) {
+                setError({ type: 'error', text: 'Configuration error: API URL not configured' });
+                return;
+            }
+            
+            const response = await fetch(`${apiUrl}/api/auth/forgot-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -61,45 +174,92 @@ const ForgotPassword = () => {
                 body: JSON.stringify({ step: 'verify-otp', email, otp }),
             });
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (parseError) {
+                throw new Error('Invalid response from server');
+            }
 
-            if (data.success) {
-                setMessage('OTP verified! Please set your new password.');
+            if (data.success && mountedRef.current) {
+                setMessage({ type: 'success', text: 'OTP verified! Please set your new password.' });
                 setStep('reset');
-            } else {
-                setError(data.message || 'Invalid OTP');
+            } else if (mountedRef.current) {
+                setError({ type: 'error', text: data.message || 'Invalid OTP' });
             }
         } catch (err) {
-            setError('Network error. Please try again.');
+            if (mountedRef.current) {
+                const errorMessage = err.message === 'Invalid response from server'
+                    ? 'Network error. Please check your connection and try again.'
+                    : 'Network error. Please try again.';
+                setError({ type: 'error', text: errorMessage });
+            }
         } finally {
-            setLoading(false);
+            if (mountedRef.current) {
+                setLoading(false);
+            }
         }
     };
 
+    const validateResetForm = useCallback(() => {
+        const errors = {};
+
+        // Password validation
+        if (!newPassword.trim()) {
+            errors.newPassword = 'New password is required';
+        } else {
+            const passwordValidation = validatePassword(newPassword);
+            if (!passwordValidation.isValid) {
+                const failedRules = [];
+                if (!passwordValidation.errors.minLength) failedRules.push('min 8 chars');
+                if (!passwordValidation.errors.hasUpperCase) failedRules.push('uppercase');
+                if (!passwordValidation.errors.hasLowerCase) failedRules.push('lowercase');
+                if (!passwordValidation.errors.hasNumber) failedRules.push('number');
+                if (!passwordValidation.errors.hasSymbol) failedRules.push('symbol');
+                errors.newPassword = `Password must include: ${failedRules.join(', ')}`;
+            }
+        }
+
+        // Confirm password validation
+        if (!confirmPassword.trim()) {
+            errors.confirmPassword = 'Please confirm your password';
+        } else if (newPassword !== confirmPassword) {
+            errors.confirmPassword = 'Passwords do not match';
+        }
+
+        setValidationErrors(errors);
+        return errors;
+    }, [newPassword, confirmPassword]);
+
     const handleResetPassword = async (e) => {
         e.preventDefault();
+        
+        const errors = validateResetForm();
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            focusFirst(errors);
+            return;
+        }
+
+        if (!mountedRef.current) return;
+        
         setLoading(true);
-        setError('');
-        setMessage('');
-
-        if (newPassword !== confirmPassword) {
-            setError('Passwords do not match');
-            setLoading(false);
-            return;
-        }
-
-        if (newPassword.length < 6) {
-            setError('Password must be at least 6 characters long');
-            setLoading(false);
-            return;
-        }
+        setError({ type: '', text: '' });
+        setMessage({ type: '', text: '' });
 
         try {
-            const response = await fetch('/api/auth/forgot-password', {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            if (!apiUrl) {
+                setError({ type: 'error', text: 'Configuration error: API URL not configured' });
+                return;
+            }
+            
+            const response = await fetch(`${apiUrl}/api/auth/forgot-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({ 
                     step: 'reset-password', 
                     email, 
@@ -108,21 +268,104 @@ const ForgotPassword = () => {
                 }),
             });
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (parseError) {
+                throw new Error('Invalid response from server');
+            }
 
-            if (data.success) {
-                setMessage('Password reset successfully! Redirecting to login...');
+            if (data.success && mountedRef.current) {
+                setMessage({ type: 'success', text: 'Password reset successfully! Redirecting to login...' });
+                toast.success('Password reset successful! Redirecting to login...', {
+                    duration: 2000,
+                    position: 'top-center',
+                });
+                
+                // Clear sensitive fields
+                setNewPassword('');
+                setConfirmPassword('');
+                
                 setTimeout(() => {
-                    router.push('/login');
+                    if (mountedRef.current) {
+                        router.push('/login');
+                    }
                 }, 2000);
-            } else {
-                setError(data.message || 'Failed to reset password');
+            } else if (mountedRef.current) {
+                setError({ type: 'error', text: data.message || 'Failed to reset password' });
             }
         } catch (err) {
-            setError('Network error. Please try again.');
+            if (mountedRef.current) {
+                const errorMessage = err.message === 'Invalid response from server'
+                    ? 'Network error. Please check your connection and try again.'
+                    : 'Network error. Please try again.';
+                setError({ type: 'error', text: errorMessage });
+            }
         } finally {
-            setLoading(false);
+            if (mountedRef.current) {
+                setLoading(false);
+            }
         }
+    };
+
+    const handleInputChange = useCallback((field, value) => {
+        // Sanitize input to prevent XSS
+        const sanitizeInput = (input) => {
+            return input
+                .replace(/[<>]/g, '') // Remove < and > characters
+                .replace(/javascript:/gi, '') // Remove javascript: protocol
+                .replace(/on\w+\s*=/gi, '') // Remove event handlers (onclick=, onerror=, etc.)
+                .replace(/data:/gi, '') // Remove data: protocol
+                .replace(/vbscript:/gi, '') // Remove vbscript: protocol
+                .replace(/expression\s*\(/gi, '') // Remove CSS expressions
+                .trim();
+        };
+        
+        // Clear validation errors when user starts typing
+        if (validationErrors[field]) {
+            setValidationErrors(prev => ({
+                ...prev,
+                [field]: ''
+            }));
+        }
+
+        // Clear messages when user starts typing
+        if (message.text || error.text) {
+            setMessage({ type: '', text: '' });
+            setError({ type: '', text: '' });
+        }
+
+        // Update the appropriate field
+        switch (field) {
+            case 'email':
+                setEmail(sanitizeInput(value));
+                break;
+            case 'otp':
+                setOtp(value.replace(/\D/g, '').slice(0, 6));
+                break;
+            case 'newPassword':
+                setNewPassword(value);
+                break;
+            case 'confirmPassword':
+                setConfirmPassword(value);
+                break;
+        }
+    }, [validationErrors, message.text, error.text]);
+
+    const handleBack = () => {
+        if (step === 'reset') {
+            setStep('otp');
+            setNewPassword('');
+            setConfirmPassword('');
+            setValidationErrors({});
+        } else if (step === 'otp') {
+            setStep('email');
+            setOtp('');
+            setResendCooldown(0);
+            setValidationErrors({});
+        }
+        setMessage({ type: '', text: '' });
+        setError({ type: '', text: '' });
     };
 
     const renderEmailStep = () => (
@@ -135,12 +378,23 @@ const ForgotPassword = () => {
                     type="email"
                     id="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-500 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 transition-colors"
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    className={`w-full px-4 py-3 bg-gray-700/50 border rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 transition-colors ${
+                        validationErrors.email 
+                            ? 'border-red-500 focus:border-red-500 focus:ring-red-500' 
+                            : 'border-gray-600 focus:border-orange-500 focus:ring-orange-500'
+                    }`}
                     placeholder="Enter your email address"
                     required
                     disabled={loading}
+                    aria-describedby={validationErrors.email ? 'email-error' : undefined}
+                    aria-invalid={!!validationErrors.email}
                 />
+                {validationErrors.email && (
+                    <p id="email-error" className="mt-1 text-sm text-red-400" role="alert">
+                        {validationErrors.email}
+                    </p>
+                )}
             </div>
             
             <button
@@ -173,10 +427,12 @@ const ForgotPassword = () => {
                     type="text"
                     id="otp"
                     value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
+                    onChange={(e) => handleInputChange('otp', e.target.value)}
                     className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-500 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 transition-colors text-center text-2xl tracking-widest"
                     placeholder="000000"
                     maxLength="6"
+                    inputMode="numeric"
+                    pattern="\d{6}"
                     required
                     disabled={loading}
                 />
@@ -195,7 +451,7 @@ const ForgotPassword = () => {
             
             <button
                 type="button"
-                onClick={() => setStep('email')}
+                onClick={handleBack}
                 className="w-full text-gray-400 hover:text-orange-400 transition-colors"
             >
                 ← Back to Email
@@ -204,37 +460,91 @@ const ForgotPassword = () => {
     );
 
     const renderResetStep = () => (
-        <form onSubmit={handleResetPassword} className="space-y-6">
+        <form onSubmit={handleResetPassword} className="space-y-6" noValidate>
             <div>
                 <label htmlFor="newPassword" className="block text-sm font-medium text-gray-300 mb-2">
                     New Password
                 </label>
-                <input
-                    type="password"
-                    id="newPassword"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-500 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 transition-colors"
-                    placeholder="Enter new password"
-                    required
-                    disabled={loading}
-                />
+                <div className="relative">
+                    <input
+                        type={showNewPassword ? "text" : "password"}
+                        id="newPassword"
+                        value={newPassword}
+                        onChange={(e) => handleInputChange('newPassword', e.target.value)}
+                        className={`w-full px-4 py-3 bg-gray-700/50 border rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 transition-colors pr-12 ${
+                            validationErrors.newPassword 
+                                ? 'border-red-500 focus:border-red-500 focus:ring-red-500' 
+                                : 'border-gray-600 focus:border-orange-500 focus:ring-orange-500'
+                        }`}
+                        placeholder="Enter new password"
+                        required
+                        disabled={loading}
+                        aria-describedby={validationErrors.newPassword ? 'newPassword-error' : 'newPassword-hint'}
+                        aria-invalid={!!validationErrors.newPassword}
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
+                        disabled={loading}
+                        aria-label={showNewPassword ? 'Hide password' : 'Show password'}
+                    >
+                        {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                </div>
+                
+                {/* Password Requirements Hint */}
+                <div className="mt-2 text-xs text-gray-500" id="newPassword-hint">
+                    Password must contain: at least 8 characters, uppercase letter, lowercase letter, number, and symbol
+                </div>
+                
+                {/* Password Strength Indicator */}
+                <PasswordStrengthIndicator password={newPassword} />
+                
+                {validationErrors.newPassword && (
+                    <p id="newPassword-error" className="mt-1 text-sm text-red-400" role="alert">
+                        {validationErrors.newPassword}
+                    </p>
+                )}
             </div>
             
             <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
                     Confirm New Password
                 </label>
-                <input
-                    type="password"
-                    id="confirmPassword"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-500 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 transition-colors"
-                    placeholder="Confirm new password"
-                    required
-                    disabled={loading}
-                />
+                <div className="relative">
+                    <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        id="confirmPassword"
+                        value={confirmPassword}
+                        onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                        className={`w-full px-4 py-3 bg-gray-700/50 border rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 transition-colors pr-12 ${
+                            validationErrors.confirmPassword 
+                                ? 'border-red-500 focus:border-red-500 focus:ring-red-500' 
+                                : 'border-gray-600 focus:border-orange-500 focus:ring-orange-500'
+                        }`}
+                        placeholder="Confirm new password"
+                        required
+                        disabled={loading}
+                        aria-describedby={validationErrors.confirmPassword ? 'confirmPassword-error' : undefined}
+                        aria-invalid={!!validationErrors.confirmPassword}
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors"
+                        disabled={loading}
+                        aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                    >
+                        {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                </div>
+                
+                {validationErrors.confirmPassword && (
+                    <p id="confirmPassword-error" className="mt-1 text-sm text-red-400" role="alert">
+                        {validationErrors.confirmPassword}
+                    </p>
+                )}
             </div>
             
             <button
@@ -247,7 +557,7 @@ const ForgotPassword = () => {
             
             <button
                 type="button"
-                onClick={() => setStep('otp')}
+                onClick={handleBack}
                 className="w-full text-gray-400 hover:text-orange-400 transition-colors"
             >
                 ← Back to OTP
@@ -287,17 +597,8 @@ const ForgotPassword = () => {
                 </div>
 
                 {/* Messages */}
-                {message && (
-                    <div className="bg-green-500/20 border border-green-500/50 rounded-lg p-4 text-green-400 text-center">
-                        {message}
-                    </div>
-                )}
-
-                {error && (
-                    <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-red-400 text-center">
-                        {error}
-                    </div>
-                )}
+                {message.text && <MessageAlert message={message} />}
+                {error.text && <MessageAlert message={error} />}
 
                 {/* Back to Login */}
                 <div className="text-center">

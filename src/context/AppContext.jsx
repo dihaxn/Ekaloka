@@ -11,7 +11,7 @@ export const useAppContext = () => {
 
 export const AppContextProvider = (props) => {
     const router = useRouter();
-    const url = "http://localhost:3000"
+    const url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
     const [products, setProducts] = useState([])
     const [cartItems, setCartItems] = useState({})
     const [token, setToken] = useState("");

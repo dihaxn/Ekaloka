@@ -102,16 +102,30 @@ public/uploads/
 *.pfx
 *.crt
 *.csr
+*.env
+.env*
+!.env.example
 
 # Database
 *.db
 *.sqlite
 *.sqlite3
 
+# Authentication & OAuth
+oauth_state.json
+session_tokens.json
+*.jwt
+*.token
+
 # Backup files
 *.bak
 *.backup
 *~
+
+# Debug & Development
+debug.log
+otp_debug.log
+*.debug
 
 # Temporary files
 *.tmp

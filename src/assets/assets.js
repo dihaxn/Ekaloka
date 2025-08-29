@@ -34,6 +34,7 @@ export const assets = {
   add_icon: '/images/add_icon.png',
   arrow_icon: '/images/arrow_icon.svg',
   arrow_icon_white: '/images/arrow_icon_white.svg',
+  arrow_left_icon_colored: '/images/arrow_left_icon_colored.svg',
   arrow_right_icon_colored: '/images/arrow_right_icon_colored.svg',
   box_icon: '/images/box_icon.svg',
   cart_icon: '/images/cart_icon.svg',
