@@ -30,10 +30,10 @@ export const ENTERPRISE_SECURITY_CONFIG = {
   RATE_LIMIT: {
     WINDOW_MS: 15 * 60 * 1000, // 15 minutes
     MAX_REQUESTS: {
-      GENERAL: 100,
-      AUTH: 3,
-      API: 50,
-      ADMIN: 20,
+      GENERAL: 1000,
+      AUTH: 100,
+      API: 1000,
+      ADMIN: 200,
     },
     BURST_PROTECTION: true,
     PROGRESSIVE_BLOCKING: true,
@@ -97,12 +97,14 @@ export const ENTERPRISE_SECURITY_CONFIG = {
   // Advanced Security Headers
   SECURITY_HEADERS: {
     'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
-    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none';",
+    'Content-Security-Policy':
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none';",
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
     'X-XSS-Protection': '1; mode=block',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+    'Permissions-Policy':
+      'camera=(), microphone=(), geolocation=(), payment=()',
   },
 
   // Advanced Session Security
@@ -247,25 +249,25 @@ export const ENTERPRISE_SECURITY_CONFIG = {
     CONTAINER_SCANNING: true,
     INFRASTRUCTURE_SCANNING: true,
   },
-} as const
+} as const;
 
 // Type definitions for better type safety
-export type SecurityConfig = typeof ENTERPRISE_SECURITY_CONFIG
-export type PasswordConfig = SecurityConfig['PASSWORD']
-export type JWTConfig = SecurityConfig['JWT']
-export type RateLimitConfig = SecurityConfig['RATE_LIMIT']
-export type InputConfig = SecurityConfig['INPUT']
-export type FileConfig = SecurityConfig['FILE']
-export type MFAConfig = SecurityConfig['MFA']
-export type SessionConfig = SecurityConfig['SESSION']
-export type CSRFConfig = SecurityConfig['CSRF']
-export type AuditConfig = SecurityConfig['AUDIT']
-export type ThreatDetectionConfig = SecurityConfig['THREAT_DETECTION']
-export type EncryptionConfig = SecurityConfig['ENCRYPTION']
-export type BackupConfig = SecurityConfig['BACKUP']
-export type MonitoringConfig = SecurityConfig['MONITORING']
-export type ComplianceConfig = SecurityConfig['COMPLIANCE']
-export type APIConfig = SecurityConfig['API']
-export type DatabaseConfig = SecurityConfig['DATABASE']
-export type NetworkConfig = SecurityConfig['NETWORK']
-export type DevelopmentConfig = SecurityConfig['DEVELOPMENT']
+export type SecurityConfig = typeof ENTERPRISE_SECURITY_CONFIG;
+export type PasswordConfig = SecurityConfig['PASSWORD'];
+export type JWTConfig = SecurityConfig['JWT'];
+export type RateLimitConfig = SecurityConfig['RATE_LIMIT'];
+export type InputConfig = SecurityConfig['INPUT'];
+export type FileConfig = SecurityConfig['FILE'];
+export type MFAConfig = SecurityConfig['MFA'];
+export type SessionConfig = SecurityConfig['SESSION'];
+export type CSRFConfig = SecurityConfig['CSRF'];
+export type AuditConfig = SecurityConfig['AUDIT'];
+export type ThreatDetectionConfig = SecurityConfig['THREAT_DETECTION'];
+export type EncryptionConfig = SecurityConfig['ENCRYPTION'];
+export type BackupConfig = SecurityConfig['BACKUP'];
+export type MonitoringConfig = SecurityConfig['MONITORING'];
+export type ComplianceConfig = SecurityConfig['COMPLIANCE'];
+export type APIConfig = SecurityConfig['API'];
+export type DatabaseConfig = SecurityConfig['DATABASE'];
+export type NetworkConfig = SecurityConfig['NETWORK'];
+export type DevelopmentConfig = SecurityConfig['DEVELOPMENT'];

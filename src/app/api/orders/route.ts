@@ -1,66 +1,68 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-import { handleApiError } from '@/lib/errorHandler'
-import jwt from 'jsonwebtoken'
+import { PrismaClient } from '@prisma/client';
+import jwt from 'jsonwebtoken';
+import { NextRequest, NextResponse } from 'next/server';
 
-const prisma = new PrismaClient()
+import { handleApiError } from '@/lib/errorHandler';
+
+const prisma = new PrismaClient();
 
 // CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+  'Access-Control-Allow-Headers':
+    'Content-Type, Authorization, X-Requested-With',
   'Access-Control-Allow-Credentials': 'true',
-}
+};
 
 // Handle OPTIONS request for CORS preflight
 export async function OPTIONS() {
-  return new NextResponse(null, { 
+  return new NextResponse(null, {
     status: 200,
-    headers: corsHeaders
-  })
+    headers: corsHeaders,
+  });
 }
 
 // GET /api/orders
 export async function GET(request: NextRequest) {
   try {
     // Check authorization
-    const authHeader = request.headers.get('authorization')
+    const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
         { success: false, message: 'Authorization required' },
         { status: 401, headers: corsHeaders }
-      )
+      );
     }
 
-    const token = authHeader.substring(7)
-    const jwtSecret = process.env.JWT_ACCESS_SECRET || 'your-secret-key'
-    
-    let decoded: any
+    const token = authHeader.substring(7);
+    const jwtSecret = process.env.JWT_ACCESS_SECRET || 'your-secret-key';
+
+    let decoded: any;
     try {
-      decoded = jwt.verify(token, jwtSecret) as any
+      decoded = jwt.verify(token, jwtSecret) as any;
     } catch (err) {
       return NextResponse.json(
         { success: false, message: 'Invalid token' },
         { status: 401, headers: corsHeaders }
-      )
+      );
     }
 
-    const { searchParams } = new URL(request.url)
-    const status = searchParams.get('status')
-    const userId = searchParams.get('userId')
+    const { searchParams } = new URL(request.url);
+    const status = searchParams.get('status');
+    const userId = searchParams.get('userId');
 
-    const where: any = {}
-    
+    const where: any = {};
+
     // If user is not owner, only show their orders
     if (decoded.role !== 'owner') {
-      where.userId = decoded.userId
+      where.userId = decoded.userId;
     } else if (userId) {
-      where.userId = userId
+      where.userId = userId;
     }
-    
+
     if (status && status !== 'all') {
-      where.status = status
+      where.status = status;
     }
 
     const orders = await prisma.order.findMany({
@@ -73,7 +75,7 @@ export async function GET(request: NextRequest) {
             email: true,
             phone: true,
             avatar: true,
-          }
+          },
         },
         orderItems: {
           include: {
@@ -84,31 +86,33 @@ export async function GET(request: NextRequest) {
                 price: true,
                 images: true,
                 category: true,
-              }
-            }
-          }
-        }
+              },
+            },
+          },
+        },
       },
-      orderBy: { createdAt: 'desc' }
-    })
+      orderBy: { createdAt: 'desc' },
+    });
 
-    const response = NextResponse.json({ 
-      success: true, 
-      data: { orders } 
-    })
-    
+    const response = NextResponse.json({
+      success: true,
+      data: { orders },
+    });
+
     // Set CORS headers
     Object.entries(corsHeaders).forEach(([key, value]) => {
-      response.headers.set(key, value)
-    })
-    
-    return response
+      response.headers.set(key, value);
+    });
+
+    return response;
   } catch (error) {
-    console.error('Error fetching orders:', error)
-    const errorResponse = handleApiError(error as Error)
-    return NextResponse.json(errorResponse, { status: errorResponse.error.statusCode })
+    console.error('Error fetching orders:', error);
+    const errorResponse = handleApiError(error as Error);
+    return NextResponse.json(errorResponse, {
+      status: errorResponse.error.statusCode,
+    });
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }
 
@@ -116,47 +120,45 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Check authorization
-    const authHeader = request.headers.get('authorization')
+    const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
         { success: false, message: 'Authorization required' },
         { status: 401, headers: corsHeaders }
-      )
+      );
     }
 
-    const token = authHeader.substring(7)
-    const jwtSecret = process.env.JWT_ACCESS_SECRET || 'your-secret-key'
-    
-    let decoded: any
+    const token = authHeader.substring(7);
+    const jwtSecret = process.env.JWT_ACCESS_SECRET || 'your-secret-key';
+
+    let decoded: any;
     try {
-      decoded = jwt.verify(token, jwtSecret) as any
+      decoded = jwt.verify(token, jwtSecret) as any;
     } catch (err) {
       return NextResponse.json(
         { success: false, message: 'Invalid token' },
         { status: 401, headers: corsHeaders }
-      )
+      );
     }
 
-    const body = await request.json()
-    const {
-      items,
-      shippingAddress,
-      paymentMethod,
-      totalAmount
-    } = body
+    const body = await request.json();
+    const { items, shippingAddress, paymentMethod, totalAmount } = body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
         { success: false, message: 'Order items are required' },
         { status: 400, headers: corsHeaders }
-      )
+      );
     }
 
     if (!shippingAddress || !totalAmount) {
       return NextResponse.json(
-        { success: false, message: 'Shipping address and total amount are required' },
+        {
+          success: false,
+          message: 'Shipping address and total amount are required',
+        },
         { status: 400, headers: corsHeaders }
-      )
+      );
     }
 
     // Get user details
@@ -167,18 +169,18 @@ export async function POST(request: NextRequest) {
         name: true,
         email: true,
         phone: true,
-      }
-    })
+      },
+    });
 
     if (!user) {
       return NextResponse.json(
         { success: false, message: 'User not found' },
         { status: 404, headers: corsHeaders }
-      )
+      );
     }
 
     // Generate order number
-    const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
+    const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
 
     // Create order with items
     const order = await prisma.order.create({
@@ -197,18 +199,18 @@ export async function POST(request: NextRequest) {
           create: items.map((item: any) => ({
             productId: item.productId,
             quantity: parseInt(item.quantity),
-            price: parseFloat(item.price)
-          }))
-        }
+            price: parseFloat(item.price),
+          })),
+        },
       },
       include: {
         orderItems: {
           include: {
-            product: true
-          }
-        }
-      }
-    })
+            product: true,
+          },
+        },
+      },
+    });
 
     // Update product stock and sales
     for (const item of items) {
@@ -216,33 +218,35 @@ export async function POST(request: NextRequest) {
         where: { id: item.productId },
         data: {
           stock: {
-            decrement: parseInt(item.quantity)
+            decrement: parseInt(item.quantity),
           },
           totalSales: {
-            increment: parseInt(item.quantity)
-          }
-        }
-      })
+            increment: parseInt(item.quantity),
+          },
+        },
+      });
     }
 
-    const response = NextResponse.json({ 
-      success: true, 
+    const response = NextResponse.json({
+      success: true,
       message: 'Order created successfully',
-      data: { order }
-    })
-    
+      data: { order },
+    });
+
     // Set CORS headers
     Object.entries(corsHeaders).forEach(([key, value]) => {
-      response.headers.set(key, value)
-    })
-    
-    return response
+      response.headers.set(key, value);
+    });
+
+    return response;
   } catch (error) {
-    console.error('Error creating order:', error)
-    const errorResponse = handleApiError(error as Error)
-    return NextResponse.json(errorResponse, { status: errorResponse.error.statusCode })
+    console.error('Error creating order:', error);
+    const errorResponse = handleApiError(error as Error);
+    return NextResponse.json(errorResponse, {
+      status: errorResponse.error.statusCode,
+    });
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }
 
@@ -250,46 +254,46 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     // Check authorization - only owners can update order status
-    const authHeader = request.headers.get('authorization')
+    const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
         { success: false, message: 'Authorization required' },
         { status: 401, headers: corsHeaders }
-      )
+      );
     }
 
-    const token = authHeader.substring(7)
-    const jwtSecret = process.env.JWT_ACCESS_SECRET || 'your-secret-key'
-    
-    let decoded: any
+    const token = authHeader.substring(7);
+    const jwtSecret = process.env.JWT_ACCESS_SECRET || 'your-secret-key';
+
+    let decoded: any;
     try {
-      decoded = jwt.verify(token, jwtSecret) as any
+      decoded = jwt.verify(token, jwtSecret) as any;
       if (decoded.role !== 'owner') {
         return NextResponse.json(
           { success: false, message: 'Owner access required' },
           { status: 403, headers: corsHeaders }
-        )
+        );
       }
     } catch (err) {
       return NextResponse.json(
         { success: false, message: 'Invalid token' },
         { status: 401, headers: corsHeaders }
-      )
+      );
     }
 
-    const body = await request.json()
-    const { orderId, status, paymentStatus } = body
+    const body = await request.json();
+    const { orderId, status, paymentStatus } = body;
 
     if (!orderId || !status) {
       return NextResponse.json(
         { success: false, message: 'Order ID and status are required' },
         { status: 400, headers: corsHeaders }
-      )
+      );
     }
 
-    const updateData: any = { status }
+    const updateData: any = { status };
     if (paymentStatus) {
-      updateData.paymentStatus = paymentStatus
+      updateData.paymentStatus = paymentStatus;
     }
 
     const order = await prisma.order.update({
@@ -298,29 +302,31 @@ export async function PUT(request: NextRequest) {
       include: {
         orderItems: {
           include: {
-            product: true
-          }
-        }
-      }
-    })
+            product: true,
+          },
+        },
+      },
+    });
 
-    const response = NextResponse.json({ 
-      success: true, 
+    const response = NextResponse.json({
+      success: true,
       message: 'Order updated successfully',
-      data: { order }
-    })
-    
+      data: { order },
+    });
+
     // Set CORS headers
     Object.entries(corsHeaders).forEach(([key, value]) => {
-      response.headers.set(key, value)
-    })
-    
-    return response
+      response.headers.set(key, value);
+    });
+
+    return response;
   } catch (error) {
-    console.error('Error updating order:', error)
-    const errorResponse = handleApiError(error as Error)
-    return NextResponse.json(errorResponse, { status: errorResponse.error.statusCode })
+    console.error('Error updating order:', error);
+    const errorResponse = handleApiError(error as Error);
+    return NextResponse.json(errorResponse, {
+      status: errorResponse.error.statusCode,
+    });
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }

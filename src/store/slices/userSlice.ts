@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 // Types
 export interface UserProfile {
@@ -89,7 +89,10 @@ export const updateUserProfile = createAsyncThunk(
 
 export const updateUserPreferences = createAsyncThunk(
   'user/updatePreferences',
-  async (preferences: Partial<UserProfile['preferences']>, { rejectWithValue }) => {
+  async (
+    preferences: Partial<UserProfile['preferences']>,
+    { rejectWithValue }
+  ) => {
     try {
       const response = await fetch('/api/user/preferences', {
         method: 'PUT',
@@ -117,22 +120,25 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    clearError: (state) => {
+    clearError: state => {
       state.error = null;
     },
     setProfile: (state, action: PayloadAction<UserProfile>) => {
       state.profile = action.payload;
     },
-    updateProfileField: (state, action: PayloadAction<Partial<UserProfile>>) => {
+    updateProfileField: (
+      state,
+      action: PayloadAction<Partial<UserProfile>>
+    ) => {
       if (state.profile) {
         state.profile = { ...state.profile, ...action.payload };
       }
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     // Fetch profile
     builder
-      .addCase(fetchUserProfile.pending, (state) => {
+      .addCase(fetchUserProfile.pending, state => {
         state.isLoading = true;
         state.error = null;
       })
@@ -147,7 +153,7 @@ const userSlice = createSlice({
 
     // Update profile
     builder
-      .addCase(updateUserProfile.pending, (state) => {
+      .addCase(updateUserProfile.pending, state => {
         state.isLoading = true;
         state.error = null;
       })
@@ -162,14 +168,17 @@ const userSlice = createSlice({
 
     // Update preferences
     builder
-      .addCase(updateUserPreferences.pending, (state) => {
+      .addCase(updateUserPreferences.pending, state => {
         state.isLoading = true;
         state.error = null;
       })
       .addCase(updateUserPreferences.fulfilled, (state, action) => {
         state.isLoading = false;
         if (state.profile) {
-          state.profile.preferences = { ...state.profile.preferences, ...action.payload };
+          state.profile.preferences = {
+            ...state.profile.preferences,
+            ...action.payload,
+          };
         }
       })
       .addCase(updateUserPreferences.rejected, (state, action) => {
@@ -180,11 +189,7 @@ const userSlice = createSlice({
 });
 
 // Export actions
-export const {
-  clearError,
-  setProfile,
-  updateProfileField,
-} = userSlice.actions;
+export const { clearError, setProfile, updateProfileField } = userSlice.actions;
 
 // Export reducer
 export default userSlice.reducer;

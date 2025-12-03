@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { jwtVerify, SignJWT } from 'jose';
+import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
+
 import { cache } from './cache';
 import { CacheUtils } from './cache';
 
@@ -59,7 +60,9 @@ export interface JWTPayload {
 // Authentication utilities class
 export class AuthUtils {
   // Generate JWT token
-  static async generateToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): Promise<string> {
+  static async generateToken(
+    payload: Omit<JWTPayload, 'iat' | 'exp'>
+  ): Promise<string> {
     return await new SignJWT(payload)
       .setProtectedHeader({ alg: JWT_ALGORITHM })
       .setIssuedAt()
@@ -68,7 +71,10 @@ export class AuthUtils {
   }
 
   // Generate refresh token
-  static async generateRefreshToken(userId: string, sessionId: string): Promise<string> {
+  static async generateRefreshToken(
+    userId: string,
+    sessionId: string
+  ): Promise<string> {
     return await new SignJWT({ userId, sessionId, type: 'refresh' })
       .setProtectedHeader({ alg: JWT_ALGORITHM })
       .setIssuedAt()
@@ -96,7 +102,11 @@ export class AuthUtils {
     mfaEnabled: boolean;
     ipAddress: string;
     userAgent: string;
-  }): Promise<{ session: UserSession; accessToken: string; refreshToken: string }> {
+  }): Promise<{
+    session: UserSession;
+    accessToken: string;
+    refreshToken: string;
+  }> {
     const sessionId = this.generateSessionId();
     const session: UserSession = {
       ...userData,
@@ -116,13 +126,18 @@ export class AuthUtils {
       sessionId,
     });
 
-    const refreshToken = await this.generateRefreshToken(userData.userId, sessionId);
+    const refreshToken = await this.generateRefreshToken(
+      userData.userId,
+      sessionId
+    );
 
     return { session, accessToken, refreshToken };
   }
 
   // Get user session from request
-  static async getSessionFromRequest(request: NextRequest): Promise<UserSession | null> {
+  static async getSessionFromRequest(
+    request: NextRequest
+  ): Promise<UserSession | null> {
     try {
       const token = this.extractTokenFromRequest(request);
       if (!token) return null;
@@ -131,7 +146,9 @@ export class AuthUtils {
       if (!payload) return null;
 
       // Check if session exists in cache
-      const session = await CacheUtils.getUserSession<UserSession>(payload.userId);
+      const session = await CacheUtils.getUserSession<UserSession>(
+        payload.userId
+      );
       if (!session) return null;
 
       // Verify session ID matches
@@ -212,7 +229,9 @@ export class AuthUtils {
       }
 
       // Get user session
-      const session = await CacheUtils.getUserSession<UserSession>(payload.userId);
+      const session = await CacheUtils.getUserSession<UserSession>(
+        payload.userId
+      );
       if (!session) {
         return { success: false, error: 'Session expired' };
       }
@@ -311,10 +330,12 @@ export class AuthUtils {
 // Authentication middleware helper
 export class AuthMiddleware {
   // Require authentication
-  static requireAuth(handler: (request: NextRequest, user: UserSession) => Promise<NextResponse>) {
+  static requireAuth(
+    handler: (request: NextRequest, user: UserSession) => Promise<NextResponse>
+  ) {
     return async (request: NextRequest): Promise<NextResponse> => {
       const user = await AuthUtils.getSessionFromRequest(request);
-      
+
       if (!user) {
         return NextResponse.json(
           { success: false, message: 'Authentication required' },
@@ -328,10 +349,15 @@ export class AuthMiddleware {
 
   // Require specific permission
   static requirePermission(permission: string) {
-    return (handler: (request: NextRequest, user: UserSession) => Promise<NextResponse>) => {
+    return (
+      handler: (
+        request: NextRequest,
+        user: UserSession
+      ) => Promise<NextResponse>
+    ) => {
       return async (request: NextRequest): Promise<NextResponse> => {
         const user = await AuthUtils.getSessionFromRequest(request);
-        
+
         if (!user) {
           return NextResponse.json(
             { success: false, message: 'Authentication required' },
@@ -353,10 +379,15 @@ export class AuthMiddleware {
 
   // Require specific role
   static requireRole(role: string) {
-    return (handler: (request: NextRequest, user: UserSession) => Promise<NextResponse>) => {
+    return (
+      handler: (
+        request: NextRequest,
+        user: UserSession
+      ) => Promise<NextResponse>
+    ) => {
       return async (request: NextRequest): Promise<NextResponse> => {
         const user = await AuthUtils.getSessionFromRequest(request);
-        
+
         if (!user) {
           return NextResponse.json(
             { success: false, message: 'Authentication required' },

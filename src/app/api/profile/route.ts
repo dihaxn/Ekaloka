@@ -1,35 +1,37 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/server/db/prisma'
+import { NextRequest, NextResponse } from 'next/server';
+
+import { prisma } from '@/server/db/prisma';
 
 // CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+  'Access-Control-Allow-Headers':
+    'Content-Type, Authorization, X-Requested-With',
   'Access-Control-Allow-Credentials': 'true',
-}
+};
 
 // Handle OPTIONS request for CORS preflight
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
-    headers: corsHeaders
-  })
+    headers: corsHeaders,
+  });
 }
 
 // GET /api/profile - Get user profile
 export async function GET(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization')
+    const authHeader = request.headers.get('authorization');
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
         { success: false, message: 'Authorization token required' },
         { status: 401, headers: corsHeaders }
-      )
+      );
     }
 
-    const token = authHeader.substring(7) // Remove 'Bearer ' prefix
+    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
     // For now, we'll use a mock user response based on token
     // In a real app, you'd verify the JWT token and fetch user from database
@@ -46,9 +48,9 @@ export async function GET(request: NextRequest) {
         area: 'Downtown',
         city: 'New York',
         state: 'NY',
-        pincode: '10001'
-      }
-    }
+        pincode: '10001',
+      },
+    };
 
     // Check if it's an admin token
     if (token.includes('admin')) {
@@ -65,52 +67,52 @@ export async function GET(request: NextRequest) {
           area: 'Uptown',
           city: 'Los Angeles',
           state: 'CA',
-          pincode: '90210'
-        }
-      }
+          pincode: '90210',
+        },
+      };
     }
 
     const response = NextResponse.json({
       success: true,
-      user: mockUser
-    })
+      user: mockUser,
+    });
 
     // Set CORS headers
     Object.entries(corsHeaders).forEach(([key, value]) => {
-      response.headers.set(key, value)
-    })
+      response.headers.set(key, value);
+    });
 
-    return response
+    return response;
   } catch (error) {
-    console.error('Error getting profile:', error)
+    console.error('Error getting profile:', error);
     return NextResponse.json(
       { success: false, message: 'Failed to get profile' },
       { status: 500, headers: corsHeaders }
-    )
+    );
   }
 }
 
 // PUT /api/profile - Update user profile
 export async function PUT(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization')
+    const authHeader = request.headers.get('authorization');
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
         { success: false, message: 'Authorization token required' },
         { status: 401, headers: corsHeaders }
-      )
+      );
     }
 
-    const body = await request.json()
-    const { fullName, email, phoneNumber, dateOfBirth, gender, address } = body
+    const body = await request.json();
+    const { fullName, email, phoneNumber, dateOfBirth, gender, address } = body;
 
     // Validate required fields
     if (!fullName || !email) {
       return NextResponse.json(
         { success: false, message: 'Full name and email are required' },
         { status: 400, headers: corsHeaders }
-      )
+      );
     }
 
     // In a real app, you'd update the user in the database
@@ -121,26 +123,26 @@ export async function PUT(request: NextRequest) {
       phoneNumber: phoneNumber || '',
       dateOfBirth: dateOfBirth || '',
       gender: gender || '',
-      address: address || {}
-    }
+      address: address || {},
+    };
 
     const response = NextResponse.json({
       success: true,
       message: 'Profile updated successfully',
-      user: updatedProfile
-    })
+      user: updatedProfile,
+    });
 
     // Set CORS headers
     Object.entries(corsHeaders).forEach(([key, value]) => {
-      response.headers.set(key, value)
-    })
+      response.headers.set(key, value);
+    });
 
-    return response
+    return response;
   } catch (error) {
-    console.error('Error updating profile:', error)
+    console.error('Error updating profile:', error);
     return NextResponse.json(
       { success: false, message: 'Failed to update profile' },
       { status: 500, headers: corsHeaders }
-    )
+    );
   }
 }

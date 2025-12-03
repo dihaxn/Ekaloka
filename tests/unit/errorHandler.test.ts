@@ -321,7 +321,7 @@ describe('Error Handler', () => {
       const result = handleApiError(error, mockRequest)
       
       expect(result.error.field).toBe('email')
-      expect(result.error.value).toBe('test')
+      expect((result.error as any).value).toBe('test')
     })
 
     it('should not include field information for non-ValidationError', () => {
@@ -329,7 +329,7 @@ describe('Error Handler', () => {
       const result = handleApiError(error, mockRequest)
       
       expect(result.error.field).toBeUndefined()
-      expect(result.error.value).toBeUndefined()
+      expect((result.error as any).value).toBeUndefined()
     })
   })
 
@@ -337,11 +337,11 @@ describe('Error Handler', () => {
     const originalEnv = process.env.NODE_ENV
 
     afterEach(() => {
-      process.env.NODE_ENV = originalEnv
+      (process.env as any).NODE_ENV = originalEnv
     })
 
     it('should show generic message in production for unknown errors', () => {
-      process.env.NODE_ENV = 'production'
+      (process.env as any).NODE_ENV = 'production'
       
       const error = new Error('Sensitive error message')
       const result = handleApiError(error, mockRequest)
@@ -350,7 +350,7 @@ describe('Error Handler', () => {
     })
 
     it('should show actual error message in development', () => {
-      process.env.NODE_ENV = 'development'
+      (process.env as any).NODE_ENV = 'development'
       
       const error = new Error('Sensitive error message')
       const result = handleApiError(error, mockRequest)

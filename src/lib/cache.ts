@@ -78,7 +78,7 @@ class MemoryCache implements ICache {
   }
 
   async increment(key: CacheKey, value: number = 1): Promise<number> {
-    const current = await this.get<number>(key) || 0;
+    const current = (await this.get<number>(key)) || 0;
     const newValue = current + value;
     await this.set(key, newValue);
     return newValue;
@@ -118,7 +118,7 @@ class RedisCache implements ICache {
       });
     }
 
-    this.redis.on('error', (error) => {
+    this.redis.on('error', error => {
       console.error('Redis connection error:', error);
     });
 
@@ -247,7 +247,11 @@ export class CacheUtils {
     return this.cache.get<T>(this.getUserSessionKey(userId));
   }
 
-  static async setUserSession(userId: string, session: any, ttl?: number): Promise<void> {
+  static async setUserSession(
+    userId: string,
+    session: any,
+    ttl?: number
+  ): Promise<void> {
     await this.cache.set(this.getUserSessionKey(userId), session, ttl);
   }
 
@@ -256,17 +260,32 @@ export class CacheUtils {
   }
 
   // API response cache
-  static getApiResponseKey(endpoint: string, params?: Record<string, any>): string {
+  static getApiResponseKey(
+    endpoint: string,
+    params?: Record<string, any>
+  ): string {
     const paramString = params ? JSON.stringify(params) : '';
     return `api:response:${endpoint}:${paramString}`;
   }
 
-  static async getApiResponse<T>(endpoint: string, params?: Record<string, any>): Promise<T | null> {
+  static async getApiResponse<T>(
+    endpoint: string,
+    params?: Record<string, any>
+  ): Promise<T | null> {
     return this.cache.get<T>(this.getApiResponseKey(endpoint, params));
   }
 
-  static async setApiResponse(endpoint: string, response: any, ttl?: number, params?: Record<string, any>): Promise<void> {
-    await this.cache.set(this.getApiResponseKey(endpoint, params), response, ttl);
+  static async setApiResponse(
+    endpoint: string,
+    response: any,
+    ttl?: number,
+    params?: Record<string, any>
+  ): Promise<void> {
+    await this.cache.set(
+      this.getApiResponseKey(endpoint, params),
+      response,
+      ttl
+    );
   }
 
   // Rate limiting cache
@@ -274,12 +293,21 @@ export class CacheUtils {
     return `rate:limit:${identifier}:${action}`;
   }
 
-  static async getRateLimitCount(identifier: string, action: string): Promise<number> {
-    const count = await this.cache.get<number>(this.getRateLimitKey(identifier, action));
+  static async getRateLimitCount(
+    identifier: string,
+    action: string
+  ): Promise<number> {
+    const count = await this.cache.get<number>(
+      this.getRateLimitKey(identifier, action)
+    );
     return count || 0;
   }
 
-  static async incrementRateLimit(identifier: string, action: string, ttl?: number): Promise<number> {
+  static async incrementRateLimit(
+    identifier: string,
+    action: string,
+    ttl?: number
+  ): Promise<number> {
     const key = this.getRateLimitKey(identifier, action);
     const newCount = await this.cache.increment(key, 1);
     if (ttl) {
@@ -297,7 +325,11 @@ export class CacheUtils {
     return this.cache.get<string>(this.getCsrfTokenKey(sessionId));
   }
 
-  static async setCsrfToken(sessionId: string, token: string, ttl?: number): Promise<void> {
+  static async setCsrfToken(
+    sessionId: string,
+    token: string,
+    ttl?: number
+  ): Promise<void> {
     await this.cache.set(this.getCsrfTokenKey(sessionId), token, ttl);
   }
 
@@ -333,12 +365,16 @@ export class CacheUtils {
 
 // Cache decorator for API routes
 export function withCache(ttl: number = 300000) {
-  return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
+  return function (
+    target: any,
+    propertyName: string,
+    descriptor: PropertyDescriptor
+  ) {
     const method = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
       const cacheKey = `${target.constructor.name}:${propertyName}:${JSON.stringify(args)}`;
-      
+
       // Try to get from cache
       const cached = await cache.get(cacheKey);
       if (cached) {
@@ -348,7 +384,7 @@ export function withCache(ttl: number = 300000) {
       // Execute method and cache result
       const result = await method.apply(this, args);
       await cache.set(cacheKey, result, ttl);
-      
+
       return result;
     };
   };

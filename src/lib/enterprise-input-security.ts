@@ -1,7 +1,8 @@
-'use server'
+'use server';
 
-import { z } from 'zod'
-import { ENTERPRISE_SECURITY_CONFIG } from './enterprise-security-config'
+import { z } from 'zod';
+
+import { ENTERPRISE_SECURITY_CONFIG } from './enterprise-security-config';
 
 // Advanced Input Validation and Sanitization
 export class EnterpriseInputSecurity {
@@ -10,19 +11,19 @@ export class EnterpriseInputSecurity {
     .string()
     .email('Invalid email format')
     .max(ENTERPRISE_SECURITY_CONFIG.INPUT.MAX_EMAIL_LENGTH, 'Email too long')
-    .transform(val => val.toLowerCase().trim())
+    .transform(val => val.toLowerCase().trim());
 
   private static readonly nameSchema = z
     .string()
     .min(1, 'Name is required')
     .max(ENTERPRISE_SECURITY_CONFIG.INPUT.MAX_NAME_LENGTH, 'Name too long')
     .regex(/^[a-zA-Z\s\-'\.]+$/, 'Name contains invalid characters')
-    .transform(val => val.trim())
+    .transform(val => val.trim());
 
   private static readonly passwordSchema = z
     .string()
     .min(ENTERPRISE_SECURITY_CONFIG.PASSWORD.MIN_LENGTH, 'Password too short')
-    .max(ENTERPRISE_SECURITY_CONFIG.PASSWORD.MAX_LENGTH, 'Password too long')
+    .max(ENTERPRISE_SECURITY_CONFIG.PASSWORD.MAX_LENGTH, 'Password too long');
 
   /**
    * Advanced input validation with Zod schemas
@@ -32,31 +33,39 @@ export class EnterpriseInputSecurity {
     schema: T
   ): { isValid: boolean; data?: z.infer<T>; errors?: string[] } {
     try {
-      const result = schema.parse(input)
-      return { isValid: true, data: result }
+      const result = schema.parse(input);
+      return { isValid: true, data: result };
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return { 
-          isValid: false, 
-          errors: error.errors.map(e => e.message)
-        }
+        return {
+          isValid: false,
+          errors: error.errors.map(e => e.message),
+        };
       }
-      return { isValid: false, errors: ['Validation failed'] }
+      return { isValid: false, errors: ['Validation failed'] };
     }
   }
 
   /**
    * Validate email with advanced checks
    */
-  static validateEmail(email: string): { isValid: boolean; sanitized?: string; errors?: string[] } {
-    return this.validateInput(email, this.emailSchema)
+  static validateEmail(email: string): {
+    isValid: boolean;
+    sanitized?: string;
+    errors?: string[];
+  } {
+    return this.validateInput(email, this.emailSchema);
   }
 
   /**
    * Validate name with advanced checks
    */
-  static validateName(name: string): { isValid: boolean; sanitized?: string; errors?: string[] } {
-    return this.validateInput(name, this.nameSchema)
+  static validateName(name: string): {
+    isValid: boolean;
+    sanitized?: string;
+    errors?: string[];
+  } {
+    return this.validateInput(name, this.nameSchema);
   }
 
   /**
@@ -74,7 +83,7 @@ export class EnterpriseInputSecurity {
       .replace(/on\w+\s*=/gi, '')
       .replace(/data:/gi, '')
       .replace(/vbscript:/gi, '')
-      .replace(/expression\s*\(/gi, '')
+      .replace(/expression\s*\(/gi, '');
   }
 
   /**
@@ -97,9 +106,9 @@ export class EnterpriseInputSecurity {
       /load_file\s*\(/i,
       /into\s+outfile/i,
       /into\s+dumpfile/i,
-    ]
+    ];
 
-    return sqlPatterns.some(pattern => pattern.test(input))
+    return sqlPatterns.some(pattern => pattern.test(input));
   }
 
   /**
@@ -133,47 +142,61 @@ export class EnterpriseInputSecurity {
       /<img\s+src\s*=\s*["']?\s*javascript:/i,
       /<img\s+onerror/i,
       /<img\s+onload/i,
-    ]
+    ];
 
-    return xssPatterns.some(pattern => pattern.test(input))
+    return xssPatterns.some(pattern => pattern.test(input));
   }
 
   /**
    * Advanced file validation
    */
   static validateFile(file: File): { isValid: boolean; errors: string[] } {
-    const errors: string[] = []
+    const errors: string[] = [];
 
     // Size check
     if (file.size > ENTERPRISE_SECURITY_CONFIG.FILE.MAX_SIZE) {
-      errors.push(`File size must be less than ${ENTERPRISE_SECURITY_CONFIG.FILE.MAX_SIZE / (1024 * 1024)}MB`)
+      errors.push(
+        `File size must be less than ${ENTERPRISE_SECURITY_CONFIG.FILE.MAX_SIZE / (1024 * 1024)}MB`
+      );
     }
 
     // Type check
-    if (!ENTERPRISE_SECURITY_CONFIG.FILE.ALLOWED_TYPES.includes(file.type as any)) {
-      errors.push('File type not allowed')
+    if (
+      !ENTERPRISE_SECURITY_CONFIG.FILE.ALLOWED_TYPES.includes(file.type as any)
+    ) {
+      errors.push('File type not allowed');
     }
 
     // Extension check
-    const extension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase()
-    if (!ENTERPRISE_SECURITY_CONFIG.FILE.ALLOWED_EXTENSIONS.includes(extension as any)) {
-      errors.push('File extension not allowed')
+    const extension = file.name
+      .substring(file.name.lastIndexOf('.'))
+      .toLowerCase();
+    if (
+      !ENTERPRISE_SECURITY_CONFIG.FILE.ALLOWED_EXTENSIONS.includes(
+        extension as any
+      )
+    ) {
+      errors.push('File extension not allowed');
     }
 
     // Path traversal check
-    if (file.name.includes('..') || file.name.includes('\\') || file.name.includes('/')) {
-      errors.push('Invalid filename')
+    if (
+      file.name.includes('..') ||
+      file.name.includes('\\') ||
+      file.name.includes('/')
+    ) {
+      errors.push('Invalid filename');
     }
 
     // Double extension check
-    const extensions = file.name.split('.').length - 1
+    const extensions = file.name.split('.').length - 1;
     if (extensions > 1) {
-      errors.push('Multiple file extensions not allowed')
+      errors.push('Multiple file extensions not allowed');
     }
 
     return {
       isValid: errors.length === 0,
-      errors
-    }
+      errors,
+    };
   }
 }

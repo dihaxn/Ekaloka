@@ -1,116 +1,123 @@
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react'
-import { apiPost } from '../lib/api'
-import { AuthenticationError, ValidationError } from '../types/errors'
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+
+import { apiPost } from '../lib/api';
+import { AuthenticationError, ValidationError } from '../types/errors';
 
 export interface User {
-  id: string
-  uid: string
-  name: string
-  email: string
-  role: string
+  id: string;
+  uid: string;
+  name: string;
+  email: string;
+  role: string;
 }
 
 interface AuthContextType {
-  user: User | null
-  loading: boolean
-  error: string | null
-  login: (email: string, password: string) => Promise<boolean>
-  logout: () => void
-  getUser: () => User | null
-  clearError: () => void
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+  login: (email: string, password: string) => Promise<boolean>;
+  logout: () => void;
+  getUser: () => User | null;
+  clearError: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Check if user is already logged in (e.g., from localStorage or session)
-    const storedUser = localStorage.getItem('user')
+    const storedUser = localStorage.getItem('user');
     if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser))
+        setUser(JSON.parse(storedUser));
       } catch (error) {
-        console.error('Error parsing stored user:', error)
-        localStorage.removeItem('user')
-        setError('Failed to restore user session')
+        console.error('Error parsing stored user:', error);
+        localStorage.removeItem('user');
+        setError('Failed to restore user session');
       }
     }
-    setLoading(false)
-  }, [])
+    setLoading(false);
+  }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      setLoading(true)
-      setError(null)
-      
-      const response = await apiPost('/api/auth/login', { email, password })
-      
+      setLoading(true);
+      setError(null);
+
+      const response = await apiPost('/api/auth/login', { email, password });
+
       if (response.ok && response.data) {
-        const { user: userData, accessToken } = response.data
-        setUser(userData)
-        localStorage.setItem('user', JSON.stringify(userData))
-        localStorage.setItem('accessToken', accessToken)
-        return true
+        const { user: userData, accessToken } = response.data;
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('accessToken', accessToken);
+        return true;
       } else {
         // Handle different types of errors
         if (response.error) {
-          const errorMessage = response.error.message
+          const errorMessage = response.error.message;
           if (errorMessage.includes('Invalid credentials')) {
-            setError('Invalid email or password')
+            setError('Invalid email or password');
           } else if (errorMessage.includes('required')) {
-            setError('Please fill in all required fields')
+            setError('Please fill in all required fields');
           } else if (errorMessage.includes('email')) {
-            setError('Please enter a valid email address')
+            setError('Please enter a valid email address');
           } else {
-            setError(errorMessage)
+            setError(errorMessage);
           }
         } else {
-          setError('Login failed. Please try again.')
+          setError('Login failed. Please try again.');
         }
-        return false
+        return false;
       }
     } catch (error) {
-      console.error('Login error:', error)
-      
+      console.error('Login error:', error);
+
       // Handle specific error types
       if (error instanceof AuthenticationError) {
-        setError(error.message)
+        setError(error.message);
       } else if (error instanceof ValidationError) {
-        setError(error.message)
+        setError(error.message);
       } else if (error instanceof Error) {
         if (error.message.includes('fetch')) {
-          setError('Network error. Please check your connection.')
+          setError('Network error. Please check your connection.');
         } else {
-          setError('An unexpected error occurred. Please try again.')
+          setError('An unexpected error occurred. Please try again.');
         }
       } else {
-        setError('Login failed. Please try again.')
+        setError('Login failed. Please try again.');
       }
-      
-      return false
+
+      return false;
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const logout = () => {
-    setUser(null)
-    setError(null)
-    localStorage.removeItem('user')
-    localStorage.removeItem('accessToken')
-  }
+    setUser(null);
+    setError(null);
+    localStorage.removeItem('user');
+    localStorage.removeItem('accessToken');
+  };
 
   const getUser = (): User | null => {
-    return user
-  }
+    return user;
+  };
 
   const clearError = () => {
-    setError(null)
-  }
+    setError(null);
+  };
 
   const value: AuthContextType = {
     user,
@@ -119,20 +126,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     login,
     logout,
     getUser,
-    clearError
-  }
+    clearError,
+  };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth(): AuthContextType {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    throw new Error('useAuth must be used within an AuthProvider');
   }
-  return context
+  return context;
 }

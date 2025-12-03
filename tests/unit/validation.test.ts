@@ -17,11 +17,11 @@ describe('Validation System', () => {
     })
 
     it('should return ValidationError for null/undefined/empty values', () => {
-      const error1 = validators.required(null, 'field')
+      const error1 = validators.required(null as any, 'field')
       expect(error1).toBeInstanceOf(ValidationError)
       expect(error1?.message).toBe('field is required')
 
-      const error2 = validators.required(undefined, 'field')
+      const error2 = validators.required(undefined as any, 'field')
       expect(error2).toBeInstanceOf(ValidationError)
       expect(error2?.message).toBe('field is required')
 
@@ -52,7 +52,7 @@ describe('Validation System', () => {
 
     it('should return null for empty values (skip validation)', () => {
       expect(validators.email('', 'email')).toBeNull()
-      expect(validators.email(null, 'email')).toBeNull()
+      expect(validators.email(null as any, 'email')).toBeNull()
     })
   })
 
@@ -75,7 +75,7 @@ describe('Validation System', () => {
     it('should return null for empty values (skip validation)', () => {
       const validator = validators.minLength(5, 'field')
       expect(validator('')).toBeNull()
-      expect(validator(null)).toBeNull()
+      expect(validator(null as any)).toBeNull()
     })
   })
 
@@ -98,7 +98,7 @@ describe('Validation System', () => {
     it('should return null for empty values (skip validation)', () => {
       const validator = validators.maxLength(5, 'field')
       expect(validator('')).toBeNull()
-      expect(validator(null)).toBeNull()
+      expect(validator(null as any)).toBeNull()
     })
   })
 
@@ -118,8 +118,8 @@ describe('Validation System', () => {
 
     it('should return null for null/undefined values (skip validation)', () => {
       const validator = validators.minValue(3, 'field')
-      expect(validator(null)).toBeNull()
-      expect(validator(undefined)).toBeNull()
+      expect(validator(null as any)).toBeNull()
+      expect(validator(undefined as any)).toBeNull()
     })
   })
 
@@ -139,8 +139,8 @@ describe('Validation System', () => {
 
     it('should return null for null/undefined values (skip validation)', () => {
       const validator = validators.maxValue(5, 'field')
-      expect(validator(null)).toBeNull()
-      expect(validator(undefined)).toBeNull()
+      expect(validator(null as any)).toBeNull()
+      expect(validator(undefined as any)).toBeNull()
     })
   })
 
@@ -164,8 +164,8 @@ describe('Validation System', () => {
 
     it('should return null for null/undefined values (skip validation)', () => {
       const validator = validators.positive('field')
-      expect(validator(null)).toBeNull()
-      expect(validator(undefined)).toBeNull()
+      expect(validator(null as any)).toBeNull()
+      expect(validator(undefined as any)).toBeNull()
     })
   })
 
@@ -190,7 +190,7 @@ describe('Validation System', () => {
     it('should return null for empty values (skip validation)', () => {
       const validator = validators.url('field')
       expect(validator('')).toBeNull()
-      expect(validator(null)).toBeNull()
+      expect(validator(null as any)).toBeNull()
     })
   })
 

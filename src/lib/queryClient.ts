@@ -6,37 +6,37 @@ export const queryClient = new QueryClient({
     queries: {
       // Time before data is considered stale
       staleTime: 5 * 60 * 1000, // 5 minutes
-      
+
       // Time before inactive queries are garbage collected
       gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
-      
+
       // Retry failed requests
       retry: (failureCount, error: any) => {
         // Don't retry on 4xx errors (client errors)
         if (error?.status >= 400 && error?.status < 500) {
           return false;
         }
-        
+
         // Retry up to 3 times for other errors
         return failureCount < 3;
       },
-      
+
       // Retry delay with exponential backoff
-      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-      
+      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+
       // Refetch on window focus
       refetchOnWindowFocus: false,
-      
+
       // Refetch on reconnect
       refetchOnReconnect: true,
-      
+
       // Refetch on mount
       refetchOnMount: true,
     },
     mutations: {
       // Retry failed mutations
       retry: 1,
-      
+
       // Retry delay
       retryDelay: 1000,
     },
@@ -51,7 +51,7 @@ export const queryKeys = {
     profile: ['auth', 'profile'] as const,
     permissions: ['auth', 'permissions'] as const,
   },
-  
+
   // User queries
   user: {
     profile: ['user', 'profile'] as const,
@@ -59,7 +59,7 @@ export const queryKeys = {
     orders: ['user', 'orders'] as const,
     addresses: ['user', 'addresses'] as const,
   },
-  
+
   // Product queries
   products: {
     all: ['products'] as const,
@@ -69,13 +69,13 @@ export const queryKeys = {
     categories: ['products', 'categories'] as const,
     brands: ['products', 'brands'] as const,
   },
-  
+
   // Cart queries
   cart: {
     items: ['cart', 'items'] as const,
     summary: ['cart', 'summary'] as const,
   },
-  
+
   // Order queries
   orders: {
     all: ['orders'] as const,
@@ -83,7 +83,7 @@ export const queryKeys = {
     detail: (id: string) => ['orders', 'detail', id] as const,
     tracking: (id: string) => ['orders', 'tracking', id] as const,
   },
-  
+
   // Admin queries
   admin: {
     users: ['admin', 'users'] as const,
@@ -106,7 +106,7 @@ export const prefetchQueries = {
       },
     });
   },
-  
+
   // Prefetch products list
   productsList: async (filters: any = {}) => {
     await queryClient.prefetchQuery({
@@ -119,7 +119,7 @@ export const prefetchQueries = {
       },
     });
   },
-  
+
   // Prefetch categories
   categories: async () => {
     await queryClient.prefetchQuery({
@@ -141,24 +141,24 @@ export const invalidateQueries = {
     queryClient.invalidateQueries({ queryKey: queryKeys.user.preferences });
     queryClient.invalidateQueries({ queryKey: queryKeys.user.orders });
   },
-  
+
   // Invalidate all product-related queries
   products: () => {
     queryClient.invalidateQueries({ queryKey: queryKeys.products.all });
     queryClient.invalidateQueries({ queryKey: ['products', 'list'] });
   },
-  
+
   // Invalidate specific product
   product: (id: string) => {
     queryClient.invalidateQueries({ queryKey: queryKeys.products.detail(id) });
   },
-  
+
   // Invalidate all order-related queries
   orders: () => {
     queryClient.invalidateQueries({ queryKey: queryKeys.orders.all });
     queryClient.invalidateQueries({ queryKey: ['orders', 'list'] });
   },
-  
+
   // Invalidate cart
   cart: () => {
     queryClient.invalidateQueries({ queryKey: queryKeys.cart.items });
@@ -176,7 +176,7 @@ export const optimisticUpdates = {
         return [...old, newItem];
       });
     },
-    
+
     update: (productId: string, updates: any) => {
       queryClient.setQueryData(queryKeys.cart.items, (old: any) => {
         if (!old) return old;
@@ -185,7 +185,7 @@ export const optimisticUpdates = {
         );
       });
     },
-    
+
     remove: (productId: string) => {
       queryClient.setQueryData(queryKeys.cart.items, (old: any) => {
         if (!old) return old;
@@ -193,7 +193,7 @@ export const optimisticUpdates = {
       });
     },
   },
-  
+
   // Optimistic user profile update
   userProfile: (updates: any) => {
     queryClient.setQueryData(queryKeys.user.profile, (old: any) => {
@@ -206,7 +206,7 @@ export const optimisticUpdates = {
 // Error handling
 export const handleQueryError = (error: any) => {
   console.error('Query error:', error);
-  
+
   // Handle specific error types
   if (error?.status === 401) {
     // Unauthorized - redirect to login

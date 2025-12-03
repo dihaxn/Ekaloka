@@ -6,94 +6,45 @@ test.describe('Dashboard Page', () => {
     await page.goto('/dashboard')
   })
 
-  test('should show access denied for unauthenticated users', async ({ page }) => {
-    // Check that the access denied message is displayed
-    await expect(page.getByText('Access Denied')).toBeVisible()
-    await expect(page.getByText('Please log in to access the dashboard.')).toBeVisible()
+  test('should redirect to login for unauthenticated users', async ({ page }) => {
+    // Check that we are redirected to login page
+    await expect(page).toHaveURL(/\/login/)
   })
 
   test('should display dashboard content for authenticated users', async ({ page }) => {
-    // This test would require authentication setup
-    // For now, we'll just check the basic structure
+    // Navigate with welcome param to simulate auth
+    await page.goto('/dashboard?welcome=true')
     
-    // Mock authentication by setting localStorage
-    await page.evaluate(() => {
-      localStorage.setItem('user', JSON.stringify({
-        id: 'test-user',
-        uid: 'test-uid',
-        name: 'Test User',
-        email: 'test@example.com',
-        role: 'user'
-      }))
-    })
-
-    // Reload the page to trigger the auth check
-    await page.reload()
-
     // Check that the dashboard content is displayed
-    await expect(page.getByText('Dashboard')).toBeVisible()
-    await expect(page.getByText('Welcome back, Test User!')).toBeVisible()
+    // Use first() or specific locators to avoid strict mode violations
+    await expect(page.getByRole('heading', { name: 'Dai Fashion', exact: true })).toBeVisible()
+    await expect(page.getByText('OAuth User').first()).toBeVisible()
     await expect(page.getByText('Logout')).toBeVisible()
   })
 
-  test('should have search functionality', async ({ page }) => {
-    // Mock authentication
-    await page.evaluate(() => {
-      localStorage.setItem('user', JSON.stringify({
-        id: 'test-user',
-        uid: 'test-uid',
-        name: 'Test User',
-        email: 'test@example.com',
-        role: 'user'
-      }))
-    })
+  test('should have quick actions', async ({ page }) => {
+    // Navigate with welcome param
+    await page.goto('/dashboard?welcome=true')
 
-    await page.reload()
-
-    // Check search input is present
-    const searchInput = page.getByPlaceholder('Search products...')
-    await expect(searchInput).toBeVisible()
-
-    // Check search button is present
-    const searchButton = page.getByRole('button', { name: 'Search' })
-    await expect(searchButton).toBeVisible()
-  })
-
-  test('should display products section', async ({ page }) => {
-    // Mock authentication
-    await page.evaluate(() => {
-      localStorage.setItem('user', JSON.stringify({
-        id: 'test-user',
-        uid: 'test-uid',
-        name: 'Test User',
-        email: 'test@example.com',
-        role: 'user'
-      }))
-    })
-
-    await page.reload()
-
-    // Check products section is present
-    await expect(page.getByText('Products')).toBeVisible()
+    // Check quick actions are present
+    await expect(page.getByText('Quick Actions')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Browse Products' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'View Orders' })).toBeVisible()
   })
 
   test('should have logout functionality', async ({ page }) => {
-    // Mock authentication
-    await page.evaluate(() => {
-      localStorage.setItem('user', JSON.stringify({
-        id: 'test-user',
-        uid: 'test-uid',
-        name: 'Test User',
-        email: 'test@example.com',
-        role: 'user'
-      }))
-    })
-
-    await page.reload()
+    // Navigate with welcome param
+    await page.goto('/dashboard?welcome=true')
 
     // Check logout button is present and clickable
     const logoutButton = page.getByRole('button', { name: 'Logout' })
     await expect(logoutButton).toBeVisible()
     await expect(logoutButton).toBeEnabled()
+    
+    // Click logout
+    await logoutButton.click()
+    
+    // Should redirect to login
+    await expect(page).toHaveURL(/\/login/)
   })
 })

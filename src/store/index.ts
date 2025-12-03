@@ -1,14 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { combineReducers } from 'redux';
-import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
 // Import slices
 import authReducer from './slices/authSlice';
-import userReducer from './slices/userSlice';
 import cartReducer from './slices/cartSlice';
 import uiReducer from './slices/uiSlice';
+import userReducer from './slices/userSlice';
 
 // Root reducer
 const rootReducer = combineReducers({
@@ -31,7 +31,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 // Configure store
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
+  middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],

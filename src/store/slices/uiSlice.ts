@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 // Types
 export interface UIState {
@@ -43,79 +43,85 @@ const uiSlice = createSlice({
     setTheme: (state, action: PayloadAction<'light' | 'dark' | 'system'>) => {
       state.theme = action.payload;
     },
-    
-    toggleSidebar: (state) => {
+
+    toggleSidebar: state => {
       state.sidebarOpen = !state.sidebarOpen;
     },
-    
+
     setSidebarOpen: (state, action: PayloadAction<boolean>) => {
       state.sidebarOpen = action.payload;
     },
-    
-    toggleMobileMenu: (state) => {
+
+    toggleMobileMenu: state => {
       state.mobileMenuOpen = !state.mobileMenuOpen;
     },
-    
+
     setMobileMenuOpen: (state, action: PayloadAction<boolean>) => {
       state.mobileMenuOpen = action.payload;
     },
-    
+
     openModal: (state, action: PayloadAction<string>) => {
       state.modals[action.payload] = true;
     },
-    
+
     closeModal: (state, action: PayloadAction<string>) => {
       state.modals[action.payload] = false;
     },
-    
-    closeAllModals: (state) => {
+
+    closeAllModals: state => {
       state.modals = {};
     },
-    
-    addNotification: (state, action: PayloadAction<{
-      id: string;
-      type: 'success' | 'error' | 'warning' | 'info';
-      message: string;
-      duration?: number;
-    }>) => {
+
+    addNotification: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        type: 'success' | 'error' | 'warning' | 'info';
+        message: string;
+        duration?: number;
+      }>
+    ) => {
       state.notifications.push(action.payload);
     },
-    
+
     removeNotification: (state, action: PayloadAction<string>) => {
       state.notifications = state.notifications.filter(
         notification => notification.id !== action.payload
       );
     },
-    
-    clearNotifications: (state) => {
+
+    clearNotifications: state => {
       state.notifications = [];
     },
-    
-    setLoading: (state, action: PayloadAction<{ key: string; loading: boolean }>) => {
+
+    setLoading: (
+      state,
+      action: PayloadAction<{ key: string; loading: boolean }>
+    ) => {
       state.loading[action.payload.key] = action.payload.loading;
     },
-    
+
     clearLoading: (state, action: PayloadAction<string>) => {
       delete state.loading[action.payload];
     },
-    
+
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.searchQuery = action.payload;
     },
-    
+
     setFilter: (state, action: PayloadAction<{ key: string; value: any }>) => {
       state.filters[action.payload.key] = action.payload.value;
     },
-    
+
     clearFilter: (state, action: PayloadAction<string>) => {
       delete state.filters[action.payload];
     },
-    
-    clearAllFilters: (state) => {
+
+    clearAllFilters: state => {
       state.filters = {};
     },
-    
-    resetUI: (state) => {
+
+    resetUI: state => {
       state.sidebarOpen = false;
       state.mobileMenuOpen = false;
       state.modals = {};
@@ -151,22 +157,27 @@ export const {
 
 // Export selectors
 export const selectTheme = (state: { ui: UIState }) => state.ui.theme;
-export const selectSidebarOpen = (state: { ui: UIState }) => state.ui.sidebarOpen;
-export const selectMobileMenuOpen = (state: { ui: UIState }) => state.ui.mobileMenuOpen;
+export const selectSidebarOpen = (state: { ui: UIState }) =>
+  state.ui.sidebarOpen;
+export const selectMobileMenuOpen = (state: { ui: UIState }) =>
+  state.ui.mobileMenuOpen;
 export const selectModals = (state: { ui: UIState }) => state.ui.modals;
-export const selectNotifications = (state: { ui: UIState }) => state.ui.notifications;
+export const selectNotifications = (state: { ui: UIState }) =>
+  state.ui.notifications;
 export const selectLoading = (state: { ui: UIState }) => state.ui.loading;
-export const selectSearchQuery = (state: { ui: UIState }) => state.ui.searchQuery;
+export const selectSearchQuery = (state: { ui: UIState }) =>
+  state.ui.searchQuery;
 export const selectFilters = (state: { ui: UIState }) => state.ui.filters;
 
 // Helper selectors
-export const selectIsModalOpen = (modalName: string) => (state: { ui: UIState }) => 
-  state.ui.modals[modalName] || false;
+export const selectIsModalOpen =
+  (modalName: string) => (state: { ui: UIState }) =>
+    state.ui.modals[modalName] || false;
 
-export const selectIsLoading = (key: string) => (state: { ui: UIState }) => 
+export const selectIsLoading = (key: string) => (state: { ui: UIState }) =>
   state.ui.loading[key] || false;
 
-export const selectFilterValue = (key: string) => (state: { ui: UIState }) => 
+export const selectFilterValue = (key: string) => (state: { ui: UIState }) =>
   state.ui.filters[key];
 
 // Export reducer

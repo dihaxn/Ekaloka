@@ -1,5 +1,6 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
+import '@testing-library/jest-dom'
 import { ErrorBoundary, withErrorBoundary, useErrorHandler } from '../../src/components/ErrorBoundary'
 
 // Mock component that throws an error
@@ -73,8 +74,8 @@ describe('ErrorBoundary', () => {
 
     it('should show error details in development mode', () => {
       // Set NODE_ENV to development
-      const originalEnv = process.env.NODE_ENV
-      process.env.NODE_ENV = 'development'
+      const originalEnv = process.env.NODE_ENV;
+      (process.env as any).NODE_ENV = 'development'
       
       render(
         <ErrorBoundary>
@@ -83,16 +84,16 @@ describe('ErrorBoundary', () => {
       )
       
       // In development mode, the component should render normally
-      expect(screen.getByText('Test content')).toBeInTheDocument()
+      expect(screen.getByText('Test content')).toBeInTheDocument();
       
       // Restore original environment
-      process.env.NODE_ENV = originalEnv
+      (process.env as any).NODE_ENV = originalEnv
     })
 
     it('should not show error details in production mode', () => {
       // Set NODE_ENV to production
-      const originalEnv = process.env.NODE_ENV
-      process.env.NODE_ENV = 'production'
+      const originalEnv = process.env.NODE_ENV;
+      (process.env as any).NODE_ENV = 'production'
       
       render(
         <ErrorBoundary>
@@ -101,10 +102,10 @@ describe('ErrorBoundary', () => {
       )
       
       // In production mode, the component should render normally
-      expect(screen.getByText('Test content')).toBeInTheDocument()
+      expect(screen.getByText('Test content')).toBeInTheDocument();
       
       // Restore original environment
-      process.env.NODE_ENV = originalEnv
+      (process.env as any).NODE_ENV = originalEnv
     })
 
     it('should provide try again and refresh buttons', () => {

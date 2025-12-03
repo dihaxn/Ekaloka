@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 // Types
 export interface CartItem {
@@ -44,8 +44,10 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addItem: (state, action: PayloadAction<CartItem>) => {
-      const existingItem = state.items.find(item => item.productId === action.payload.productId);
-      
+      const existingItem = state.items.find(
+        item => item.productId === action.payload.productId
+      );
+
       if (existingItem) {
         existingItem.quantity += action.payload.quantity;
         // Ensure quantity doesn't exceed available stock
@@ -55,71 +57,88 @@ const cartSlice = createSlice({
       } else {
         state.items.push(action.payload);
       }
-      
+
       state.total = calculateTotal(state.items);
       state.itemCount = calculateItemCount(state.items);
     },
-    
-    updateItemQuantity: (state, action: PayloadAction<{ productId: string; quantity: number }>) => {
-      const item = state.items.find(item => item.productId === action.payload.productId);
-      
+
+    updateItemQuantity: (
+      state,
+      action: PayloadAction<{ productId: string; quantity: number }>
+    ) => {
+      const item = state.items.find(
+        item => item.productId === action.payload.productId
+      );
+
       if (item) {
-        const newQuantity = Math.max(0, Math.min(action.payload.quantity, item.availableStock));
+        const newQuantity = Math.max(
+          0,
+          Math.min(action.payload.quantity, item.availableStock)
+        );
         item.quantity = newQuantity;
-        
+
         // Remove item if quantity is 0
         if (newQuantity === 0) {
-          state.items = state.items.filter(item => item.productId !== action.payload.productId);
+          state.items = state.items.filter(
+            item => item.productId !== action.payload.productId
+          );
         }
-        
+
         state.total = calculateTotal(state.items);
         state.itemCount = calculateItemCount(state.items);
       }
     },
-    
+
     removeItem: (state, action: PayloadAction<string>) => {
-      state.items = state.items.filter(item => item.productId !== action.payload);
+      state.items = state.items.filter(
+        item => item.productId !== action.payload
+      );
       state.total = calculateTotal(state.items);
       state.itemCount = calculateItemCount(state.items);
     },
-    
-    clearCart: (state) => {
+
+    clearCart: state => {
       state.items = [];
       state.total = 0;
       state.itemCount = 0;
     },
-    
-    updateItemStock: (state, action: PayloadAction<{ productId: string; availableStock: number }>) => {
-      const item = state.items.find(item => item.productId === action.payload.productId);
-      
+
+    updateItemStock: (
+      state,
+      action: PayloadAction<{ productId: string; availableStock: number }>
+    ) => {
+      const item = state.items.find(
+        item => item.productId === action.payload.productId
+      );
+
       if (item) {
         item.availableStock = action.payload.availableStock;
-        
+
         // Adjust quantity if it exceeds new stock
         if (item.quantity > item.availableStock) {
           item.quantity = item.availableStock;
         }
-        
+
         state.total = calculateTotal(state.items);
         state.itemCount = calculateItemCount(state.items);
       }
     },
-    
+
     setCartItems: (state, action: PayloadAction<CartItem[]>) => {
       state.items = action.payload;
       state.total = calculateTotal(state.items);
       state.itemCount = calculateItemCount(state.items);
     },
-    
+
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
-    
+
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
-    
-    clearError: (state) => {
+
+    clearError: state => {
       state.error = null;
     },
   },
@@ -141,8 +160,10 @@ export const {
 // Export selectors
 export const selectCartItems = (state: { cart: CartState }) => state.cart.items;
 export const selectCartTotal = (state: { cart: CartState }) => state.cart.total;
-export const selectCartItemCount = (state: { cart: CartState }) => state.cart.itemCount;
-export const selectCartLoading = (state: { cart: CartState }) => state.cart.isLoading;
+export const selectCartItemCount = (state: { cart: CartState }) =>
+  state.cart.itemCount;
+export const selectCartLoading = (state: { cart: CartState }) =>
+  state.cart.isLoading;
 export const selectCartError = (state: { cart: CartState }) => state.cart.error;
 
 // Export reducer

@@ -1,20 +1,21 @@
-import { NextRequest, NextResponse } from 'next/server'
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs';
+import { NextRequest, NextResponse } from 'next/server';
 
 // CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+  'Access-Control-Allow-Headers':
+    'Content-Type, Authorization, X-Requested-With',
   'Access-Control-Allow-Credentials': 'true',
-}
+};
 
 // Handle OPTIONS request for CORS preflight
 export async function OPTIONS() {
-  return new NextResponse(null, { 
+  return new NextResponse(null, {
     status: 200,
-    headers: corsHeaders
-  })
+    headers: corsHeaders,
+  });
 }
 
 // Brevo Email Service Integration
@@ -29,11 +30,17 @@ class BrevoEmailService {
     this.senderName = process.env.BREVO_SENDER_NAME || 'DAI Fashion';
 
     if (!this.apiKey || !this.senderEmail) {
-      console.warn('⚠️ Brevo API Key or Sender Email not configured. Emails will not be sent.');
+      console.warn(
+        '⚠️ Brevo API Key or Sender Email not configured. Emails will not be sent.'
+      );
     }
   }
 
-  async sendEmail(toEmail: string, subject: string, htmlContent: string): Promise<boolean> {
+  async sendEmail(
+    toEmail: string,
+    subject: string,
+    htmlContent: string
+  ): Promise<boolean> {
     if (!this.apiKey || !this.senderEmail) {
       console.error('❌ Brevo is not configured. Cannot send email.');
       return false;
@@ -48,15 +55,15 @@ class BrevoEmailService {
       const response = await fetch('https://api.brevo.com/v3/smtp/email', {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
+          Accept: 'application/json',
           'Content-Type': 'application/json',
           'api-key': this.apiKey,
         },
         body: JSON.stringify({
           sender: { email: this.senderEmail, name: this.senderName },
           to: [{ email: toEmail }],
-          subject: subject,
-          htmlContent: htmlContent,
+          subject,
+          htmlContent,
         }),
       });
 
@@ -68,7 +75,10 @@ class BrevoEmailService {
         return true;
       } else {
         const errorData = await response.json();
-        console.error(`❌ Brevo: Failed to send OTP email. Status: ${response.status}, Error:`, errorData);
+        console.error(
+          `❌ Brevo: Failed to send OTP email. Status: ${response.status}, Error:`,
+          errorData
+        );
         console.log('📧 === END BREVO EMAIL ===');
         return false;
       }
@@ -84,98 +94,109 @@ const brevoEmailService = new BrevoEmailService();
 
 // Local OTP System for Password Reset
 class PasswordResetOTPSystem {
-  private otpStore = new Map<string, { otp: string; expiresAt: number; attempts: number; email: string }>()
-  
+  private otpStore = new Map<
+    string,
+    { otp: string; expiresAt: number; attempts: number; email: string }
+  >();
+
   constructor() {
     // Clean up expired OTPs every minute
-    setInterval(() => {
-      this.cleanupExpiredOTPs()
-    }, 60000)
+    const interval = setInterval(() => {
+      this.cleanupExpiredOTPs();
+    }, 60000);
+    
+    // Allow the process to exit even if this interval is running
+    if (interval.unref) {
+      interval.unref();
+    }
   }
 
   // Generate a random 6-digit OTP
   generateOTP(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString()
+    return Math.floor(100000 + Math.random() * 900000).toString();
   }
 
   // Store OTP with rate limiting and expiration
   storeOTP(email: string, otp: string): boolean {
-    const now = Date.now()
-    const existingData = this.otpStore.get(email)
-    
+    const now = Date.now();
+    const existingData = this.otpStore.get(email);
+
     // Rate limiting: max 3 OTP requests per 10 minutes
     if (existingData && existingData.attempts >= 3) {
-      const timeSinceFirstAttempt = now - (existingData.expiresAt - 10 * 60 * 1000)
+      const timeSinceFirstAttempt =
+        now - (existingData.expiresAt - 10 * 60 * 1000);
       if (timeSinceFirstAttempt < 10 * 60 * 1000) {
-        console.log(`🚫 Rate limit exceeded for ${email}`)
-        return false
+        console.log(`🚫 Rate limit exceeded for ${email}`);
+        return false;
       }
       // Reset attempts after 10 minutes
-      this.otpStore.delete(email)
+      this.otpStore.delete(email);
     }
-    
-    const expiresAt = now + 10 * 60 * 1000 // 10 minutes expiry
-    const attempts = existingData ? existingData.attempts + 1 : 1
-    
-    this.otpStore.set(email, { otp, expiresAt, attempts, email })
-    console.log(`💾 Stored password reset OTP for ${email}, attempt ${attempts}`)
-    
-    return true
+
+    const expiresAt = now + 10 * 60 * 1000; // 10 minutes expiry
+    const attempts = existingData ? existingData.attempts + 1 : 1;
+
+    this.otpStore.set(email, { otp, expiresAt, attempts, email });
+    console.log(
+      `💾 Stored password reset OTP for ${email}, attempt ${attempts}`
+    );
+
+    return true;
   }
 
   // Verify OTP (don't delete it yet - keep for password reset)
   verifyOTP(email: string, otp: string): boolean {
-    const data = this.otpStore.get(email)
+    const data = this.otpStore.get(email);
     if (!data) {
-      console.log(`❌ No password reset OTP found for ${email}`)
-      return false
+      console.log(`❌ No password reset OTP found for ${email}`);
+      return false;
     }
-    
+
     if (Date.now() > data.expiresAt) {
-      console.log(`⏰ Password reset OTP expired for ${email}`)
-      this.otpStore.delete(email)
-      return false
+      console.log(`⏰ Password reset OTP expired for ${email}`);
+      this.otpStore.delete(email);
+      return false;
     }
-    
+
     if (data.otp !== otp) {
-      console.log(`❌ Invalid password reset OTP for ${email}`)
-      return false
+      console.log(`❌ Invalid password reset OTP for ${email}`);
+      return false;
     }
-    
+
     // OTP verified successfully, but don't delete it yet
     // It will be deleted after password reset is complete
-    console.log(`✅ Password reset OTP verified successfully for ${email}`)
-    return true
+    console.log(`✅ Password reset OTP verified successfully for ${email}`);
+    return true;
   }
 
   // Mark OTP as used (call this after password reset is complete)
   markOTPAsUsed(email: string): void {
-    this.otpStore.delete(email)
-    console.log(`🗑️ OTP marked as used and removed for ${email}`)
+    this.otpStore.delete(email);
+    console.log(`🗑️ OTP marked as used and removed for ${email}`);
   }
 
   // Check if OTP is still valid (without deleting it)
   isOTPValid(email: string, otp: string): boolean {
-    const data = this.otpStore.get(email)
+    const data = this.otpStore.get(email);
     if (!data) {
-      return false
+      return false;
     }
-    
+
     if (Date.now() > data.expiresAt) {
-      this.otpStore.delete(email)
-      return false
+      this.otpStore.delete(email);
+      return false;
     }
-    
-    return data.otp === otp
+
+    return data.otp === otp;
   }
 
   // Clean up expired OTPs
   private cleanupExpiredOTPs() {
-    const now = Date.now()
+    const now = Date.now();
     for (const [email, data] of this.otpStore.entries()) {
       if (now > data.expiresAt) {
-        this.otpStore.delete(email)
-        console.log(`🧹 Cleaned up expired password reset OTP for ${email}`)
+        this.otpStore.delete(email);
+        console.log(`🧹 Cleaned up expired password reset OTP for ${email}`);
       }
     }
   }
@@ -183,10 +204,10 @@ class PasswordResetOTPSystem {
   // Send OTP via Brevo or fallback to console
   async sendOTP(email: string, otp: string): Promise<boolean> {
     try {
-      console.log('📧 === PASSWORD RESET OTP SYSTEM ===')
-      console.log(`📧 Email: ${email}`)
-      console.log(`🔐 OTP Code: ${otp}`)
-      console.log(`⏰ Timestamp: ${new Date().toISOString()}`)
+      console.log('📧 === PASSWORD RESET OTP SYSTEM ===');
+      console.log(`📧 Email: ${email}`);
+      console.log(`🔐 OTP Code: ${otp}`);
+      console.log(`⏰ Timestamp: ${new Date().toISOString()}`);
 
       // Try to send via Brevo first
       const subject = 'DAI Fashion - Password Reset OTP';
@@ -236,7 +257,11 @@ class PasswordResetOTPSystem {
       `;
 
       // Attempt to send via Brevo
-      const sentViaBrevo = await brevoEmailService.sendEmail(email, subject, htmlContent);
+      const sentViaBrevo = await brevoEmailService.sendEmail(
+        email,
+        subject,
+        htmlContent
+      );
 
       if (sentViaBrevo) {
         console.log('✅ OTP sent successfully via Brevo email!');
@@ -250,23 +275,23 @@ class PasswordResetOTPSystem {
         return true; // Consider console logging as successful for development
       }
     } catch (error) {
-      console.error('❌ Error in password reset OTP system:', error)
+      console.error('❌ Error in password reset OTP system:', error);
       console.log('📧 === END PASSWORD RESET OTP ===');
-      return false
+      return false;
     }
   }
 }
 
 // Initialize password reset OTP system
-const passwordResetOTPSystem = new PasswordResetOTPSystem()
+const passwordResetOTPSystem = new PasswordResetOTPSystem();
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { step, email, otp, newPassword } = body
+    const body = await request.json();
+    const { step, email, otp, newPassword } = body;
 
-    console.log('🔐 === PASSWORD RESET REQUEST ===')
-    console.log('📋 Request body:', body)
+    console.log('🔐 === PASSWORD RESET REQUEST ===');
+    console.log('📋 Request body:', body);
 
     if (step === 'send-otp') {
       // Validate email
@@ -274,63 +299,86 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           { success: false, message: 'Valid email address is required' },
           { status: 400, headers: corsHeaders }
-        )
+        );
       }
 
       // Check if user exists in database
       try {
-        const { PrismaClient } = await import('@prisma/client')
-        const prisma = new PrismaClient()
-        
+        const { PrismaClient } = await import('@prisma/client');
+        const prisma = new PrismaClient();
+
         const user = await prisma.user.findUnique({
-          where: { email: email.toLowerCase() }
-        })
+          where: { email: email.toLowerCase() },
+        });
 
         if (!user) {
-          console.log(`❌ Password reset attempted for non-existent email: ${email}`)
+          console.log(
+            `❌ Password reset attempted for non-existent email: ${email}`
+          );
           return NextResponse.json(
-            { success: false, message: 'No account found with this email address. Please check your email spelling or sign up for a new account.' },
+            {
+              success: false,
+              message:
+                'No account found with this email address. Please check your email spelling or sign up for a new account.',
+            },
             { status: 404, headers: corsHeaders }
-          )
+          );
         }
 
-        console.log(`✅ User found for password reset: ${email}`)
-        await prisma.$disconnect()
+        console.log(`✅ User found for password reset: ${email}`);
+        await prisma.$disconnect();
       } catch (dbError) {
-        console.log(`⚠️ Database check failed, proceeding with OTP generation: ${dbError}`)
+        console.log(
+          `⚠️ Database check failed, proceeding with OTP generation: ${dbError}`
+        );
         // Continue with OTP generation even if database check fails
       }
 
       // Generate and store OTP
-      const generatedOTP = passwordResetOTPSystem.generateOTP()
-      const otpStored = passwordResetOTPSystem.storeOTP(email.toLowerCase(), generatedOTP)
-      
+      const generatedOTP = passwordResetOTPSystem.generateOTP();
+      const otpStored = passwordResetOTPSystem.storeOTP(
+        email.toLowerCase(),
+        generatedOTP
+      );
+
       if (!otpStored) {
         return NextResponse.json(
-          { success: false, message: 'Rate limit exceeded. Please wait before requesting another OTP.' },
+          {
+            success: false,
+            message:
+              'Rate limit exceeded. Please wait before requesting another OTP.',
+          },
           { status: 429, headers: corsHeaders }
-        )
+        );
       }
 
-      console.log('✅ OTP generated and stored')
-      console.log(`🔐 Generated OTP: ${generatedOTP}`)
-      console.log(`⏰ Expires at: ${new Date(Date.now() + 10 * 60 * 1000).toISOString()}`)
+      console.log('✅ OTP generated and stored');
+      console.log(`🔐 Generated OTP: ${generatedOTP}`);
+      console.log(
+        `⏰ Expires at: ${new Date(Date.now() + 10 * 60 * 1000).toISOString()}`
+      );
 
       // Send OTP via Brevo or fallback to console
-      const otpSent = await passwordResetOTPSystem.sendOTP(email.toLowerCase(), generatedOTP)
-      
+      const otpSent = await passwordResetOTPSystem.sendOTP(
+        email.toLowerCase(),
+        generatedOTP
+      );
+
       if (otpSent) {
-        console.log('✅ Password reset OTP sent successfully')
-        console.log('🔐 === END PASSWORD RESET REQUEST ===')
-        return NextResponse.json({ 
-          success: true, 
-          message: 'OTP sent to your email! Check your inbox.' 
-        }, { headers: corsHeaders })
+        console.log('✅ Password reset OTP sent successfully');
+        console.log('🔐 === END PASSWORD RESET REQUEST ===');
+        return NextResponse.json(
+          {
+            success: true,
+            message: 'OTP sent to your email! Check your inbox.',
+          },
+          { headers: corsHeaders }
+        );
       } else {
         return NextResponse.json(
           { success: false, message: 'Failed to send OTP' },
           { status: 500, headers: corsHeaders }
-        )
+        );
       }
     }
 
@@ -340,101 +388,126 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           { success: false, message: 'Email and OTP are required' },
           { status: 400, headers: corsHeaders }
-        )
+        );
       }
 
       // Verify OTP
-      const otpValid = passwordResetOTPSystem.verifyOTP(email.toLowerCase(), otp)
+      const otpValid = passwordResetOTPSystem.verifyOTP(
+        email.toLowerCase(),
+        otp
+      );
       if (!otpValid) {
         return NextResponse.json(
           { success: false, message: 'Invalid or expired OTP' },
           { status: 400, headers: corsHeaders }
-        )
+        );
       }
 
-      console.log('✅ Password reset OTP verified successfully')
-      console.log('🔐 === END PASSWORD RESET REQUEST ===')
-      
-      return NextResponse.json({
-        success: true,
-        message: 'OTP verified successfully. You can now reset your password.'
-      }, { headers: corsHeaders })
+      console.log('✅ Password reset OTP verified successfully');
+      console.log('🔐 === END PASSWORD RESET REQUEST ===');
+
+      return NextResponse.json(
+        {
+          success: true,
+          message:
+            'OTP verified successfully. You can now reset your password.',
+        },
+        { headers: corsHeaders }
+      );
     }
 
     if (step === 'reset-password') {
       // Validate required fields
       if (!email || !otp || !newPassword) {
         return NextResponse.json(
-          { success: false, message: 'Email, OTP, and new password are required' },
+          {
+            success: false,
+            message: 'Email, OTP, and new password are required',
+          },
           { status: 400, headers: corsHeaders }
-        )
+        );
       }
 
       // Verify OTP again (security check) - use validation without deletion
-      const otpValid = passwordResetOTPSystem.isOTPValid(email.toLowerCase(), otp)
+      const otpValid = passwordResetOTPSystem.isOTPValid(
+        email.toLowerCase(),
+        otp
+      );
       if (!otpValid) {
         return NextResponse.json(
           { success: false, message: 'Invalid or expired OTP' },
           { status: 400, headers: corsHeaders }
-        )
+        );
       }
 
       // Validate password strength
       if (newPassword.length < 6) {
         return NextResponse.json(
-          { success: false, message: 'Password must be at least 6 characters long' },
+          {
+            success: false,
+            message: 'Password must be at least 6 characters long',
+          },
           { status: 400, headers: corsHeaders }
-        )
+        );
       }
 
       // Mark OTP as used after successful password reset
-      passwordResetOTPSystem.markOTPAsUsed(email.toLowerCase())
-      
+      passwordResetOTPSystem.markOTPAsUsed(email.toLowerCase());
+
       // Actually update the password in the database
       try {
-        const { PrismaClient } = await import('@prisma/client')
-        const prisma = new PrismaClient()
-        
+        const { PrismaClient } = await import('@prisma/client');
+        const prisma = new PrismaClient();
+
         // Hash the new password
-        const hashedPassword = await bcrypt.hash(newPassword, 12)
-        
+        const hashedPassword = await bcrypt.hash(newPassword, 12);
+
         // Update user's password in database
         await prisma.user.update({
           where: { email: email.toLowerCase() },
-          data: { passwordHash: hashedPassword }
-        })
-        
-        await prisma.$disconnect()
-        
-        console.log('✅ Password updated successfully in database for:', email.toLowerCase())
-        console.log('🔐 === END PASSWORD RESET REQUEST ===')
-        
-        return NextResponse.json({
-          success: true,
-          message: 'Password reset successful! You can now login with your new password.'
-        }, { headers: corsHeaders })
-        
+          data: { passwordHash: hashedPassword },
+        });
+
+        await prisma.$disconnect();
+
+        console.log(
+          '✅ Password updated successfully in database for:',
+          email.toLowerCase()
+        );
+        console.log('🔐 === END PASSWORD RESET REQUEST ===');
+
+        return NextResponse.json(
+          {
+            success: true,
+            message:
+              'Password reset successful! You can now login with your new password.',
+          },
+          { headers: corsHeaders }
+        );
       } catch (dbError) {
-        console.error('❌ Database error during password update:', dbError)
-        console.log('🔐 === END PASSWORD RESET REQUEST ===')
-        
-        return NextResponse.json({
-          success: false,
-          message: 'Password reset failed. Please try again or contact support.'
-        }, { status: 500, headers: corsHeaders })
+        console.error('❌ Database error during password update:', dbError);
+        console.log('🔐 === END PASSWORD RESET REQUEST ===');
+
+        return NextResponse.json(
+          {
+            success: false,
+            message:
+              'Password reset failed. Please try again or contact support.',
+          },
+          { status: 500, headers: corsHeaders }
+        );
       }
     }
 
     return NextResponse.json(
       { success: false, message: 'Invalid step' },
       { status: 400, headers: corsHeaders }
-    )
-
+    );
   } catch (error) {
-    console.error('❌ Password reset error:', error)
+    console.error('❌ Password reset error:', error);
     return NextResponse.json(
       { success: false, message: 'Internal server error' },
       { status: 500, headers: corsHeaders }
-    )
+    );
   }
 }

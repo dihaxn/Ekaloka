@@ -1,5 +1,5 @@
 import { AuthService } from '../../src/services/auth.server'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
 // Mock Prisma client
@@ -12,7 +12,7 @@ jest.mock('../../src/server/db/prisma', () => ({
 }))
 
 // Mock bcrypt
-jest.mock('bcrypt', () => ({
+jest.mock('bcryptjs', () => ({
   compare: jest.fn()
 }))
 

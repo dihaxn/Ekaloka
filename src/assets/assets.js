@@ -6,7 +6,7 @@ export const assets = {
   fashion_model: '/images/fashion-model.jpg',
   fashion_accessories: '/images/fashion-accessories.jpg',
   fashion_lifestyle: '/images/fashion-lifestyle.jpg',
-  
+
   // Image paths for the application
   jbl_soundbox_image: '/images/jbl_soundbox_image.svg',
   md_controller_image: '/images/md_controller_image.svg',
@@ -25,11 +25,16 @@ export const assets = {
   venu_watch_image: '/images/jbl_soundbox_image.svg',
   boy_with_laptop_image: '/images/boy_with_laptop_image.svg',
   // Product detail images
-  product_details_page_apple_earphone_image1: '/images/product_details_page_apple_earphone_image1.png',
-  product_details_page_apple_earphone_image2: '/images/product_details_page_apple_earphone_image2.png',
-  product_details_page_apple_earphone_image3: '/images/product_details_page_apple_earphone_image3.png',
-  product_details_page_apple_earphone_image4: '/images/product_details_page_apple_earphone_image4.png',
-  product_details_page_apple_earphone_image5: '/images/product_details_page_apple_earphone_image5.png',
+  product_details_page_apple_earphone_image1:
+    '/images/product_details_page_apple_earphone_image1.png',
+  product_details_page_apple_earphone_image2:
+    '/images/product_details_page_apple_earphone_image2.png',
+  product_details_page_apple_earphone_image3:
+    '/images/product_details_page_apple_earphone_image3.png',
+  product_details_page_apple_earphone_image4:
+    '/images/product_details_page_apple_earphone_image4.png',
+  product_details_page_apple_earphone_image5:
+    '/images/product_details_page_apple_earphone_image5.png',
   // Icons
   add_icon: '/images/add_icon.png',
   arrow_icon: '/images/arrow_icon.svg',
@@ -56,90 +61,90 @@ export const assets = {
   twitter_icon: '/images/twitter_icon.svg',
   upload_area: '/images/placeholder_image.svg',
   user_icon: '/images/user_icon.svg',
-  placeholder_image: '/images/placeholder_image.svg'
+  placeholder_image: '/images/placeholder_image.svg',
 };
 
 // Dummy data for testing
 export const addressDummyData = [
   {
-    fullName: "John Doe",
-    area: "Downtown",
-    city: "New York",
-    state: "NY",
-    zipCode: "10001",
-    phone: "+1-555-0123"
+    fullName: 'John Doe',
+    area: 'Downtown',
+    city: 'New York',
+    state: 'NY',
+    zipCode: '10001',
+    phone: '+1-555-0123',
   },
   {
-    fullName: "Jane Smith",
-    area: "Uptown",
-    city: "Los Angeles",
-    state: "CA",
-    zipCode: "90210",
-    phone: "+1-555-0456"
-  }
+    fullName: 'Jane Smith',
+    area: 'Uptown',
+    city: 'Los Angeles',
+    state: 'CA',
+    zipCode: '90210',
+    phone: '+1-555-0456',
+  },
 ];
 
 // Additional dummy data for other components
 export const orderDummyData = [
   {
-    id: "1",
-    orderNumber: "ORD-001",
-    date: "2025-08-25",
-    status: "Delivered",
+    id: '1',
+    orderNumber: 'ORD-001',
+    date: '2025-08-25',
+    status: 'Delivered',
     amount: 299.99,
     items: [
       {
-        product: { name: "Premium Wireless Headphones" },
-        quantity: 1
+        product: { name: 'Premium Wireless Headphones' },
+        quantity: 1,
       },
       {
-        product: { name: "Gaming Controller" },
-        quantity: 2
-      }
+        product: { name: 'Gaming Controller' },
+        quantity: 2,
+      },
     ],
     address: {
-      fullName: "John Doe",
-      area: "Downtown",
-      city: "New York",
-      state: "NY",
-      phoneNumber: "+1-555-0123"
-    }
+      fullName: 'John Doe',
+      area: 'Downtown',
+      city: 'New York',
+      state: 'NY',
+      phoneNumber: '+1-555-0123',
+    },
   },
   {
-    id: "2", 
-    orderNumber: "ORD-002",
-    date: "2025-08-24",
-    status: "Processing",
+    id: '2',
+    orderNumber: 'ORD-002',
+    date: '2025-08-24',
+    status: 'Processing',
     amount: 149.99,
     items: [
       {
-        product: { name: "Laptop Computer" },
-        quantity: 1
-      }
+        product: { name: 'Laptop Computer' },
+        quantity: 1,
+      },
     ],
     address: {
-      fullName: "Jane Smith",
-      area: "Uptown",
-      city: "Los Angeles",
-      state: "CA",
-      phoneNumber: "+1-555-0456"
-    }
-  }
+      fullName: 'Jane Smith',
+      area: 'Uptown',
+      city: 'Los Angeles',
+      state: 'CA',
+      phoneNumber: '+1-555-0456',
+    },
+  },
 ];
 
 export const productsDummyData = [
   {
-    id: "1",
-    name: "Premium Fashion Collection",
+    id: '1',
+    name: 'Premium Fashion Collection',
     price: 199.99,
-    image: "/images/fashion-accessories.jpg"
+    image: '/images/fashion-accessories.jpg',
   },
   {
-    id: "2",
-    name: "Lifestyle Fashion Bundle",
+    id: '2',
+    name: 'Lifestyle Fashion Bundle',
     price: 299.99,
-    image: "/images/fashion-lifestyle.jpg"
-  }
+    image: '/images/fashion-lifestyle.jpg',
+  },
 ];
 
 export default assets;

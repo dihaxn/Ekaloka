@@ -12,14 +12,19 @@ export const passwordSchema = z
   .string()
   .min(8, 'Password must be at least 8 characters')
   .max(128, 'Password too long')
-  .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, 
-    'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character');
+  .regex(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+    'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+  );
 
 export const usernameSchema = z
   .string()
   .min(3, 'Username must be at least 3 characters')
   .max(50, 'Username too long')
-  .regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, underscores, and hyphens')
+  .regex(
+    /^[a-zA-Z0-9_-]+$/,
+    'Username can only contain letters, numbers, underscores, and hyphens'
+  )
   .transform(val => val.toLowerCase().trim());
 
 export const phoneSchema = z
@@ -27,10 +32,7 @@ export const phoneSchema = z
   .regex(/^\+?[1-9]\d{1,14}$/, 'Invalid phone number format')
   .optional();
 
-export const urlSchema = z
-  .string()
-  .url('Invalid URL format')
-  .optional();
+export const urlSchema = z.string().url('Invalid URL format').optional();
 
 // Authentication schemas
 export const loginSchema = z.object({
@@ -40,82 +42,122 @@ export const loginSchema = z.object({
   csrfToken: z.string().optional(),
 });
 
-export const registerSchema = z.object({
-  email: emailSchema,
-  password: passwordSchema,
-  confirmPassword: z.string().min(1, 'Please confirm your password'),
-  username: usernameSchema,
-  firstName: z.string().min(1, 'First name is required').max(50, 'First name too long'),
-  lastName: z.string().min(1, 'Last name is required').max(50, 'Last name too long'),
-  phone: phoneSchema,
-  acceptTerms: z.boolean().refine(val => val === true, 'You must accept the terms and conditions'),
-  csrfToken: z.string().optional(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+export const registerSchema = z
+  .object({
+    email: emailSchema,
+    password: passwordSchema,
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
+    username: usernameSchema,
+    firstName: z
+      .string()
+      .min(1, 'First name is required')
+      .max(50, 'First name too long'),
+    lastName: z
+      .string()
+      .min(1, 'Last name is required')
+      .max(50, 'Last name too long'),
+    phone: phoneSchema,
+    acceptTerms: z
+      .boolean()
+      .refine(val => val === true, 'You must accept the terms and conditions'),
+    csrfToken: z.string().optional(),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 
 export const forgotPasswordSchema = z.object({
   email: emailSchema,
   csrfToken: z.string().optional(),
 });
 
-export const resetPasswordSchema = z.object({
-  token: z.string().min(1, 'Reset token is required'),
-  password: passwordSchema,
-  confirmPassword: z.string().min(1, 'Please confirm your password'),
-  csrfToken: z.string().optional(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+export const resetPasswordSchema = z
+  .object({
+    token: z.string().min(1, 'Reset token is required'),
+    password: passwordSchema,
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
+    csrfToken: z.string().optional(),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 
 export const mfaSchema = z.object({
-  code: z.string().length(6, 'MFA code must be 6 digits').regex(/^\d{6}$/, 'MFA code must contain only numbers'),
+  code: z
+    .string()
+    .length(6, 'MFA code must be 6 digits')
+    .regex(/^\d{6}$/, 'MFA code must contain only numbers'),
   type: z.enum(['otp', 'totp', 'sms']),
   csrfToken: z.string().optional(),
 });
 
 // User profile schemas
 export const updateProfileSchema = z.object({
-  firstName: z.string().min(1, 'First name is required').max(50, 'First name too long'),
-  lastName: z.string().min(1, 'Last name is required').max(50, 'Last name too long'),
+  firstName: z
+    .string()
+    .min(1, 'First name is required')
+    .max(50, 'First name too long'),
+  lastName: z
+    .string()
+    .min(1, 'Last name is required')
+    .max(50, 'Last name too long'),
   phone: phoneSchema,
   bio: z.string().max(500, 'Bio too long').optional(),
   website: urlSchema,
   location: z.string().max(100, 'Location too long').optional(),
-  dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format').optional(),
+  dateOfBirth: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format')
+    .optional(),
   csrfToken: z.string().optional(),
 });
 
-export const changePasswordSchema = z.object({
-  currentPassword: z.string().min(1, 'Current password is required'),
-  newPassword: passwordSchema,
-  confirmNewPassword: z.string().min(1, 'Please confirm your new password'),
-  csrfToken: z.string().optional(),
-}).refine((data) => data.newPassword === data.confirmNewPassword, {
-  message: "New passwords don't match",
-  path: ["confirmNewPassword"],
-});
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, 'Current password is required'),
+    newPassword: passwordSchema,
+    confirmNewPassword: z.string().min(1, 'Please confirm your new password'),
+    csrfToken: z.string().optional(),
+  })
+  .refine(data => data.newPassword === data.confirmNewPassword, {
+    message: "New passwords don't match",
+    path: ['confirmNewPassword'],
+  });
 
 // Product schemas
 export const productSchema = z.object({
-  name: z.string().min(1, 'Product name is required').max(200, 'Product name too long'),
-  description: z.string().min(10, 'Description must be at least 10 characters').max(2000, 'Description too long'),
-  price: z.number().positive('Price must be positive').max(999999.99, 'Price too high'),
+  name: z
+    .string()
+    .min(1, 'Product name is required')
+    .max(200, 'Product name too long'),
+  description: z
+    .string()
+    .min(10, 'Description must be at least 10 characters')
+    .max(2000, 'Description too long'),
+  price: z
+    .number()
+    .positive('Price must be positive')
+    .max(999999.99, 'Price too high'),
   category: z.string().min(1, 'Category is required'),
   brand: z.string().min(1, 'Brand is required').max(100, 'Brand too long'),
   sku: z.string().min(1, 'SKU is required').max(50, 'SKU too long'),
   stock: z.number().int().min(0, 'Stock cannot be negative'),
-  images: z.array(z.string().url('Invalid image URL')).min(1, 'At least one image is required').max(10, 'Too many images'),
+  images: z
+    .array(z.string().url('Invalid image URL'))
+    .min(1, 'At least one image is required')
+    .max(10, 'Too many images'),
   tags: z.array(z.string()).max(20, 'Too many tags'),
   isActive: z.boolean().default(true),
   weight: z.number().positive('Weight must be positive').optional(),
-  dimensions: z.object({
-    length: z.number().positive('Length must be positive'),
-    width: z.number().positive('Width must be positive'),
-    height: z.number().positive('Height must be positive'),
-  }).optional(),
+  dimensions: z
+    .object({
+      length: z.number().positive('Length must be positive'),
+      width: z.number().positive('Width must be positive'),
+      height: z.number().positive('Height must be positive'),
+    })
+    .optional(),
 });
 
 export const productUpdateSchema = productSchema.partial();
@@ -155,15 +197,30 @@ export const orderSchema = z.object({
 // Review schemas
 export const reviewSchema = z.object({
   productId: z.string().min(1, 'Product ID is required'),
-  rating: z.number().min(1, 'Rating must be at least 1').max(5, 'Rating cannot exceed 5'),
-  title: z.string().min(1, 'Review title is required').max(100, 'Title too long'),
-  comment: z.string().min(10, 'Review must be at least 10 characters').max(1000, 'Review too long'),
-  images: z.array(z.string().url('Invalid image URL')).max(5, 'Too many images').optional(),
+  rating: z
+    .number()
+    .min(1, 'Rating must be at least 1')
+    .max(5, 'Rating cannot exceed 5'),
+  title: z
+    .string()
+    .min(1, 'Review title is required')
+    .max(100, 'Title too long'),
+  comment: z
+    .string()
+    .min(10, 'Review must be at least 10 characters')
+    .max(1000, 'Review too long'),
+  images: z
+    .array(z.string().url('Invalid image URL'))
+    .max(5, 'Too many images')
+    .optional(),
 });
 
 // Search and filter schemas
 export const searchSchema = z.object({
-  query: z.string().min(1, 'Search query is required').max(100, 'Search query too long'),
+  query: z
+    .string()
+    .min(1, 'Search query is required')
+    .max(100, 'Search query too long'),
   category: z.string().optional(),
   brand: z.string().optional(),
   minPrice: z.number().positive('Minimum price must be positive').optional(),
@@ -171,14 +228,36 @@ export const searchSchema = z.object({
   rating: z.number().min(1).max(5).optional(),
   sortBy: z.enum(['price', 'name', 'rating', 'date']).optional(),
   sortOrder: z.enum(['asc', 'desc']).optional(),
-  page: z.number().int().min(1, 'Page must be at least 1').optional().default(1),
-  limit: z.number().int().min(1, 'Limit must be at least 1').max(100, 'Limit too high').optional().default(20),
+  page: z
+    .number()
+    .int()
+    .min(1, 'Page must be at least 1')
+    .optional()
+    .default(1),
+  limit: z
+    .number()
+    .int()
+    .min(1, 'Limit must be at least 1')
+    .max(100, 'Limit too high')
+    .optional()
+    .default(20),
 });
 
 // Pagination schema
 export const paginationSchema = z.object({
-  page: z.number().int().min(1, 'Page must be at least 1').optional().default(1),
-  limit: z.number().int().min(1, 'Limit must be at least 1').max(100, 'Limit too high').optional().default(20),
+  page: z
+    .number()
+    .int()
+    .min(1, 'Page must be at least 1')
+    .optional()
+    .default(1),
+  limit: z
+    .number()
+    .int()
+    .min(1, 'Limit must be at least 1')
+    .max(100, 'Limit too high')
+    .optional()
+    .default(20),
   sortBy: z.string().optional(),
   sortOrder: z.enum(['asc', 'desc']).optional().default('desc'),
 });
@@ -186,8 +265,14 @@ export const paginationSchema = z.object({
 // File upload schemas
 export const fileUploadSchema = z.object({
   file: z.instanceof(File),
-  maxSize: z.number().optional().default(5 * 1024 * 1024), // 5MB default
-  allowedTypes: z.array(z.string()).optional().default(['image/jpeg', 'image/png', 'image/webp']),
+  maxSize: z
+    .number()
+    .optional()
+    .default(5 * 1024 * 1024), // 5MB default
+  allowedTypes: z
+    .array(z.string())
+    .optional()
+    .default(['image/jpeg', 'image/png', 'image/webp']),
 });
 
 // API response schemas
@@ -196,12 +281,14 @@ export const apiResponseSchema = z.object({
   message: z.string(),
   data: z.any().optional(),
   errors: z.array(z.string()).optional(),
-  pagination: z.object({
-    page: z.number(),
-    limit: z.number(),
-    total: z.number(),
-    totalPages: z.number(),
-  }).optional(),
+  pagination: z
+    .object({
+      page: z.number(),
+      limit: z.number(),
+      total: z.number(),
+      totalPages: z.number(),
+    })
+    .optional(),
 });
 
 // Validation helper functions
@@ -210,7 +297,9 @@ export class ValidationUtils {
   static async validateAndSanitize<T>(
     schema: z.ZodSchema<T>,
     data: unknown
-  ): Promise<{ success: true; data: T } | { success: false; errors: string[] }> {
+  ): Promise<
+    { success: true; data: T } | { success: false; errors: string[] }
+  > {
     try {
       const validatedData = await schema.parseAsync(data);
       return { success: true, data: validatedData };
@@ -224,10 +313,12 @@ export class ValidationUtils {
   }
 
   // Validate partial data (for updates)
-  static async validatePartial<T>(
-    schema: z.ZodSchema<T>,
+  static async validatePartial<T extends z.AnyZodObject>(
+    schema: T,
     data: unknown
-  ): Promise<{ success: true; data: Partial<T> } | { success: false; errors: string[] }> {
+  ): Promise<
+    { success: true; data: z.infer<T> } | { success: false; errors: string[] }
+  > {
     try {
       const validatedData = await schema.partial().parseAsync(data);
       return { success: true, data: validatedData };
@@ -252,20 +343,28 @@ export class ValidationUtils {
   }
 
   // Validate file upload
-  static validateFile(file: File, maxSize: number = 5 * 1024 * 1024, allowedTypes: string[] = ['image/jpeg', 'image/png']): string | null {
+  static validateFile(
+    file: File,
+    maxSize: number = 5 * 1024 * 1024,
+    allowedTypes: string[] = ['image/jpeg', 'image/png']
+  ): string | null {
     if (file.size > maxSize) {
       return `File size must be less than ${Math.round(maxSize / 1024 / 1024)}MB`;
     }
-    
+
     if (!allowedTypes.includes(file.type)) {
       return `File type not allowed. Allowed types: ${allowedTypes.join(', ')}`;
     }
-    
+
     return null;
   }
 
   // Generate validation error response
-  static createValidationErrorResponse(errors: string[]): { success: false; message: string; errors: string[] } {
+  static createValidationErrorResponse(errors: string[]): {
+    success: false;
+    message: string;
+    errors: string[];
+  } {
     return {
       success: false,
       message: 'Validation failed',
@@ -345,28 +444,3 @@ export class ValidationUtils {
       .substring(0, 100); // Limit length
   }
 }
-
-// Export all schemas
-export {
-  emailSchema,
-  passwordSchema,
-  usernameSchema,
-  phoneSchema,
-  urlSchema,
-  loginSchema,
-  registerSchema,
-  forgotPasswordSchema,
-  resetPasswordSchema,
-  mfaSchema,
-  updateProfileSchema,
-  changePasswordSchema,
-  productSchema,
-  productUpdateSchema,
-  orderItemSchema,
-  orderSchema,
-  reviewSchema,
-  searchSchema,
-  paginationSchema,
-  fileUploadSchema,
-  apiResponseSchema,
-};

@@ -65,6 +65,11 @@ const nextConfig = {
   
   // Server external packages for security
   serverExternalPackages: ['bcrypt'],
+
+  // Ignore ESLint during builds (handled in separate CI job)
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 }
 
 module.exports = nextConfig

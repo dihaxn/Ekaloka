@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 // Types
 export interface User {
@@ -38,7 +38,10 @@ const initialState: AuthState = {
 // Async thunks
 export const loginUser = createAsyncThunk(
   'auth/login',
-  async (credentials: { email: string; password: string; rememberMe?: boolean }, { rejectWithValue }) => {
+  async (
+    credentials: { email: string; password: string; rememberMe?: boolean },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -147,10 +150,13 @@ const authSlice = createSlice({
     setRefreshToken: (state, action: PayloadAction<string>) => {
       state.refreshToken = action.payload;
     },
-    clearError: (state) => {
+    clearError: state => {
       state.error = null;
     },
-    setMFARequired: (state, action: PayloadAction<{ required: boolean; data?: any }>) => {
+    setMFARequired: (
+      state,
+      action: PayloadAction<{ required: boolean; data?: any }>
+    ) => {
       state.mfaRequired = action.payload.required;
       state.mfaData = action.payload.data || null;
     },
@@ -160,10 +166,10 @@ const authSlice = createSlice({
       }
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     // Login
     builder
-      .addCase(loginUser.pending, (state) => {
+      .addCase(loginUser.pending, state => {
         state.isLoading = true;
         state.error = null;
       })
@@ -183,10 +189,10 @@ const authSlice = createSlice({
 
     // Logout
     builder
-      .addCase(logoutUser.pending, (state) => {
+      .addCase(logoutUser.pending, state => {
         state.isLoading = true;
       })
-      .addCase(logoutUser.fulfilled, (state) => {
+      .addCase(logoutUser.fulfilled, state => {
         state.isLoading = false;
         state.user = null;
         state.token = null;
@@ -202,7 +208,7 @@ const authSlice = createSlice({
 
     // Refresh token
     builder
-      .addCase(refreshToken.pending, (state) => {
+      .addCase(refreshToken.pending, state => {
         state.isLoading = true;
       })
       .addCase(refreshToken.fulfilled, (state, action) => {
@@ -222,7 +228,7 @@ const authSlice = createSlice({
 
     // MFA verification
     builder
-      .addCase(verifyMFA.pending, (state) => {
+      .addCase(verifyMFA.pending, state => {
         state.isLoading = true;
         state.error = null;
       })

@@ -1,36 +1,37 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { EnterpriseSecurityMiddleware } from './middleware/enterprise-security'
+import { NextRequest, NextResponse } from 'next/server';
+
+import { EnterpriseSecurityMiddleware } from './middleware/enterprise-security';
 
 export async function middleware(request: NextRequest) {
-  const startTime = Date.now()
+  const startTime = Date.now();
 
   try {
     // 1. Enterprise Security Check
-    const securityResponse = await EnterpriseSecurityMiddleware.securityCheck(request)
+    const securityResponse =
+      await EnterpriseSecurityMiddleware.securityCheck(request);
     if (securityResponse) {
-      return EnterpriseSecurityMiddleware.addSecurityHeaders(securityResponse)
+      return EnterpriseSecurityMiddleware.addSecurityHeaders(securityResponse);
     }
 
     // 2. Handle CORS for API routes
     if (request.nextUrl.pathname.startsWith('/api/')) {
-      const response = NextResponse.next()
-      return EnterpriseSecurityMiddleware.handleCORS(request, response)
+      const response = NextResponse.next();
+      return EnterpriseSecurityMiddleware.handleCORS(request, response);
     }
 
     // 3. Add security headers to all responses
-    const response = NextResponse.next()
-    return EnterpriseSecurityMiddleware.addSecurityHeaders(response)
-
+    const response = NextResponse.next();
+    return EnterpriseSecurityMiddleware.addSecurityHeaders(response);
   } catch (error) {
-    console.error('Middleware error:', error)
-    
+    console.error('Middleware error:', error);
+
     // Return generic error response
     const errorResponse = NextResponse.json(
       { success: false, message: 'Internal server error' },
       { status: 500 }
-    )
-    
-    return EnterpriseSecurityMiddleware.addSecurityHeaders(errorResponse)
+    );
+
+    return EnterpriseSecurityMiddleware.addSecurityHeaders(errorResponse);
   }
 }
 
@@ -46,4 +47,4 @@ export const config = {
      */
     '/((?!_next/static|_next/image|favicon.ico|images/|public/).*)',
   ],
-}
+};
