@@ -3,7 +3,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, CheckCircle } from "lucide-react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import SocialLoginButtons from "../../components/SocialLoginButtons";
 import MessageAlert from "../../components/MessageAlert";
 import PasswordStrengthIndicator from "../../components/PasswordStrengthIndicator";

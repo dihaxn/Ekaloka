@@ -2,7 +2,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import MessageAlert from "../../components/MessageAlert";
 import PasswordStrengthIndicator from "../../components/PasswordStrengthIndicator";
 import { validatePassword, getPasswordErrorMessage } from "../../utils/validators";

@@ -1,7 +1,7 @@
 // components/Footer.jsx
 import React from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+
 
 const quickLinks = [
   { name: "New Arrivals", href: "#" },
@@ -60,12 +60,7 @@ const Footer = () => (
     <div className="container mx-auto px-4 py-12">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* Brand Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-6"
-        >
+        <div className="space-y-6">
           <div className="flex items-center space-x-3">
                          <div className="bg-gradient-to-r from-amber-500 to-amber-300 p-2 rounded-lg">
                <div className="bg-black p-1 rounded-md">
@@ -81,82 +76,57 @@ const Footer = () => (
           </p>
           <div className="flex space-x-4">
             {socialLinks.map((link, i) => (
-              <motion.a
+              <a
                 key={i}
                 href={link.href}
                 aria-label={link.label}
-                                 className="bg-gray-800 p-2 rounded-full hover:bg-amber-500 transition-all duration-300"
-                whileHover={{ scale: 1.1, rotate: 10 }}
-                whileTap={{ scale: 0.9 }}
+                className="bg-gray-800 p-2 rounded-full hover:bg-amber-500 transition-all duration-300"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M10 9.658l4.917 2.338L10 14.342V9.658z" />
                 </svg>
-              </motion.a>
+              </a>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Quick Links */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="space-y-4"
-        >
-                     <h3 className="text-lg font-semibold border-b border-amber-500 pb-2 w-fit">Quick Links</h3>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold border-b border-amber-500 pb-2 w-fit">Quick Links</h3>
           <ul className="space-y-3">
             {quickLinks.map((item, index) => (
-              <motion.li
-                key={index}
-                whileHover={{ x: 5 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                                 <a href={item.href} className="flex items-center hover:text-amber-400 transition-colors">
-                   <span className="mr-2 text-amber-500">→</span>
-                   {item.name}
-                 </a>
-              </motion.li>
+              <li key={index}>
+                <a href={item.href} className="flex items-center hover:text-amber-400 transition-colors">
+                  <span className="mr-2 text-amber-500">→</span>
+                  {item.name}
+                </a>
+              </li>
             ))}
           </ul>
-        </motion.div>
+        </div>
 
         {/* Categories */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="space-y-4"
-        >
-                     <h3 className="text-lg font-semibold border-b border-amber-500 pb-2 w-fit">Categories</h3>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold border-b border-amber-500 pb-2 w-fit">Categories</h3>
           <div className="grid grid-cols-2 gap-3">
             {categories.map((category, index) => (
-              <motion.a
+              <a
                 key={index}
                 href="#"
-                                 className="group block p-3 bg-gray-800 rounded-lg hover:bg-amber-500/10 transition-all"
-                whileHover={{
-                  y: -5,
-                  boxShadow: "0 10px 25px -5px rgba(245, 158, 11, 0.1)",
-                }}
+                className="group block p-3 bg-gray-800 rounded-lg hover:bg-amber-500/10 transition-all"
               >
-                                 <span className="font-medium group-hover:text-amber-400">{category.name}</span>
-                 <span className="block text-xs text-gray-400 group-hover:text-amber-300 mt-1">
-                   {category.count} items
-                 </span>
-              </motion.a>
+                <span className="font-medium group-hover:text-amber-400">{category.name}</span>
+                <span className="block text-xs text-gray-400 group-hover:text-amber-300 mt-1">
+                  {category.count} items
+                </span>
+              </a>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Contact Us */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="space-y-4"
-        >
+        <div className="space-y-4">
                      <h3 className="text-lg font-semibold border-b border-amber-500 pb-2 w-fit">Contact Us</h3>
           <div className="space-y-2 text-sm">
             {contacts.map((contact, idx) => (
@@ -166,16 +136,11 @@ const Footer = () => (
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Payment & Security */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="mt-12 pt-8 border-t border-gray-800"
-      >
+      <div className="mt-12 pt-8 border-t border-gray-800">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-6 md:mb-0">
             <h4 className="font-medium mb-3">We Accept</h4>
@@ -201,15 +166,10 @@ const Footer = () => (
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Copyright */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-        className="mt-8 pt-6 border-t border-gray-800 text-center text-gray-400 text-sm"
-      >
+      <div className="mt-8 pt-6 border-t border-gray-800 text-center text-gray-400 text-sm">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p>© 2023 Dai Fashion. All rights reserved.</p>
           <div className="mt-4 md:mt-0 flex space-x-6">
@@ -218,7 +178,7 @@ const Footer = () => (
              <a href="#" className="hover:text-amber-400 transition-colors">Returns & Exchanges</a>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   </footer>
 );

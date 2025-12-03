@@ -1,69 +1,63 @@
 'use client'
-import { validatePassword } from '../utils/validators';
+import { validatePassword } from '@/utils/validators';
 
 /**
- * PasswordStrengthIndicator Component
- * Shows visual feedback for password strength requirements
- * 
- * @param {string} password - Password to evaluate
- * @returns {JSX.Element} - Rendered password strength indicator
+ * Password strength indicator component
+ * @param {Object} props
+ * @param {string} props.password - Password to analyze
  */
 const PasswordStrengthIndicator = ({ password }) => {
     if (!password) return null;
 
     const validation = validatePassword(password);
-    const { isValid, checks } = validation;
-
+    const strength = Object.values(validation.errors).filter(Boolean).length;
+    
     const getStrengthColor = () => {
-        const passedChecks = Object.values(checks).filter(Boolean).length;
-        const totalChecks = Object.keys(checks).length;
-        const percentage = (passedChecks / totalChecks) * 100;
-
-        if (percentage >= 80) return 'bg-green-500';
-        if (percentage >= 60) return 'bg-yellow-500';
-        if (percentage >= 40) return 'bg-orange-500';
-        return 'bg-red-500';
+        if (strength <= 2) return 'bg-red-500';
+        if (strength <= 3) return 'bg-yellow-500';
+        if (strength <= 4) return 'bg-blue-500';
+        return 'bg-green-500';
     };
 
     const getStrengthText = () => {
-        const passedChecks = Object.values(checks).filter(Boolean).length;
-        const totalChecks = Object.keys(checks).length;
-        const percentage = (passedChecks / totalChecks) * 100;
-
-        if (percentage >= 80) return 'Strong';
-        if (percentage >= 60) return 'Good';
-        if (percentage >= 40) return 'Fair';
-        return 'Weak';
+        if (strength <= 2) return 'Weak';
+        if (strength <= 3) return 'Fair';
+        if (strength <= 4) return 'Good';
+        return 'Strong';
     };
 
     return (
-        <div className="space-y-2">
-            {/* Password strength bar */}
-            <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                    className={`h-2 rounded-full transition-all duration-300 ${getStrengthColor()}`}
-                    style={{
-                        width: `${(Object.values(checks).filter(Boolean).length / Object.keys(checks).length) * 100}%`
-                    }}
-                />
+        <div className="mt-2">
+            <div className="flex items-center gap-2 mb-1">
+                <div className="flex-1 h-2 bg-gray-600 rounded-full overflow-hidden">
+                    <div 
+                        className={`h-full transition-all duration-300 ${getStrengthColor()}`}
+                        style={{ width: `${(strength / 5) * 100}%` }}
+                    />
+                </div>
+                <span className="text-xs text-gray-400">{getStrengthText()}</span>
             </div>
-
-            {/* Strength text */}
-            <p className={`text-sm font-medium ${isValid ? 'text-green-400' : 'text-gray-300'}`}>
-                Password strength: {getStrengthText()}
-            </p>
-
-            {/* Requirements checklist */}
-            <div className="space-y-1">
-                <p className="text-xs font-medium text-gray-300 mb-2">Requirements:</p>
-                {Object.entries(checks).map(([requirement, isMet]) => (
-                    <div key={requirement} className="flex items-center gap-2">
-                        <div className={`w-3 h-3 rounded-full ${isMet ? 'bg-green-500' : 'bg-gray-600'}`} />
-                        <span className={`text-xs ${isMet ? 'text-green-400' : 'text-gray-400'}`}>
-                            {requirement}
-                        </span>
-                    </div>
-                ))}
+            <div className="grid grid-cols-2 gap-1 text-xs text-gray-500">
+                <div className={`flex items-center gap-1 ${validation.errors.minLength ? 'text-green-400' : ''}`}>
+                    <span>{validation.errors.minLength ? '✓' : '○'}</span>
+                    Min 8 characters
+                </div>
+                <div className={`flex items-center gap-1 ${validation.errors.hasUpperCase ? 'text-green-400' : ''}`}>
+                    <span>{validation.errors.hasUpperCase ? '✓' : '○'}</span>
+                    Uppercase letter
+                </div>
+                <div className={`flex items-center gap-1 ${validation.errors.hasLowerCase ? 'text-green-400' : ''}`}>
+                    <span>{validation.errors.hasLowerCase ? '✓' : '○'}</span>
+                    Lowercase letter
+                </div>
+                <div className={`flex items-center gap-1 ${validation.errors.hasNumber ? 'text-green-400' : ''}`}>
+                    <span>{validation.errors.hasNumber ? '✓' : '○'}</span>
+                    Number
+                </div>
+                <div className={`flex items-center gap-1 ${validation.errors.hasSymbol ? 'text-green-400' : ''}`}>
+                    <span>{validation.errors.hasSymbol ? '✓' : '○'}</span>
+                    Symbol
+                </div>
             </div>
         </div>
     );

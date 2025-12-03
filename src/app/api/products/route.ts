@@ -113,11 +113,12 @@ export async function GET(request: NextRequest) {
     return response
   } catch (error) {
     console.error('Error fetching products:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json(
       { 
         success: false, 
         message: 'Failed to fetch products',
-        error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+        error: process.env.NODE_ENV === 'development' ? errorMessage : 'Internal server error'
       },
       { status: 500, headers: corsHeaders }
     )
@@ -220,11 +221,12 @@ export async function POST(request: NextRequest) {
     return response
   } catch (error) {
     console.error('Error creating product:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json(
       { 
         success: false, 
         message: 'Failed to create product',
-        error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+        error: process.env.NODE_ENV === 'development' ? errorMessage : 'Internal server error'
       },
       { status: 500, headers: corsHeaders }
     )

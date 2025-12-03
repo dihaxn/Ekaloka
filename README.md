@@ -1,306 +1,349 @@
-# Ekaloka - Full-Stack Next.js Application
+# Ekaloka - Enterprise E-commerce Platform
 
-A complete Next.js application with Prisma ORM, PostgreSQL database (Supabase), JWT authentication, and comprehensive testing setup.
+A modern, scalable e-commerce platform built with Next.js, React, and .NET backend, featuring enterprise-grade security, performance, and maintainability.
 
 ## 🚀 Features
 
-- **Next.js 15** with App Router and TypeScript
-- **Prisma ORM** with PostgreSQL database
-- **JWT Authentication** with access and refresh tokens
-- **Supabase Integration** for managed PostgreSQL
-- **Comprehensive Testing** with Jest and Playwright
-- **CI/CD Pipeline** with GitHub Actions
-- **Vercel Deployment** ready
-- **Tailwind CSS** for styling
+### Core Features
+- **Authentication & Authorization**: JWT-based auth with MFA/2FA support
+- **User Management**: Role-based access control (RBAC)
+- **Product Management**: Full CRUD operations with image handling
+- **Shopping Cart**: Persistent cart with real-time updates
+- **Order Management**: Complete order lifecycle
+- **Payment Integration**: Stripe payment processing
+- **Admin Dashboard**: Comprehensive admin interface
+
+### Enterprise Features
+- **Security**: CSRF protection, rate limiting, input validation
+- **Performance**: Redis caching, React Query, optimized images
+- **Scalability**: Serverless-ready, horizontal scaling support
+- **Monitoring**: Comprehensive logging and error tracking
+- **Testing**: Unit, integration, and E2E test coverage
+- **Accessibility**: WCAG 2.1 AA compliant
 
 ## 🏗️ Architecture
 
+### Frontend Stack
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **State Management**: Redux Toolkit + Redux Persist
+- **Data Fetching**: React Query (TanStack Query)
+- **UI Components**: Radix UI + Custom components
+- **Forms**: React Hook Form + Zod validation
+
+### Backend Stack
+- **Framework**: .NET 8
+- **Database**: PostgreSQL with Prisma ORM
+- **Caching**: Redis/Upstash Redis
+- **Authentication**: JWT with refresh tokens
+- **File Storage**: Cloudinary
+- **Payment**: Stripe
+- **Email**: SMTP with templates
+
+### Infrastructure
+- **Deployment**: Vercel (Frontend) + Azure/AWS (Backend)
+- **Database**: PostgreSQL (Supabase/AWS RDS)
+- **Caching**: Redis (Upstash/AWS ElastiCache)
+- **CDN**: Vercel Edge Network
+- **Monitoring**: Sentry + Logtail
+- **CI/CD**: GitHub Actions
+
+## 📁 Project Structure
+
 ```
 src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable UI components
-├── hooks/              # Custom React hooks
-├── lib/                # Utility libraries and API client
-├── services/           # Business logic and server services
-├── server/             # Database and server utilities
-├── styles/             # Global styles and CSS
-└── types/              # TypeScript type definitions
-
-pages/api/              # API routes (Pages Router)
-├── auth/               # Authentication endpoints
-└── products/           # Product management endpoints
-
-prisma/                 # Database schema and migrations
-tests/                  # Test files (unit + e2e)
+├── app/                          # Next.js App Router
+│   ├── (auth)/                   # Auth group routes
+│   │   ├── login/
+│   │   ├── register/
+│   │   └── forgot-password/
+│   ├── (dashboard)/              # Protected dashboard routes
+│   │   ├── dashboard/
+│   │   ├── profile/
+│   │   └── settings/
+│   ├── api/                      # API routes
+│   │   ├── auth/
+│   │   ├── user/
+│   │   └── telemetry/
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/                   # Shared UI components
+│   ├── ui/                      # Base UI components
+│   ├── forms/                   # Form components
+│   ├── layout/                  # Layout components
+│   └── providers/               # Context providers
+├── features/                    # Feature-based modules
+│   ├── auth/                    # Authentication feature
+│   ├── users/                   # User management
+│   ├── products/                # Product management
+│   └── orders/                  # Order management
+├── hooks/                       # Custom React hooks
+├── lib/                         # Core utilities
+│   ├── auth.ts                  # Authentication utilities
+│   ├── cache.ts                 # Caching system
+│   ├── csrf.ts                  # CSRF utilities
+│   ├── db.ts                    # Database utilities
+│   ├── validators.ts            # Validation schemas
+│   └── utils.ts                 # General utilities
+├── services/                    # API services
+├── store/                       # State management
+├── types/                       # TypeScript types
+└── config/                      # Configuration files
 ```
 
-## 🛠️ Tech Stack
+## 🛠️ Setup & Installation
 
-- **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS
-- **Backend**: Next.js API Routes, Prisma ORM
-- **Database**: PostgreSQL (Supabase)
-- **Authentication**: JWT with bcrypt password hashing
-- **Testing**: Jest, React Testing Library, Playwright
-- **Deployment**: Vercel, GitHub Actions CI/CD
-
-## 📋 Prerequisites
-
+### Prerequisites
 - Node.js 18+ 
-- npm, yarn, or pnpm
-- PostgreSQL database (local or Supabase)
-- Git
+- npm 9+
+- PostgreSQL 14+
+- Redis 6+
+- .NET 8 SDK
 
-## 🚀 Quick Start
-
-### 1. Clone and Install
-
+### 1. Clone the Repository
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/your-org/ekaloka.git
 cd ekaloka
+```
+
+### 2. Install Dependencies
+```bash
 npm install
 ```
 
-### 2. Environment Setup
-
-Copy the environment template and configure your variables:
-
+### 3. Environment Configuration
 ```bash
-cp apps/frontend/.env.example apps/frontend/.env
+cp env.example .env.local
 ```
 
-Edit `apps/frontend/.env` with your actual values:
-
+Update `.env.local` with your configuration:
 ```env
-# API Configuration
-NEXT_PUBLIC_API_URL=http://localhost:3000
+# Database
+DATABASE_URL="postgresql://username:password@localhost:5432/ekaloka_db"
 
-# Database Configuration
-DATABASE_URL=postgresql://<user>:<pass>@<host>:5432/<db>
+# Authentication
+JWT_SECRET="your-super-secret-jwt-key"
+JWT_REFRESH_SECRET="your-super-secret-refresh-key"
 
-# JWT Configuration
-JWT_ACCESS_SECRET=your_super_secret_access_key_here
-JWT_REFRESH_SECRET=your_super_secret_refresh_key_here
+# Redis
+REDIS_URL="redis://localhost:6379"
+UPSTASH_REDIS_REST_URL="https://your-redis-url.upstash.io"
+UPSTASH_REDIS_REST_TOKEN="your-upstash-token"
 
-# Environment
-NODE_ENV=development
+# API
+NEXT_PUBLIC_API_URL="http://localhost:3000/api"
+
+# External Services
+STRIPE_SECRET_KEY="sk_test_your-stripe-secret-key"
+STRIPE_PUBLISHABLE_KEY="pk_test_your-stripe-publishable-key"
+CLOUDINARY_CLOUD_NAME="your-cloud-name"
+CLOUDINARY_API_KEY="your-api-key"
+CLOUDINARY_API_SECRET="your-api-secret"
 ```
 
-### 3. Database Setup
-
-#### Option A: Supabase (Recommended)
-
-1. Create a new project at [supabase.com](https://supabase.com)
-2. Go to Settings > Database
-3. Copy the connection string
-4. Update your `DATABASE_URL` in `.env`
-
-#### Option B: Local PostgreSQL
-
-1. Install PostgreSQL locally
-2. Create a new database
-3. Update your `DATABASE_URL` in `.env`
-
-### 4. Database Migration and Seeding
-
+### 4. Database Setup
 ```bash
-cd apps/frontend
-
 # Generate Prisma client
 npm run prisma:generate
 
-# Run database migrations
+# Run migrations
 npm run prisma:migrate
 
-# Seed the database with sample data
+# Seed database
 npm run prisma:seed
 ```
 
 ### 5. Start Development Server
-
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application.
+Visit [http://localhost:3000](http://localhost:3000) to see the application.
 
 ## 🧪 Testing
 
-### Unit Tests
-
+### Run Tests
 ```bash
-# Run all unit tests
+# Unit tests
 npm test
 
-# Run tests in watch mode
-npm run test:watch
+# Unit tests with coverage
+npm run test:coverage
 
-# Run tests with coverage
-npm test -- --coverage
-```
-
-### E2E Tests
-
-```bash
-# Install Playwright browsers (first time only)
-npx playwright install
-
-# Run E2E tests
+# E2E tests
 npm run test:e2e
 
-# Run E2E tests with UI
+# E2E tests with UI
 npm run test:e2e:ui
 ```
 
-### Type Checking
-
-```bash
-npm run typecheck
-```
+### Test Coverage
+- Unit Tests: Jest + React Testing Library
+- Integration Tests: API route testing
+- E2E Tests: Playwright
+- Coverage Target: >80%
 
 ## 🚀 Deployment
 
-### Vercel Deployment
+### Frontend (Vercel)
+1. Connect your GitHub repository to Vercel
+2. Configure environment variables in Vercel dashboard
+3. Deploy automatically on push to main branch
 
-1. **Connect Repository**
-   - Push your code to GitHub
-   - Connect your repository to Vercel
+### Backend (.NET)
+1. Build the .NET application
+2. Deploy to Azure App Service or AWS ECS
+3. Configure environment variables
+4. Set up database and Redis connections
 
-2. **Environment Variables**
-   - Add all environment variables in Vercel dashboard
-   - Ensure `DATABASE_URL` points to your production database
+### Database
+1. Set up PostgreSQL instance (Supabase/AWS RDS)
+2. Run migrations: `npm run prisma:migrate`
+3. Seed initial data: `npm run prisma:seed`
 
-3. **Deploy**
-   - Vercel will automatically build and deploy on push to main branch
+### Redis
+1. Set up Redis instance (Upstash/AWS ElastiCache)
+2. Configure connection strings
+3. Test cache connectivity
 
-### Manual Deployment
+## 🔧 Development
 
+### Code Quality
 ```bash
-# Build the application
-npm run build
+# Lint code
+npm run lint
 
-# Start production server
-npm start
+# Fix linting issues
+npm run lint:fix
+
+# Format code
+npm run format
+
+# Type check
+npm run typecheck
 ```
 
-## 📚 API Endpoints
+### Git Hooks
+The project uses Husky for pre-commit hooks:
+- Lint staged files
+- Format code
+- Run type checking
+- Run tests
 
-### Authentication
+### Branching Strategy
+- `main`: Production-ready code
+- `develop`: Development branch
+- `feature/*`: New features
+- `fix/*`: Bug fixes
+- `hotfix/*`: Critical production fixes
 
-- `POST /api/auth/login` - User login
-- `POST /api/auth/refresh` - Refresh access token
+## 📊 Performance
 
-### Products
+### Optimization Features
+- **Image Optimization**: Next.js Image component
+- **Code Splitting**: Automatic route-based splitting
+- **Caching**: Redis + React Query caching
+- **Bundle Analysis**: Webpack bundle analyzer
+- **Lighthouse Score**: >90 in all categories
 
-- `GET /api/products` - List products (with pagination and search)
+### Monitoring
+- **Performance**: Vercel Analytics
+- **Errors**: Sentry error tracking
+- **Logs**: Logtail structured logging
+- **Uptime**: Status page monitoring
 
-### Response Format
+## 🔒 Security
 
-All API responses follow this format:
+### Security Features
+- **CSRF Protection**: Token-based CSRF protection
+- **Rate Limiting**: Per-user and per-IP limits
+- **Input Validation**: Zod schema validation
+- **XSS Prevention**: Content Security Policy
+- **SQL Injection**: Parameterized queries
+- **Authentication**: JWT with refresh tokens
+- **Authorization**: Role-based access control
 
-```json
-{
-  "ok": true,
-  "data": { ... },
-  "error": null
-}
-```
-
-## 🔧 Available Scripts
-
-```bash
-# Development
-npm run dev              # Start development server
-npm run build            # Build for production
-npm run start            # Start production server
-
-# Testing
-npm test                 # Run unit tests
-npm run test:watch       # Run tests in watch mode
-npm run test:e2e         # Run E2E tests
-npm run typecheck        # TypeScript type checking
-
-# Database
-npm run prisma:generate  # Generate Prisma client
-npm run prisma:migrate   # Run database migrations
-npm run prisma:push      # Push schema to database
-npm run prisma:seed      # Seed database
-npm run prisma:studio    # Open Prisma Studio
-
-# Linting
-npm run lint             # Run ESLint
-```
-
-## 🗄️ Database Schema
-
-### Users Table
-- `id`: Unique identifier
-- `uid`: User ID string
-- `name`: User's full name
-- `email`: Unique email address
-- `passwordHash`: Bcrypt hashed password
-- `role`: User role (user/admin)
-- `createdAt`: Account creation timestamp
-- `updatedAt`: Last update timestamp
-
-### Products Table
-- `id`: Unique identifier
-- `name`: Product name
-- `price`: Product price
-- `description`: Optional product description
-- `createdAt`: Product creation timestamp
-- `updatedAt`: Last update timestamp
-
-## 🔐 Authentication Flow
-
-1. **Login**: User provides email/password
-2. **Validation**: Server validates credentials against database
-3. **Tokens**: Server generates JWT access token (15min) and refresh token (30 days)
-4. **Cookies**: Refresh token stored as HTTP-only secure cookie
-5. **Authorization**: Access token used for API requests
-6. **Refresh**: When access token expires, refresh token used to get new access token
-
-## 🚨 Security Features
-
-- **Password Hashing**: Bcrypt with salt rounds
-- **JWT Tokens**: Secure token-based authentication
-- **HTTP-Only Cookies**: Refresh tokens stored securely
-- **Input Validation**: Server-side validation for all inputs
-- **CORS Protection**: Configured for production use
+### Security Headers
+- Content Security Policy
+- X-Frame-Options
+- X-Content-Type-Options
+- Referrer Policy
+- Strict Transport Security
 
 ## 🤝 Contributing
 
+### Development Workflow
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add amazing feature'`
-4. Push to the branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+3. Make your changes
+4. Run tests: `npm test`
+5. Commit your changes: `git commit -m 'Add amazing feature'`
+6. Push to the branch: `git push origin feature/amazing-feature`
+7. Open a Pull Request
 
-### Commit Convention
+### Code Standards
+- Follow TypeScript best practices
+- Use ESLint and Prettier
+- Write meaningful commit messages
+- Add tests for new features
+- Update documentation
 
-- `feat:` New features
-- `fix:` Bug fixes
-- `docs:` Documentation updates
-- `style:` Code style changes
-- `refactor:` Code refactoring
-- `test:` Test updates
-- `chore:` Maintenance tasks
+## 📚 API Documentation
 
-## 📝 License
+### Authentication Endpoints
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/logout` - User logout
+- `POST /api/auth/refresh` - Refresh token
+- `POST /api/auth/mfa/verify` - MFA verification
 
-This project is licensed under the MIT License.
+### User Endpoints
+- `GET /api/user/profile` - Get user profile
+- `PUT /api/user/profile` - Update user profile
+- `GET /api/user/orders` - Get user orders
+- `PUT /api/user/preferences` - Update preferences
+
+### Product Endpoints
+- `GET /api/products` - List products
+- `GET /api/products/[id]` - Get product details
+- `POST /api/products` - Create product (admin)
+- `PUT /api/products/[id]` - Update product (admin)
+- `DELETE /api/products/[id]` - Delete product (admin)
+
+### Order Endpoints
+- `GET /api/orders` - List orders
+- `GET /api/orders/[id]` - Get order details
+- `POST /api/orders` - Create order
+- `PUT /api/orders/[id]` - Update order status
 
 ## 🆘 Support
 
-If you encounter any issues:
+### Getting Help
+- **Documentation**: Check the docs folder
+- **Issues**: Create a GitHub issue
+- **Discussions**: Use GitHub Discussions
+- **Email**: support@ekaloka.com
 
-1. Check the [Issues](../../issues) page
-2. Create a new issue with detailed information
-3. Check the documentation and troubleshooting guides
+### Common Issues
+- **Database Connection**: Check DATABASE_URL in .env.local
+- **Redis Connection**: Verify REDIS_URL configuration
+- **Build Errors**: Clear .next folder and node_modules
+- **Type Errors**: Run `npm run typecheck`
 
-## 🔗 Useful Links
+## 📄 License
 
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Prisma Documentation](https://www.prisma.io/docs)
-- [Supabase Documentation](https://supabase.com/docs)
-- [Vercel Documentation](https://vercel.com/docs)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)ation/deploying) for more details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Next.js team for the amazing framework
+- Vercel for hosting and deployment
+- Prisma team for the excellent ORM
+- Radix UI for accessible components
+- Tailwind CSS for utility-first styling
+
+---
+
+**Built with ❤️ by the Ekaloka Team**
