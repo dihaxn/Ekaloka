@@ -1,5 +1,5 @@
 'use client';
-import { validatePassword } from '@/utils/validators';
+import { validatePassword } from '@/lib/validators';
 
 /**
  * Password strength indicator component

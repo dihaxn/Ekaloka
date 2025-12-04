@@ -45,7 +45,7 @@ export {
 };
 
 // Middleware
-import { EnterpriseSecurityMiddleware } from '../middleware/enterprise-security';
+import { EnterpriseSecurityMiddleware } from '../../middleware/enterprise-security';
 export { EnterpriseSecurityMiddleware };
 
 // Utility Functions

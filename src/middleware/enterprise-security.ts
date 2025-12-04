@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { EnterpriseSecurityAudit } from '../lib/enterprise-audit';
-import { EnterpriseInputSecurity } from '../lib/enterprise-input-security';
-import { EnterpriseRateLimitSecurity } from '../lib/enterprise-rate-limit';
-import { ENTERPRISE_SECURITY_CONFIG } from '../lib/enterprise-security-config';
+import { EnterpriseSecurityAudit } from '../lib/security/enterprise-audit';
+import { EnterpriseInputSecurity } from '../lib/security/enterprise-input-security';
+import { EnterpriseRateLimitSecurity } from '../lib/security/enterprise-rate-limit';
+import { ENTERPRISE_SECURITY_CONFIG } from '../lib/security/enterprise-security-config';
 
 // Enterprise Security Middleware
 export class EnterpriseSecurityMiddleware {

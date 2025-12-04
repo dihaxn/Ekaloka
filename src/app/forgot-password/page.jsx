@@ -9,8 +9,8 @@ import MessageAlert from '../../components/MessageAlert';
 import PasswordStrengthIndicator from '../../components/PasswordStrengthIndicator';
 import {
   getPasswordErrorMessage,
-  validatePassword,
-} from '../../utils/validators';
+  validateEmail,
+} from '../../lib/validators';
 
 const ForgotPassword = () => {
   const router = useRouter();

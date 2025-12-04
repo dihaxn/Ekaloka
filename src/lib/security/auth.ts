@@ -2,8 +2,8 @@ import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { cache } from './cache';
-import { CacheUtils } from './cache';
+import { cache } from '../cache';
+import { CacheUtils } from '../cache';
 
 // JWT configuration
 const JWT_SECRET = new TextEncoder().encode(

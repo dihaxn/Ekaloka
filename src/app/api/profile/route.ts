@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { prisma } from '@/server/db/prisma';
+import { prisma } from '@/lib/db';
 
 // CORS headers
 const corsHeaders = {

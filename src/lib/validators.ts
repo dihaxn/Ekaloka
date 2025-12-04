@@ -444,3 +444,68 @@ export class ValidationUtils {
       .substring(0, 100); // Limit length
   }
 }
+
+// --- Backward Compatibility Helpers ---
+
+/**
+ * Validates email format using regex
+ */
+export const validateEmail = (email: string): boolean => {
+  return ValidationUtils.isValidEmail(email);
+};
+
+/**
+ * Validates password strength requirements
+ * Matches the signature expected by PasswordStrengthIndicator
+ */
+export const validatePassword = (password: string) => {
+  const minLength = password.length >= 8;
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+
+  return {
+    isValid: minLength && hasUpperCase && hasLowerCase && hasNumber && hasSymbol,
+    errors: {
+      minLength,
+      hasUpperCase,
+      hasLowerCase,
+      hasNumber,
+      hasSymbol,
+    },
+  };
+};
+
+/**
+ * Gets human-readable password error message
+ */
+export const getPasswordErrorMessage = (passwordValidation: any): string => {
+  const failedRules: string[] = [];
+
+  if (!passwordValidation.errors.minLength) failedRules.push('min 8 characters');
+  if (!passwordValidation.errors.hasUpperCase) failedRules.push('uppercase letter');
+  if (!passwordValidation.errors.hasLowerCase) failedRules.push('lowercase letter');
+  if (!passwordValidation.errors.hasNumber) failedRules.push('number');
+  if (!passwordValidation.errors.hasSymbol) failedRules.push('symbol');
+
+  if (failedRules.length === 0) return '';
+
+  return `Requires: ${failedRules.join(', ')}`;
+};
+
+/**
+ * Validates if a string is not empty and has minimum length
+ */
+export const validateRequired = (value: string, minLength = 1): boolean => {
+  return !!value && value.trim().length >= minLength;
+};
+
+/**
+ * Validates phone number format (basic check)
+ */
+export const validatePhoneFormat = (phone: string): boolean => {
+  const digitsOnly = phone.replace(/\D/g, '');
+  return digitsOnly.length >= 10 && digitsOnly.length <= 15;
+};
+

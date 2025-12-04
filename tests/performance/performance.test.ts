@@ -1,5 +1,5 @@
 import { performance } from 'perf_hooks'
-import { PasswordSecurity, JWTSecurity, InputSecurity, RateLimitSecurity, EncryptionSecurity } from '../../src/lib/security'
+import { PasswordSecurity, JWTSecurity, InputSecurity, RateLimitSecurity, EncryptionSecurity } from '../../src/lib/security/index'
 
 // Set test environment
 (process.env as any).NODE_ENV = 'test'

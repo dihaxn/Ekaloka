@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 
 import { validateProductData } from '../lib/validation';
-import { prisma } from '../server/db/prisma';
+import { prisma } from '../lib/db';
 import {
   ConflictError,
   DatabaseError,

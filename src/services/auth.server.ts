@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-import { prisma } from '../server/db/prisma';
+import { prisma } from '../lib/db';
 import {
   AuthenticationError,
   DatabaseError,

@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 
 import MessageAlert from '../../components/MessageAlert';
 import SocialLoginButtons from '../../components/SocialLoginButtons';
-import { CsrfContext } from '../../contexts/CsrfContext';
+import { CsrfContext } from '../../context/CsrfContext';
 import { useConfig } from '../../hooks/useConfig';
 import { useTelemetry } from '../../hooks/useTelemetry';
 import { useTranslation } from '../../hooks/useTranslation';

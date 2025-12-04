@@ -10,14 +10,16 @@ import PasswordStrengthIndicator from '../../components/PasswordStrengthIndicato
 import SocialLoginButtons from '../../components/SocialLoginButtons';
 import {
   formatPhoneNumber,
-  normalizePhoneForBackend,
   validateSriLankanPhone,
-} from '../../utils/phone';
+  normalizePhoneForBackend,
+} from '../../lib/phone';
 import {
-  getPasswordErrorMessage,
   validateEmail,
   validatePassword,
-} from '../../utils/validators';
+  getPasswordErrorMessage,
+  validateRequired,
+  validatePhoneFormat,
+} from '../../lib/validators';
 
 /**
  * Signup Component

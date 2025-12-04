@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
 // Mock Prisma client
-jest.mock('../../src/server/db/prisma', () => ({
+jest.mock('../../src/lib/db', () => ({
   prisma: {
     user: {
       findUnique: jest.fn()
@@ -21,7 +21,7 @@ jest.mock('jsonwebtoken', () => ({
   sign: jest.fn()
 }))
 
-import { prisma } from '../../src/server/db/prisma'
+import { prisma } from '../../src/lib/db'
 
 describe('AuthService', () => {
   beforeEach(() => {
